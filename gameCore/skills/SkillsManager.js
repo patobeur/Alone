@@ -235,7 +235,7 @@ class SkillsManager {
 				h: .2,
 				l: .3,
 				distanceMax: 30,
-				color: 'black',
+				color: 'white',
 				speed: .5,
 				rotation: 0,
 				addTheta: (Math.PI / 4),
@@ -244,7 +244,7 @@ class SkillsManager {
 				recastTimer: 1000,
 				explosion: {
 					radius: 1, // radius of explosion
-					duration: 100, // duration of explosion
+					duration: 300, // duration of explosion
 					color: 'red' // color of explosion
 				},
 				lv:1,
@@ -278,7 +278,7 @@ class SkillsManager {
 				h: 2.5,
 				l: .3,
 				fromfloor: 1, // (w /2)
-				distanceMax: 3,
+				distanceMax: 8,
 				duration: 10000,
 				color: 'blue',
 				speed: .5,
@@ -326,7 +326,7 @@ class SkillsManager {
 				fromfloor: 1, // (w /2)
 				distanceMax: 3,
 				duration: 100000,
-				color: 'black',
+				color: 'white',
 				speed: 5,
 				x: 0,
 				y: 0,

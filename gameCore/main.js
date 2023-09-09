@@ -3,7 +3,13 @@
 // import * as Stats from '/Alone/node_modules/stats.js/src/stats.js';
 // import {Stats} from '/Alone/node_modules/stats.js/src/stats.js';
 // import {Stats} from '/Alone/node_modules/stats.js/build/stats.js';
+
 // import * as Stats from '/Alone/node_modules/stats.js/build/stats.min.js';
+// import {Stats} from '/Alone/node_modules/stats.js/build/stats.min.js';
+import {Stats} from '/Alone/node_modules/stats.js/src/stats.js';
+
+{/* <script src="/Alone/node_modules/stats.js/build/stats.min.js"></script> */}
+
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';
 import {FullScreenManager} from './features/FullScreenManager.js';

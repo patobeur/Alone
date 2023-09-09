@@ -1,3 +1,9 @@
+
+// import * as Stats from 'https://mrdoob.github.io/stats.js/build/stats.js';
+// import * as Stats from '/Alone/node_modules/stats.js/src/stats.js';
+// import {Stats} from '/Alone/node_modules/stats.js/src/stats.js';
+// import {Stats} from '/Alone/node_modules/stats.js/build/stats.js';
+// import * as Stats from '/Alone/node_modules/stats.js/build/stats.min.js';
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';
 import {FullScreenManager} from './features/FullScreenManager.js';
@@ -52,6 +58,10 @@ class gameCore {
 		this._Init()
 	}
 	_Init() {
+		this.stats = new Stats();
+		this.stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+		document.body.appendChild( this.stats.dom );
+
         this._Formula = new Formula()
 		this._GameConfig = new GameConfig(this._conslog)
 		// ----------------------------------------------------
@@ -184,13 +194,13 @@ class gameCore {
 	  }
 	_REFRESH() {
 	  requestAnimationFrame((t) => {
+		this.stats.begin();
 
 		if (this._previousREFRESH === null) {
 			this._previousREFRESH = t;
 		  }
   
-		this._REFRESH();
-		
+		this._REFRESH();		
 		
 		if (!this._pause && this._WindowActive.get_isWindowActive()) {
 			
@@ -216,8 +226,10 @@ class gameCore {
 		  // 	if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive())
 		  // }
 		}
-			  this._Step(t - this._previousREFRESH);
-			  this._previousREFRESH = t;
+		this._Step(t - this._previousREFRESH);
+		this._previousREFRESH = t;
+
+		this.stats.end();
 	  });
 	}	
 	applyGravityToPlayerGroupe() {

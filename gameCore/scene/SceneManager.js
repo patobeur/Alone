@@ -23,7 +23,7 @@ class SceneManager {
 		// Scene
 		this._Scene = new THREE.Scene();
 		this.set_SceneBackground(
-			'/gameCore/htmlAssets/img/backgrounds/',
+			'/Alone/gameCore/htmlAssets/img/backgrounds/',
 			['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg',]
 		)
 		this.lights.forEach(light => {

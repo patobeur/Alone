@@ -1,5 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-import {Formula}  from '/gameCore/mecanics/Formula.js';
+import {Formula}  from '/ALone/gameCore/mecanics/Formula.js';
 import {MobConfig} from './MobConfig.js';
 import {Mob} from './Mob.js';
 class MobsManager {

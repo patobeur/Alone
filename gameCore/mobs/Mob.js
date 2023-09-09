@@ -1,5 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-import {Formula}  from '/gameCore/mecanics/Formula.js';
+import {Formula}  from '/Alone/gameCore/mecanics/Formula.js';
 import {MobsIa} from './MobsIa.js';
 class Mob {
 	conslog = true

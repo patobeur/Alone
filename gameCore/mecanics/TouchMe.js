@@ -1,5 +1,5 @@
 
-import {Formula}  from '/gameCore/mecanics/Formula.js';
+import {Formula}  from './Formula.js';
 class TouchMe {
 	order=0
 	#touchZone;

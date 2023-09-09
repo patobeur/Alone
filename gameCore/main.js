@@ -1,14 +1,6 @@
 
-// import * as Stats from 'https://mrdoob.github.io/stats.js/build/stats.js';
-// import * as Stats from '/Alone/node_modules/stats.js/src/stats.js';
-// import {Stats} from '/Alone/node_modules/stats.js/src/stats.js';
-// import {Stats} from '/Alone/node_modules/stats.js/build/stats.js';
-
-// import * as Stats from '/Alone/node_modules/stats.js/build/stats.min.js';
-// import {Stats} from '/Alone/node_modules/stats.js/build/stats.min.js';
+// import defaultExport from '/Alone/node_modules/stats.js/src/stats.js';
 import {Stats} from '/Alone/node_modules/stats.js/src/stats.js';
-
-{/* <script src="/Alone/node_modules/stats.js/build/stats.min.js"></script> */}
 
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';
@@ -26,6 +18,7 @@ import {MobsManager} from './mobs/MobsManager.js';
 import {TouchMe} from './mecanics/TouchMe.js';
 class gameCore {
 	v= "0.0.1"
+	stats = null
 	_conslog = false
 	_Formula = null
 	_GameConfig = null
@@ -56,7 +49,6 @@ class gameCore {
 	// _clikableThings = false;
 	// _loadingmanager = Object;
 	// _ImagesManager = Object;
-
 	constructor(datas={HowManyMobs:this.defaultMobsNumber}) {
 		this.HowManyMobs = datas && datas.HowManyMobs 
 			? datas.HowManyMobs 
@@ -64,9 +56,11 @@ class gameCore {
 		this._Init()
 	}
 	_Init() {
-		this.stats = new Stats();
-		this.stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-		document.body.appendChild( this.stats.dom );
+		if(typeof Stats === 'function') this.stats = new Stats();
+		if (this.stats != null){
+			this.stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+			document.body.appendChild( this.stats.dom );
+		}
 
         this._Formula = new Formula()
 		this._GameConfig = new GameConfig(this._conslog)
@@ -200,7 +194,7 @@ class gameCore {
 	  }
 	_REFRESH() {
 	  requestAnimationFrame((t) => {
-		this.stats.begin();
+		if (this.stats != null)this.stats.begin();
 
 		if (this._previousREFRESH === null) {
 			this._previousREFRESH = t;
@@ -235,7 +229,7 @@ class gameCore {
 		this._Step(t - this._previousREFRESH);
 		this._previousREFRESH = t;
 
-		this.stats.end();
+		if (this.stats != null)this.stats.end();
 	  });
 	}	
 	applyGravityToPlayerGroupe() {

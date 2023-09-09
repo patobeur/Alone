@@ -13,6 +13,7 @@ import {PlayerManager} from './players/PlayerManager.js';
 import {MobsManager} from './mobs/MobsManager.js';
 import {TouchMe} from './mecanics/TouchMe.js';
 class gameCore {
+	v= "0.0.1"
 	_conslog = false
 	_Formula = null
 	_GameConfig = null

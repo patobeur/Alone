@@ -19,6 +19,7 @@ class MobsManager {
 		this._scene = datas.scene
 		this._FrontboardManager = datas.FrontboardManager
 		this._GameConfig = datas.GameConfig
+
 		this.conslog = this._GameConfig.conslog
 		this._maxMobLimiteLv = 3
 		this._AllMobs = []
@@ -65,33 +66,36 @@ class MobsManager {
 					mob._removeFromSceneAndDispose();
 					return
 				}
+				else {
 
-				if (mob.conf.ia.changeAction.cur === 0) {
-					mob.ia.iaAction();
-				}
-				
-				if (mob.conf.states.isGoingToCollide.current < 1) {
-					this._isGoingToCollide(mob);
-				}
-				if (mob.conf.states.isGoingToCollide.current < 1) {
-					mob._keepMoving();
-				}
-				mob.conf.ia.changeAction.cur =
-					mob.conf.ia.changeAction.cur > mob.conf.ia.changeAction.max
-						? 0
-						: mob.conf.ia.changeAction.cur + 1;
-
-
-				if(mob.conf.states.isGoingToCollide.current < 1){
-					mob.mesh.position.set(
-						mob.conf.position.x,
-						mob.conf.position.y,
-						mob.conf.position.z + mob.conf.mesh.size.z/2
-					);
-					mob.mesh.rotation.z = mob.conf.theta.cur;
-					mob._update_BBox();
+					if (mob.conf.ia.changeAction.cur === 0) {
+						mob.ia.iaAction();
+					}
+					
+					if (mob.conf.states.isGoingToCollide.current < 1) {
+						this._isGoingToCollide(mob);
+					}
+					if (mob.conf.states.isGoingToCollide.current < 1) {
+						mob._keepMoving();
+					}
+					mob.conf.ia.changeAction.cur =
+						mob.conf.ia.changeAction.cur > mob.conf.ia.changeAction.max
+							? 0
+							: mob.conf.ia.changeAction.cur + 1;
+	
+	
+					if(mob.conf.states.isGoingToCollide.current < 1){
+						mob.mesh.position.set(
+							mob.conf.position.x,
+							mob.conf.position.y,
+							mob.conf.position.z + mob.conf.mesh.size.z/2
+						);
+						mob.mesh.rotation.z = mob.conf.theta.cur;
+						mob._update_BBox();
+					}
 				}
 			}
+				if (mob) mob.conf.states.isGoingToCollide.current = 0
 		});
     }
 	set_PlayerDatas(playerGroupe){
@@ -100,9 +104,11 @@ class MobsManager {
 	_handleCollisionWith(mob,autreMob) {
         let nouvelleDirectionAutreMob = autreMob.conf.theta.cur + (Math.PI/2);
         let nouvelleDirectionThis = mob.conf.theta.cur + (Math.PI/2);
-        mob.conf.theta.cur = nouvelleDirectionThis		
+        mob.conf.theta.cur = nouvelleDirectionThis
+        mob.conf.position.z += 1
+		// console.log(mob.conf)
 		autreMob.conf.theta.cur = nouvelleDirectionAutreMob
-        mob.conf.states.isGoingToCollide.current = 1 
+        mob.conf.states.isGoingToCollide.current = 1
 		// this.conf.states.dead = true;
 		// this.conf.stats.hp.current = 0
 		// this.conf.stats.hp.current -= 2
@@ -118,7 +124,8 @@ class MobsManager {
 			) {
                 if (this._detecterCollisionPrediction(mob,autreMob)) {
 					// ca se touche
-					mob.conf.stats.isGoingToCollide = true
+					// ca se touche
+					mob.conf.stats.isGoingToCollide = 1
 					// console.log('ca se touche !?!')
                     this._handleCollisionWith(mob,autreMob);
                 }

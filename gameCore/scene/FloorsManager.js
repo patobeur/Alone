@@ -35,6 +35,9 @@ class FloorsManager {
 				// somme updates
 				mesh.receiveShadow = true;
 				mesh.castShadow = true;
+				
+				mesh.repeat.set(this._GameConfig.floors.size.x/16, this._GameConfig.floors.size.y/16);
+
 				// mesh.rotation.x = -Math.PI / 2;
 				mesh.name = 'floor_'+this._GameConfig.floors.name;
 				if (this._GameConfig.conslog) console.log(this._GameConfig.floors.size)
@@ -90,11 +93,12 @@ class FloorsManager {
 				imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
 				// imagepath:'./gameCore/3dAssets/textures/grid64_512_blanc.png',
 				type: 'BoxGeometry',
-				size: { x: 16, y: 16, z: .1 },
+				size: { x: 16, y: 32, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
+				repeat: (20,20),
 				spawns: [
-					{ x: 0, y: -7.5, z: 100 },
+					{ x: 0, y: -15.5, z: 100 },
 					{ x: 0, y: 0, z: 0 },
 				],
 			},
@@ -104,17 +108,18 @@ class FloorsManager {
 				imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
 				// imagepath:'./gameCore/3dAssets/textures/grid64_512.png',
 				type: 'PlaneGeometry',
-				size: { x: 32, y: 32, z: .1 },
+				size: { x: 32, y: 50, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
+				repeat: (20,20),
 				spawns: [
-					{ x: 0, y: -14.5, z: 20},
+					{ x: 0, y: -24.5, z: 20},
 					{ x: 0, y: 0, z: 0},
 				],
 			}
 		}
 		let config = floorsconfig[this._currentImmat]
-
+		config.repeat = (20,20)
 		// get position if not
 		// if(typeof config.position === 'undefined') config.position = { x: -(config.size.x/2), y: -(config.size.y/2), z: -(config.size.z/2) };
 		return config

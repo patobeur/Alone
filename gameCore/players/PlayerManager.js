@@ -336,7 +336,7 @@ class PlayerManager {
 					'good',
 					(koi) => {
 						console.log('----------------------------------------------koi')
-						console.log(koi)
+						console.log('test koi :',koi)
 						console.log('----------------------------------------------koi')
 					}
 				);

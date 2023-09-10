@@ -72,9 +72,12 @@ class gameCore {
 		this._FrontboardManager = new FrontboardManager(this._DomManager,this._conslog)
 		// ----------------------------------------------------
 		this._threejs = this._SceneManager.setAndGet_WebGLRenderer()
-		this._FloorsManager = new FloorsManager(this._GameConfig,this._threejs.capabilities.getMaxAnisotropy())
+		this._GameConfig.set_value('MaxAnisotropy',this._threejs.capabilities.getMaxAnisotropy())
+
+		this._FloorsManager = new FloorsManager(this._GameConfig)
+
 		this._FullScreenManager = new FullScreenManager()
-		this._WindowActive = new WindowActive(this._GameConfig);
+		// this._WindowActive = new WindowActive(this._GameConfig);
 		// this._TouchMe = new TouchMe()
 		// ----------------------------------------------------
         this.camera = this._CameraManager.cameras[0]
@@ -146,7 +149,15 @@ class gameCore {
 		this.scene.add(this._PlayerManager.playerGroupe)
 
 		this._FullScreenManager.init()
-		if (this._WindowActive) this._WindowActive.init()
+		console.log("_WindowActive")
+		console.log(this._WindowActive)
+		console.log(typeof this._WindowActive)
+
+		if (this._WindowActive != null) {
+			this._WindowActive.init()
+		} else {
+			console.log(' no WindowActive')
+		}
 
 
 		// this.MobsManager = new MobsManager({
@@ -160,9 +171,9 @@ class gameCore {
 
 		
 		// GO RENDER
-		console.log('------')
-		console.log('SCENE:',this.scene)
-		console.log('all mount done')
+		// console.log('------')
+		// console.log('SCENE:',this.scene)
+		// console.log('all mount done')
 
 		this._ModelsManager.LoadAnimatedModel()
 		// START
@@ -194,38 +205,35 @@ class gameCore {
 	  }
 	_REFRESH() {
 	  requestAnimationFrame((t) => {
-		if (this.stats != null)this.stats.begin();
+		if (this.stats != null) this.stats.begin();
+		if (this._previousREFRESH === null) this._previousREFRESH = t;
 
-		if (this._previousREFRESH === null) {
-			this._previousREFRESH = t;
-		  }
-  
-		this._REFRESH();		
-		
-		if (!this._pause && this._WindowActive.get_isWindowActive()) {
-			
-		  this._threejs.render(this.scene, this.camera);
-  
-  
+		if (
+			!this._pause &&	((this._WindowActive != null 
+			&& this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))
+		) {
+			this._threejs.render(this.scene, this.camera);
 			this._PlayerManager.checkMoves();
 			this._PlayerManager.checkSkills(this.allMobs);
 			// this._PlayerManager.checkZooming();
 
 			this._PlayerManager.check_playerOrbiter();
 			this.applyGravityToPlayerGroupe()
-		  	this._PlayerManager.playerUpdateIfMove();
-  
-		 	 this._CameraManager.FollowPlayer(this._PlayerManager.position,this._PlayerManager.oldPosition,0)
-		  		// REGENS AND BUFF
-			  this._PlayerManager.regen();
-			  this._MobsManager.updateAllMobsPhaseB()
-			  this._MobsManager.updateAllMobsPhaseA()
-			  this.allMobs = this._MobsManager.getOnlyLivings()[0]
-			  // if (this.allMobs) {
-			  // }
-		  // 	if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive())
+			this._PlayerManager.playerUpdateIfMove();
+
+			this._CameraManager.FollowPlayer(this._PlayerManager.position,this._PlayerManager.oldPosition,0)
+			// REGENS AND BUFF
+			this._PlayerManager.regen();
+			// if (this.allMobs) {
+				this._MobsManager.updateAllMobsPhaseB()
+				this._MobsManager.updateAllMobsPhaseA()
+				this.allMobs = this._MobsManager.getOnlyLivings()[0]
+			// }
+
+		  // 	if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 		  // }
 		}
+		this._REFRESH();	
 		this._Step(t - this._previousREFRESH);
 		this._previousREFRESH = t;
 

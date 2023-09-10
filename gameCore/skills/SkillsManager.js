@@ -3,12 +3,12 @@ import {Formula}  from '/Alone/gameCore/mecanics/Formula.js';
 class SkillsManager {
 	conslog = true
 	order = 0
-	constructor(skillname, position, rotation, fromfloor = 1, Scene, faction) {
+	constructor(skillname, playerPosition, rotation, fromfloor = 1, Scene, faction) {
 		this.formula = new Formula()
 		this.scene = Scene
 		// this.fromfloor = fromfloor / 2;
 
-		this.skillDatas = this._getSkill(skillname, position, rotation, faction);
+		this.skillDatas = this._getSkill(skillname, playerPosition, rotation, faction);
 
 		this.receiveShadow = true;
 		this.castShadow = true;
@@ -24,16 +24,16 @@ class SkillsManager {
 		this.touchedMobs = []
 		if (this.conslog) console.info('SkillsManager Mounted !','conslog:',this.conslog)
 	}
-	_getSkill(skillname, position, rotation, faction) {
+	_getSkill(skillname, playerPosition, rotation, faction) {
 		skillname = JSON.parse(JSON.stringify(skillname));
-		position = JSON.parse(JSON.stringify(position));
+		playerPosition = JSON.parse(JSON.stringify(playerPosition));
 		rotation = JSON.parse(JSON.stringify(rotation._z));
 
 		let skill = this._setSkills(skillname);
 
-		skill.x = position.x;
-		skill.y = position.y;
-		skill.z = position.z + (skill.fromfloor ? skill.fromfloor : 0);
+		skill.x = playerPosition.x;
+		skill.y = playerPosition.y;
+		skill.z = playerPosition.z + (skill.fromfloor ? skill.fromfloor : 0);
 		skill.rotation = rotation;
 
 		return skill
@@ -94,7 +94,7 @@ class SkillsManager {
 				if (this.skillDatas.duration) { this._checkDuration() }
 				else { this._endThis(); }
 			}
-			// if (this.isColliding) console.log('isColliding ???',this.isColliding);
+			// if (this.conslog && this.isColliding) console.log('isColliding ???',this.isColliding);
 			// this.isColliding = false
 			
 			this._setTouchedMobs()
@@ -104,12 +104,18 @@ class SkillsManager {
 
 				// Mob dead
 				// this.touchedMobs[0].conf.states.dead = true
-				let damage = this.skillDatas.getDamage(this.touchedMobs[0]);
+				let damage = new Number(this.skillDatas.getDamage(this.touchedMobs[0]));
+				
+				if (this.conslog) console.log(this.skillDatas);
+				if (this.conslog) console.log('getDamage = ' + this.skillDatas.getDamage(this.touchedMobs[0]));
+				
 				let def = this.touchedMobs[0].conf.stats.def.current;
 				let finalDamage = damage - def;
-				console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage );
+				if (this.conslog) console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage );
 				
 				this.touchedMobs[0].conf.stats.hp.current -= finalDamage
+				if (this.conslog) console.log('mob = ' , this.touchedMobs[0].conf.stats );
+				
 
 				// this.isColliding = true
 				// delete missile
@@ -119,7 +125,7 @@ class SkillsManager {
 					this._endThis();
 				}
 				else {
-					console.log('Balles perforantes Mouhahahahaha !!!!',this.touchedMobs[0].conf.stats.hp.current,this.touchedMobs[0].mesh.uuid)
+					if (this.conslog) console.log('Balles perforantes Mouhahahahaha !!!!',this.touchedMobs[0].conf.stats.hp.current,this.touchedMobs[0].mesh.uuid)
 					this.isColliding = false
 					this.touchedMobs = []
 				}
@@ -249,7 +255,7 @@ class SkillsManager {
 				},
 				lv:1,
 				faction:'neutral',
-				baseDamage:10,
+				baseDamage:new Number(10),
 			},
 			cube: {
 				name: 'cube',
@@ -269,7 +275,7 @@ class SkillsManager {
 				recastTimer: 1000,
 				lv:1,
 				faction:'neutral',
-				baseDamage:15,
+				baseDamage:new Number(15),
 			},
 			WeedWallLv1: {
 				name: 'Weed Wall',
@@ -290,7 +296,7 @@ class SkillsManager {
 				recastTimer: 5000,
 				lv:1,
 				faction:'neutral',
-				baseDamage:0,
+				baseDamage:new Number(0),
 				mesh: {opacity: 0.7},
 				material: {transparent: true},
 				immortaluntilduration:true
@@ -312,7 +318,7 @@ class SkillsManager {
 				lv:1,
 				faction:'neutral',
 				perforante:true,
-				baseDamage:10000,
+				baseDamage:new Number(10000),
 				scale: { start: 5, end: 1, current: 3 },//min zero,
 				mesh: {opacity: 0.5},
 				material: {transparent: true},
@@ -336,7 +342,7 @@ class SkillsManager {
 				recastTimer: 5000,
 				lv:1,
 				faction:'neutral',
-				baseDamage:0,
+				baseDamage:new Number(0),
 				// mesh: {opacity: 1},
 				// material: {transparent: true},
 				immortaluntilduration:true
@@ -345,9 +351,9 @@ class SkillsManager {
 		skill[skillname].getDamage=(mob) => {
 			// if (mob.stats.def.current)
 			// this.lv * this.baseDamage
-			let damage = 0
+			let damage = new Number(0)
 			if (typeof mob.conf.stats.def.current === 'number'){
-				damage =  (this.skillDatas.lv * this.skillDatas.baseDamage)
+				damage =  new Number(this.skillDatas.lv * this.skillDatas.baseDamage)
 			}
 			return damage > 0 ? damage : false
 		}
@@ -355,16 +361,22 @@ class SkillsManager {
 	}
 	_removeFromSceneAndDispose() {
 		const object = this.scene.getObjectByProperty('uuid', this.mesh.uuid);
-		// if (this.conslog) console.log('removeFromSceneAndDispose',object)
-		object.geometry.dispose();
-		object.material.dispose();
-		this.scene.remove(object);
+		if (typeof object != 'undefined') {
+			object.geometry.dispose();
+			object.material.dispose();
+			this.scene.remove(object);
+		}
+		else {
+			console.log('. . . . . . . . . . . . . . . . .')
+			console.info('Erreur this.scene.remove object')
+			console.log('. . . . . . . . . . . . . . . . .')
+		}
 	}
 	_createExplosion() {
 		const explosionDuration = this.skillDatas.explosion.duration;
-		const particleCount = 1000; // nombre de particules
+		const particleCount = 16; // nombre de particules
 		const particleSpeed = 1; // vitesse des particules
-		const particleSize = 1; // taille des particules augmentée
+		const particleSize = 0.5; // taille des particules augmentée
 		const particleColor = this.skillDatas.explosion.color; // couleur des particules
 	
 		const particleGeometry = new THREE.BufferGeometry();
@@ -439,10 +451,13 @@ class SkillsManager {
 		const clock = new THREE.Clock();
 		animate();
 	
-		setTimeout(() => {
-			this.scene.remove(explosion);
-			this._removeFromSceneAndDispose();
-		}, this.skillDatas.explosion.duration);
+		setTimeout(
+			() => {
+				this.scene.remove(explosion);
+				this._removeFromSceneAndDispose();
+			},
+			this.skillDatas.explosion.duration
+		);
 	}
 	// getSinValue(val) {
 	// 	let x = 0;//h

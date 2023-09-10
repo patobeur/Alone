@@ -11,11 +11,11 @@ class WindowActive {
 	}
 	init() {
 		this._pauseModalText = this._GameConfig.pauseModalText;
-		if (this.conslog) console.info('WindowActive mounted','conslog:',this.conslog)
+		if (this._GameConfig.conslog) console.info('WindowActive mounted')
 		this._add_Overlay()
 		this._Window_Blur()
 		this._init_Window_Focus()
-		if (this.conslog) console.log('--->WindowActive :',this._windowActive)
+		if (this._GameConfig.conslog) console.log('--->WindowActive :',this._windowActive)
 	}
 	_init_Window_Focus() {
 		document.addEventListener('mouseover', () => {

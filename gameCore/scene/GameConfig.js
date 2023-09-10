@@ -80,6 +80,10 @@ class GameConfig {
 		if (this.conslog) console.info('Config Mounted !','conslog:',this.conslog)
 	}
 
+	set_value(varName,data) {
+		this[varName] = data
+		if (this.conslog) console.log(varName+ 'set to : '+this[varName])
+	}
 	get_renderer(value) {
 		if (this.#renderer && this.#renderer[value]) {
 			return this.#renderer[value]

@@ -4,25 +4,23 @@ class FloorsManager {
 	_currentImmat = 1
 	floor = null
 	floorConfig = null
-	conslog = true
 	order = 2
-	maxAnisotropy
-	constructor(GameConfig,MaxAnisotropy) {
-		this.maxAnisotropy = MaxAnisotropy
+	_maxAnisotropy
+	constructor(GameConfig) {
 		this._GameConfig = GameConfig
 		this._init()
+	}
+	_init() {
+		this._initFloor()
 		if (this._GameConfig.conslog) {
 			console.info('Floors Mounted !')
 			console.log('floor',this.floor)
 			console.log('floorConfig',this._GameConfig.floors)
 		}
 	}
-	_init() {
-		this._initFloor()
-	}
 	_initFloor() {
-		this._GameConfig.floors = this.get_floorConfig() // add floor config to GameConfig		
-		this.floor = this.get_floorMesh() // somme shape and colors
+		this._GameConfig.floors = this.get_floorConfig()	
+		this.floor = this.get_floorMesh()
 	}
 	get_floorMesh = () => {
 		
@@ -53,7 +51,7 @@ class FloorsManager {
 				const mapLoader = new THREE.TextureLoader();
 									const checkerboard = mapLoader.load(this._GameConfig.floors.imagepath);
 								// const checkerboard = mapLoader.load('./gameCore/htmlAssets/img/backgrounds/2k_stars_milky_way.jpg');
-								checkerboard.anisotropy = this.maxAnisotropy;
+								checkerboard.anisotropy = this._GameConfig.MaxAnisotropy;
 								checkerboard.wrapS = THREE.RepeatWrapping;
 								checkerboard.wrapT = THREE.RepeatWrapping;
 								checkerboard.repeat.set(1, 1);
@@ -89,7 +87,8 @@ class FloorsManager {
 			0: {
 				name: 'groundZero',
 				fullName: 'Lobby Room',
-				imagepath:'./gameCore/3dAssets/textures/grid64_512_blanc.png',
+				imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
+				// imagepath:'./gameCore/3dAssets/textures/grid64_512_blanc.png',
 				type: 'BoxGeometry',
 				size: { x: 16, y: 16, z: .1 },
 				color: 0x1c1c1c,
@@ -102,7 +101,8 @@ class FloorsManager {
 			1: {
 				name: 'groundOne',
 				fullName: 'Ground-One',
-				imagepath:'./gameCore/3dAssets/textures/grid64_512.png',
+				imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
+				// imagepath:'./gameCore/3dAssets/textures/grid64_512.png',
 				type: 'PlaneGeometry',
 				size: { x: 32, y: 32, z: .1 },
 				color: 0x1c1c1c,
@@ -123,7 +123,7 @@ class FloorsManager {
 		const mapLoader = new THREE.TextureLoader();
 		// const checkerboard = mapLoader.load('./gameCore/3dAssets/textures/grid64_512.png');
 		const checkerboard = mapLoader.load('./gameCore/htmlAssets/img/backgrounds/2k_stars_milky_way.jpg');
-		checkerboard.anisotropy = this.maxAnisotropy;
+		checkerboard.anisotropy = this._maxAnisotropy;
 		checkerboard.wrapS = THREE.RepeatWrapping;
 		checkerboard.wrapT = THREE.RepeatWrapping;
 		checkerboard.repeat.set(20, 20);
@@ -139,14 +139,14 @@ class FloorsManager {
 		if (this._GameConfig.conslog) console.log(mesh)
 		return mesh
 	}
-	// setFloorByImmat(Immat) {
-	// 	if(this.floor) {
-	// 		this._Scene.remove(this.floor);
-	// 		this.floor = null
-	// 		this._currentImmat = Immat
-	// 		this.initFloor()
-	// 	}
-	// }
+	setFloorByImmat(Immat) {
+		if(this.floor) {
+			this._Scene.remove(this.floor);
+			this.floor = null
+			this._currentImmat = Immat
+			this.initFloor()
+		}
+	}
 }
 export {FloorsManager}
 

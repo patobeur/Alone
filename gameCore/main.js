@@ -1,6 +1,6 @@
 
 // import defaultExport from '/Alone/node_modules/stats.js/src/stats.js';
-// import {Stats} from '/Alone/node_modules/stats.js/src/stats.js';
+import {Stats} from '/Alone/node_modules/stats.js/src/stats.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';
@@ -84,12 +84,11 @@ class gameCore {
         this.floor = this._FloorsManager.floor
 		this.plan = this._FloorsManager.get_plan()
 		
-        this.lights = this._LightsManager.lights
 		// ----------------------------
 		this._DomManager.init(this._threejs,this.camera)
 		this.scene = this._SceneManager.set_AndGetScene(
 			this.camera,
-			this.lights,
+			this._LightsManager.lights,
 			this.floor,
 			this.plan,
 			this._conslog
@@ -212,6 +211,7 @@ class gameCore {
 			!this._pause &&	((this._WindowActive != null 
 			&& this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))
 		) {
+			this._LightsManager.upadteSun()
 			this._threejs.render(this.scene, this.camera);
 			this._PlayerManager.checkMoves();
 			this._PlayerManager.checkSkills(this.allMobs);

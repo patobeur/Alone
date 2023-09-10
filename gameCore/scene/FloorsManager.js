@@ -27,7 +27,7 @@ class FloorsManager {
 		var groundGeometry = false
 		var groundMaterial = false
 		var mesh = false
-		switch (this._GameConfig.floors.type) {
+		switch (this._GameConfig.floors.mode.type) {
 			case 'BoxGeometry':
 				groundGeometry = new THREE.BoxGeometry(this._GameConfig.floors.size.x, this._GameConfig.floors.size.y, this._GameConfig.floors.size.z);
 				groundMaterial = new THREE.MeshPhongMaterial({ color: this._GameConfig.floors.color });
@@ -36,7 +36,7 @@ class FloorsManager {
 				mesh.receiveShadow = true;
 				mesh.castShadow = true;
 				
-				mesh.repeat.set(this._GameConfig.floors.size.x/16, this._GameConfig.floors.size.y/16);
+				// mesh.repeat.set(this._GameConfig.floors.size.x/16, this._GameConfig.floors.size.y/16);
 
 				// mesh.rotation.x = -Math.PI / 2;
 				mesh.name = 'floor_'+this._GameConfig.floors.name;
@@ -50,22 +50,22 @@ class FloorsManager {
 				break;
 			case 'PlaneGeometry':
 
-				if(this._GameConfig.floors.imagepath) {
+				if(this._GameConfig.floors.mode.path) {
 				const mapLoader = new THREE.TextureLoader();
-									const checkerboard = mapLoader.load(this._GameConfig.floors.imagepath);
-								// const checkerboard = mapLoader.load('./gameCore/htmlAssets/img/backgrounds/2k_stars_milky_way.jpg');
+								const checkerboard = mapLoader.load(this._GameConfig.floors.mode.path);
+								checkerboard.encoding = THREE.sRGBEncoding;
 								checkerboard.anisotropy = this._GameConfig.MaxAnisotropy;
+								checkerboard.repeat.set((this._GameConfig.floors.size.x/16)*2, (this._GameConfig.floors.size.y/16)*2);
+						
 								checkerboard.wrapS = THREE.RepeatWrapping;
 								checkerboard.wrapT = THREE.RepeatWrapping;
-								checkerboard.repeat.set(1, 1);
-								checkerboard.encoding = THREE.sRGBEncoding;
-						
 								mesh = new THREE.Mesh(
 									new THREE.PlaneGeometry(this._GameConfig.floors.size.x, this._GameConfig.floors.size.y, 10, 10),
-									new THREE.MeshStandardMaterial({map: checkerboard}));
+									new THREE.MeshStandardMaterial({map: checkerboard})
+								);
 								mesh.castShadow = false;
-								// mesh.position.z= 0
 								mesh.receiveShadow = true;
+								// mesh.position.z= 0
 								// mesh.rotation.x = -Math.PI / 2;
 								if (this._GameConfig.conslog) console.log(mesh)
 				}
@@ -90,9 +90,13 @@ class FloorsManager {
 			0: {
 				name: 'groundZero',
 				fullName: 'Lobby Room',
-				imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
+				// imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
+				// imagesize: {x:512,y:512},
 				// imagepath:'./gameCore/3dAssets/textures/grid64_512_blanc.png',
 				type: 'BoxGeometry',
+				mode: {
+					type:'BoxGeometry',
+				},
 				size: { x: 16, y: 32, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
@@ -106,8 +110,14 @@ class FloorsManager {
 				name: 'groundOne',
 				fullName: 'Ground-One',
 				imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
+				imagesize: {x:512,y:512},
 				// imagepath:'./gameCore/3dAssets/textures/grid64_512.png',
 				type: 'PlaneGeometry',
+				mode: {
+					type:'PlaneGeometry',
+					path:'./gameCore/3dAssets/textures/stone_floor_736x736.jpg',
+					size: {x:512,y:512}
+				},
 				size: { x: 32, y: 50, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,

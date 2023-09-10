@@ -27,9 +27,13 @@ class SceneManager {
 			['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg',]
 		)
 		this.lights.forEach(light => {
-			if(light.castShadow) light.castShadow = true;
-			this._Scene.add(light);
-			console.info('adding',light)
+			if(typeof light != 'undefined') {
+				if(typeof light.castShadow != 'undefined') {
+					light.castShadow = true;
+				} 
+				this._Scene.add(light);
+				console.info('adding',light)
+			} 
 		});
 		
 		if(this.floor.castShadow) this.floor.castShadow = true;

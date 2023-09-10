@@ -7,8 +7,10 @@ class LightsManager {
 	_ambientLight; 
 	_directionalLight;
 	_hemiLight
+	solLeshThetaY = 0
 	constructor(GameConfig) {
 		this.clock = new THREE.Clock();
+		this._Formula = new Formula();
 		this.SunSpeed = Math.PI/36000
 		this._GameConfig = GameConfig
 		this.BulbLigths = []
@@ -19,7 +21,7 @@ class LightsManager {
 		if (this._GameConfig.conslog) console.info('Lights Mounted !')
 		// this._init_BulbsLights()
 
-		this._init_SUNGroupe()
+		this._init_SunLight()
 		this._init_Sol()
 		// this._init_HemiLigth()
 		this._init_AmbientLight()
@@ -41,15 +43,20 @@ class LightsManager {
 		var delta = this.clock.getDelta();
 		var elapsed = this.clock.elapsedTime;
 		var speed = 0.4
-		    
+		if(typeof this.SunLight != 'undefined'){
+			speed = this.SunLight.position.z > 0 ? 0.01 : 0.4; 
 			//satellite
 			// if (this.SunLight.position.z >= 0) {speed = 0.4}else{speed = 0.8}
-			this.SunLight.position.x =  this.SUNGroupe.position.x + (Math.sin(elapsed*speed) * 1);
-			this.SunLight.position.z = this.SUNGroupe.position.z + (Math.cos(elapsed*speed) * 1);
-			this.SolMesh.position.x = this.SUNGroupe.position.x + (Math.sin(elapsed*speed) + 5) ;
-			this.SolMesh.position.z = this.SUNGroupe.position.z + (Math.cos(elapsed*speed)) + 5 ;
+			// this.SunLight.position.x = (Math.sin(elapsed*speed) * 1);
+			// this.SunLight.position.z = (Math.cos(elapsed*speed) * 1);
+			// // console.log(this._Formula.get_NextOrbitPosXYZ(this.SolMesh))
+			// this.SolMesh.position.x +=  (Math.sin(elapsed*speed) * 1);
+			// this.SolMesh.position.z +=  (Math.cos(elapsed*speed) * 1);
+			// this.SolMesh.position.x = nec.x
+			// this.SolMesh.position.z = nec.y
 			// this.SunLight.rotation.x += 0.1 * delta;
 			// this.SunLight.rotation.y += 0.1 * delta;
+		}
 
 		// console.log(this.SunSpeed,this.SUNGroupe.rotation.y)
 		// if(this.SUNGroupe.rotation.y > 4) {
@@ -68,7 +75,7 @@ class LightsManager {
 			color: 0xffffff,
 			power: 1,
 			position: new THREE.Vector3(0, 0, 20),
-			size: ( 5, 16, 5),
+			size: ( 16, 16, 1),
 			mat : {
 				color: 0xFFFFFF00,
 				emissive: 'yellow',
@@ -82,16 +89,15 @@ class LightsManager {
 			sol_config.mat.color
 		);
 
-
-		this.SolMesh = new THREE.PointLight( sol_config.color, .5, 200, .2 );
+		this.SolMesh = new THREE.Mesh( solGeometry, solMat );
+		this.SolMesh.theta = {x:[0,0],y:[0,0],z:[0,0]}
 		this.SolMesh.castShadow = true;
-		this.SolMesh.add( new THREE.Mesh( solGeometry, solMat ) );
 		this.SolMesh.position.set(sol_config.position.x,sol_config.position.y,sol_config.position.z);
 		this.SolMesh.power = sol_config.power;
 		this.SolMesh.name = sol_config.name;
 	}
-	_init_SUNGroupe() {
-		this.SUNGroupe = new THREE.Group();
+	_init_SunLight() {
+		// this.SUNGroupe = new THREE.Group();
 
 
 		let sol_config = {
@@ -159,9 +165,9 @@ class LightsManager {
 	}
 	_init_AmbientLight() {
 		this._ambientLight = new THREE.AmbientLight(
-			0xffff55,
-			.2
-			// this._GameConfig.get_ambientLight('color'),
+			0xffffff,
+			.6
+						// this._GameConfig.get_ambientLight('color'),
 			// this._GameConfig.get_ambientLight('intensity')
 		)
 		this._ambientLight.name = this._GameConfig.get_ambientLight('name');

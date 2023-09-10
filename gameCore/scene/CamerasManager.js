@@ -30,7 +30,7 @@ class CamerasManager {
 				zoom: { step: 5, zmin: 5, zmax:25 },
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
-				followDecalage: new THREE.Vector3(0, -5, 5),
+				followDecalage: new THREE.Vector3(0, -15, 10),
 				lookatDecalage: new THREE.Vector3(0, 2, 2),
 				zooming:false,
 				active:true

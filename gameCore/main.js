@@ -1,6 +1,6 @@
 
 // import defaultExport from '/Alone/node_modules/stats.js/src/stats.js';
-import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
+// import * as Stats from '/Alone/node_modules/stats.js/src/Stats.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';

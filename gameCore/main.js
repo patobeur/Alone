@@ -1,6 +1,6 @@
 
 // import defaultExport from '/Alone/node_modules/stats.js/src/stats.js';
-// import * as Stats from '/Alone/node_modules/stats.js/src/Stats.js';
+// import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';
@@ -241,11 +241,18 @@ class gameCore {
 	  });
 	}	
 	applyGravityToPlayerGroupe() {
-		let gravity = 0.1 
-		let halfHeight = this._PlayerManager._PlayerConfig.get_value('size','x')/2
-		this._PlayerManager.saveOldPos()
-		this._PlayerManager.position.z = (this._PlayerManager.position.z - halfHeight > gravity) ? (this._PlayerManager.position.z - halfHeight) - gravity : halfHeight
-		this._PlayerManager.playerGroupe.position.z = this._PlayerManager.position.z
+		if (this.grav === 'undefined' || !this.grav) this.grav = 0;
+		let gravity = 0.001
+		// console.log(this.grav)
+		this.grav++;
+		if (this.grav >= 2 ) {
+
+			let halfHeight = this._PlayerManager._PlayerConfig.get_value('size','x')/2
+			this._PlayerManager.saveOldPos()
+			this._PlayerManager.position.z = (this._PlayerManager.position.z - halfHeight > gravity) ? (this._PlayerManager.position.z - halfHeight) - gravity : halfHeight
+			this._PlayerManager.playerGroupe.position.z = this._PlayerManager.position.z
+			this.grav = 0
+		}
 	}
 	get_pause() {
 		return this._pause

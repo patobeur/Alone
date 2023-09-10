@@ -127,6 +127,7 @@ class PlayerManager {
 				this._ControlsManager.zooming = false
 			}
 		}
+		console.log('zooooooooooooooooooooom')
 	}
 	// check2() {
 	// 	// console.log('player check2 -->')
@@ -138,13 +139,6 @@ class PlayerManager {
 		this.oldPosition.z = this.position.z
 		this.oldPosition.y = this.position.y
 		this.oldPosition.x = this.position.x
-	}
-	applyGravityToPlayerGroupe() {
-		let halfHeight = this._PlayerConfig.get_value('size','x')/2
-		this.saveOldPos()
-		this.position.z = (this.position.z - halfHeight > .1) ? (this.position.z - halfHeight) - 0.1 : halfHeight
-		this.playerGroupe.position.z = this.position.z
-
 	}
 	areGroupsColliding(mob) {
 		let group = this.PlayerMesh
@@ -280,8 +274,20 @@ class PlayerManager {
 				if (this._ControlsManager.left) { this.position.x -= speed }//; direction.angle = 90 }
 				if (this._ControlsManager.right) { this.position.x += speed }//; direction.angle = 270 }
 			}
+			if (this._ControlsManager.space)  { this.jump() }
+
 		}
 		this.playerGroupe.rotation.z = THREE.MathUtils.degToRad(this.position.thetaDeg);
+	}
+	jump(){
+		// if (this.jumpTime === 'undefined' || !this.jumpTime) this.jumpTime = 0;
+		// console.log(this.jumpTime)
+		// this.jumpTime++;
+		if (this.position.z <= this._PlayerConfig.get_value('size','z')/2 ) {
+			console.log('JUMPINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
+			this.position.z += 5
+		}
+		// if (this.jumpTime >= 10 ) this.jumpTime = 0;
 	}
 	checkSkills(allmobs) {
 		if (this._ControlsManager) {

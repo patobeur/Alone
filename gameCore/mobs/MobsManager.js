@@ -37,9 +37,13 @@ class MobsManager {
 		}
 		return this.get_allMobs()
 	}	
+
 	applyGravityToMob(mob) {
-		// console.log('-------',mob.mesh)
-		let gravity = 0.1
+		//  console.log('-------',mob.mesh)
+		let gravity = 0.001
+
+
+
 		// let measure = mob.mesh.geometry.parameters.depth/2
 		// console.log( measure );
 		// let halfHeight = mob.mesh.size.z/2
@@ -52,6 +56,10 @@ class MobsManager {
 			this.applyGravityToMob(mob)
 			if(typeof this._playerGroupe === 'object'){
 				mob._update_VisualHp(this._playerGroupe);
+				mob.applyGravity(0.001);
+
+				
+
 			}
 			else {
 				console.log('not yet')
@@ -105,10 +113,10 @@ class MobsManager {
         let nouvelleDirectionAutreMob = autreMob.conf.theta.cur + (Math.PI/2);
         let nouvelleDirectionThis = mob.conf.theta.cur + (Math.PI/2);
         mob.conf.theta.cur = nouvelleDirectionThis
-        mob.conf.position.z += 1
 		// console.log(mob.conf)
 		autreMob.conf.theta.cur = nouvelleDirectionAutreMob
         mob.conf.states.isGoingToCollide.current = 1
+		
 		// this.conf.states.dead = true;
 		// this.conf.stats.hp.current = 0
 		// this.conf.stats.hp.current -= 2
@@ -125,6 +133,7 @@ class MobsManager {
                 if (this._detecterCollisionPrediction(mob,autreMob)) {
 					// ca se touche
 					// ca se touche
+        mob.conf.position.z += mob.conf.mesh.size.z*5
 					mob.conf.stats.isGoingToCollide = 1
 					// console.log('ca se touche !?!')
                     this._handleCollisionWith(mob,autreMob);

@@ -8,7 +8,8 @@ class LightsManager {
 	_directionalLight;
 	_hemiLight
 	constructor(GameConfig) {
-		this.SunSpeed = Math.PI/18000
+		this.clock = new THREE.Clock();
+		this.SunSpeed = Math.PI/36000
 		this._GameConfig = GameConfig
 		this.BulbLigths = []
 		this.lights = []
@@ -19,6 +20,7 @@ class LightsManager {
 		// this._init_BulbsLights()
 
 		this._init_SUNGroupe()
+		this._init_Sol()
 		// this._init_HemiLigth()
 		this._init_AmbientLight()
 		// this._init_DirectionalLight()
@@ -27,38 +29,72 @@ class LightsManager {
 		// this.lights.push(this._hemiLight)
 		this.lights.push(this.SUNGroupe)
 		this.lights.push(this._ambientLight)
+		this.lights.push(this.SolMesh)
+		this.lights.push(this.SunLight)
+		
+
 		// this.lights.push(this._directionalLight)
 		
 		if (this._GameConfig.conslog) console.log('lights',this.lights)
 	}
 	upadteSun(){
-		this.SUNGroupe.rotation.y += this.SunSpeed
+		var delta = this.clock.getDelta();
+		var elapsed = this.clock.elapsedTime;
+		var speed = 0.4
+		    
+			//satellite
+			// if (this.SunLight.position.z >= 0) {speed = 0.4}else{speed = 0.8}
+			this.SunLight.position.x =  this.SUNGroupe.position.x + (Math.sin(elapsed*speed) * 1);
+			this.SunLight.position.z = this.SUNGroupe.position.z + (Math.cos(elapsed*speed) * 1);
+			this.SolMesh.position.x = this.SUNGroupe.position.x + (Math.sin(elapsed*speed) + 5) ;
+			this.SolMesh.position.z = this.SUNGroupe.position.z + (Math.cos(elapsed*speed)) + 5 ;
+			// this.SunLight.rotation.x += 0.1 * delta;
+			// this.SunLight.rotation.y += 0.1 * delta;
+
+		// console.log(this.SunSpeed,this.SUNGroupe.rotation.y)
+		// if(this.SUNGroupe.rotation.y > 4) {
+		// 	console.log('DAY')
+		// }
+		// else {
+		// 	console.log('NIGHT')
+		// }
+		// this.SUNGroupe.rotation.y += (this.SunLight.position.z > 0) 
+		// 	? this.SunSpeed*50
+		// 	: this.SunSpeed*100;
+	}
+	_init_Sol() {
+		let sol_config = {
+			name: 'bulb_Sol',
+			color: 0xffffff,
+			power: 1,
+			position: new THREE.Vector3(0, 0, 20),
+			size: ( 5, 16, 5),
+			mat : {
+				color: 0xFFFFFF00,
+				emissive: 'yellow',
+				emissiveIntensity: 2,
+			}
+		}
+		let solGeometry = new THREE.SphereGeometry( sol_config.size );
+		let solMat = new THREE.MeshStandardMaterial(
+			sol_config.mat.emissive,
+			sol_config.mat.emissiveIntensity,
+			sol_config.mat.color
+		);
+
+
+		this.SolMesh = new THREE.PointLight( sol_config.color, .5, 200, .2 );
+		this.SolMesh.castShadow = true;
+		this.SolMesh.add( new THREE.Mesh( solGeometry, solMat ) );
+		this.SolMesh.position.set(sol_config.position.x,sol_config.position.y,sol_config.position.z);
+		this.SolMesh.power = sol_config.power;
+		this.SolMesh.name = sol_config.name;
 	}
 	_init_SUNGroupe() {
 		this.SUNGroupe = new THREE.Group();
 
-		// let config = {
-		// 	color: 0xffffff,
-		// 	power: 1,
-		// 	position: new THREE.Vector3(10, 10, 10),
-		// 	size: new THREE.Vector3(5, 5, 5)
-		// }
 
-
-		// this.Sol = new THREE.Mesh(
-		// 	new THREE.BoxGeometry(config.size.x, config.size.y, config.size.z),
-		// 	new THREE.MeshPhongMaterial({ color: 'yellow', wireframe: false })
-		// );
-		// this.Sol.castShadow = false;
-		// this.Sol.receiveShadow = true;
-		// this.Sol.matrixAutoUpdate = true;
-		// // this.Sol.material.transparent = true
-		// this.Sol.name = "Sol";
-		// this.Sol.position.set(config.position.x+5,config.position.y+5,config.position.z+5);
-
-
-
-		let bulb_config = {
+		let sol_config = {
 			name: 'bulb_Sol',
 			color: 0xffffff,
 			power: 1,
@@ -71,55 +107,12 @@ class LightsManager {
 			}
 		}
 
-
-		let bulbGeometry = new THREE.SphereGeometry( bulb_config.size );
-		let bulbMat = new THREE.MeshStandardMaterial(
-			bulb_config.mat.emissive,
-			bulb_config.mat.emissiveIntensity,
-			bulb_config.mat.color
-		);
-
-
-		let bulbLight = new THREE.PointLight( bulb_config.color, .5, 200, .2 );
-		bulbLight.castShadow = true;
-		bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
-		bulbLight.position.set(bulb_config.position.x,bulb_config.position.y,bulb_config.position.z);
-		bulbLight.power = bulb_config.power;
-		bulbLight.name = 'bulb_Sol';
-		// this.BulbLigths.push(bulbLight)
-
-
-		// let bulbGeometry = new THREE.SphereGeometry( 0.5, 16, 8 );
-		// let bulbMat = new THREE.MeshStandardMaterial( {
-		// 	emissive: color,
-		// 	emissiveIntensity: 2,
-		// 	color: 0xFFFFFF00
-		// } );
-		// let bulbLight = new THREE.PointLight( color, .5, 200, .2 );
-		// bulbLight.castShadow = true;
-		// bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
-		// bulbLight.position.set(position.x,position.y,position.z)
-		// bulbLight.power = power;
-		// bulbLight.name = 'bulb_'+(index);
-		// this.BulbLigths.push(bulbLight)
-		// this.lights.push(bulbLight)
-		// //this._Scene.add(bulbLight)
-
-
-
-
-
-
-
-
-
-
 		// light
 		this.SunLight = new THREE.DirectionalLight(
-			bulb_config.color,
-			bulb_config.power
+			sol_config.color,
+			sol_config.power
 		);
-		this.SunLight.position.set(bulb_config.position.x,bulb_config.position.y,bulb_config.position.z);
+		this.SunLight.position.set(sol_config.position.x,sol_config.position.y,sol_config.position.z);
 		this.SunLight.castShadow = true;
 		this.SunLight.shadow.bias = -0.001;
 
@@ -134,9 +127,9 @@ class LightsManager {
 		this.SunLight.shadow.camera.top = 100;
 		this.SunLight.shadow.camera.bottom = -100;
 
-		this.SUNGroupe.add(this.SunLight)
+		// this.SUNGroupe.add(this.SunLight)
 		// this.SUNGroupe.add(this.Sol)
-		this.SUNGroupe.add(bulbLight)
+		// this.SUNGroupe.add(bulbLight)
 	}
 	_init_BulbsLights() {
 		let zz = 3

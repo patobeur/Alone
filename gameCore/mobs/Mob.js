@@ -18,9 +18,25 @@ class Mob {
         this._set_Mesh();
         return this;
     }
+	applyGravity(grav = 0.001) {
+		//  console.log('-------',mob.mesh)
+		if (this.grav === 'undefined' || !this.grav) this.grav = 0;
+		let gravity = grav
+		this.grav++;
+		if (this.grav >= 2 ) {
+			// console.log('-------',this.conf.mesh)
+			let halfHeight = this.conf.mesh.size.z/2
+			// // this.mob.saveOldPos()
+			this.conf.position.z = (this.conf.position.z - halfHeight >0) 
+				? (this.conf.position.z - halfHeight) - gravity 
+				: halfHeight;
+			// this.conf.position.z = this._PlayerManager.position.z
+			this.grav = 0
+		}
+	}
 	_isdead(){
 		if(
-			this.conf.stats.hp.current<=0 
+			this.conf.stats.hp.current <= 0 
 			&& this.conf.status.immortal.current <= 0
 		) {
 			// if not immortal and hp lower than zero you die

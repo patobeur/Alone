@@ -110,21 +110,16 @@ class FloorsManager {
 				name: 'groundOne',
 				fullName: 'Ground-One',
 				imagesize: {x:512,y:512},
-				// imagepath:'./gameCore/3dAssets/textures/grid64_512.png',
 				type: 'PlaneGeometry',
 				mode: {
 					type:'PlaneGeometry',
-					// path:'./gameCore/3dAssets/textures/stone_floor_736x736.jpg',
-					// path:'./gameCore/3dAssets/textures/6cdrkhtj.bmp',
-					path:'./gameCore/3dAssets/textures/ir72y7af.bmp',
-					// path:'./gameCore/3dAssets/textures/1uhl6dea.bmp',
-					// path:'./gameCore/3dAssets/textures/86177tuu.bmp',
+					path:'./gameCore/3dAssets/textures/grid64_512.png',
 					size: {x:512,y:512}
 				},
 				size: { x: 150, y: 150, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
-				repeat: [8,8],
+				repeat: [64,64],
 				spawns: [
 					{ x: 0, y: -30, z: 20 },
 					{ x: 0, y: 0, z: 0},

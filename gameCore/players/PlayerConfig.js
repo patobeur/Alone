@@ -10,6 +10,7 @@ class PlayerConfig {
 			jumping:false,
 			fawling:false,
 			size: {x:1,y:1,z:1},
+			velocity: {x:0,y:0,z:0},
 			status: {  }
 		}
 		this.#Init()

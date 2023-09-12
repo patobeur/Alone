@@ -19,19 +19,14 @@ class Mob {
         return this;
     }
 	applyGravity(grav = 0.001) {
-		//  console.log('-------',mob.mesh)
-		if (this.grav === 'undefined' || !this.grav) this.grav = 0;
 		let gravity = grav
-		this.grav++;
-		if (this.grav >= 2 ) {
-			// console.log('-------',this.conf.mesh)
-			let halfHeight = this.conf.mesh.size.z/2
-			// // this.mob.saveOldPos()
-			this.conf.position.z = (this.conf.position.z - halfHeight >0) 
-				? (this.conf.position.z - halfHeight) - gravity 
-				: halfHeight;
-			// this.conf.position.z = this._PlayerManager.position.z
-			this.grav = 0
+		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
+		this.tics++;
+		if (this.tics >= 2 ) {
+			if(this.conf.position.z - this.conf.mesh.size.z/2 > -this.conf.mesh.size.z/2) {
+				this.conf.position.z = (this.conf.position.z - this.conf.mesh.size.z/2) - gravity
+			}
+			this.tics = 0
 		}
 	}
 	_isdead(){
@@ -106,9 +101,8 @@ class Mob {
 		// FRONT
 		if (typeof this.conf.mesh.childs.front === 'object' && this.conf.mesh.childs.front) {
 			this._add_Front()
-			this._add_VisualHp()
-			
 		}
+		this._add_VisualHp()
 
 		this.bbox = new THREE.Box3().setFromObject(this.mobMesh);
 		// this.bbhelper = new THREE.Box3Helper(this.bbox, 0x00ff00);

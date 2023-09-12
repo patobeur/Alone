@@ -6,31 +6,28 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 class PlayerManager {
 	conslog=true
-	order=2;
-	_PlayerConfig
-
-	
+	order=2;	
 	_FrontboardManager
 	_CameraManager
 	_PlayerConfig = null
 	_GameConfig;
 	_Formula;
 	immat = 0
-
 	constructor(startPos=false, GameConfig, FrontboardManager, CameraManager, scene) {
 		this.conslog = GameConfig.conslog
 		this.type = 'player';
-		this.stats = {
-			hp: { name: 'Hit Point', current: 25, max: 100, regen: .1, backgroundColor: 'rgba(250, 59, 9, 0.644)' },
-			energy: { name: 'Energy', current: 100, max: 100, regen: 1.5, backgroundColor: 'rgba(9, 223, 20, 0.644)' },
-			def: { name: 'defense', current: 1, max: 100, regen: 3, backgroundColor: 'rgba(9, 59, 223, 0.644)' },
-		}
 		this.scene = scene
 		this._CameraManager = CameraManager
 		this.CameraNum  = new Number(0)
 
 		this._GameConfig = GameConfig;
 		this._PlayerConfig = new PlayerConfig();
+		this.stats = {
+			hp: { name: 'Hit Point', current: 25, max: 100, regen: .1, backgroundColor: 'rgba(250, 59, 9, 0.644)' },
+			energy: { name: 'Energy', current: 100, max: 100, regen: 1.5, backgroundColor: 'rgba(9, 223, 20, 0.644)' },
+			def: { name: 'defense', current: 1, max: 100, regen: 3, backgroundColor: 'rgba(9, 59, 223, 0.644)' },
+			velocity:this._PlayerConfig.get_value('velocity')
+		}
 		this._ControlsManager = new ControlsManager(this.type, this._GameConfig);
 
 		this._FrontboardManager = FrontboardManager;
@@ -100,15 +97,15 @@ class PlayerManager {
 		this.playerColor = this._PlayerConfig.get_value('playerColor');
 
 		this.torche = this.getTorchlightConfig();
-		this.#addPlayerOrbiter(
-			{ x: 0, y: 0, z: .6 },
-			{ x: .25, y: .25, z: .1 }
-		);
 		this.#init();
 	}
 	#init() {
 		this.#addMeshToModel();
 		this.#addModelToGroupe();
+		this.#addPlayerOrbiter(
+			{ x: 0, y: 0, z: .6 },
+			{ x: .25, y: .25, z: .1 }
+		);
 		// SkillsManager
 		this.missiles = [];
 		this.skillsInUse = []
@@ -129,12 +126,6 @@ class PlayerManager {
 		}
 		console.log('zooooooooooooooooooooom')
 	}
-	// check2() {
-	// 	// console.log('player check2 -->')
-	// 	this.playerUpdateIfMove();
-		
-	// 	this.regen();
-	// }
 	saveOldPos(){		
 		this.oldPosition.z = this.position.z
 		this.oldPosition.y = this.position.y
@@ -280,13 +271,12 @@ class PlayerManager {
 		this.playerGroupe.rotation.z = THREE.MathUtils.degToRad(this.position.thetaDeg);
 	}
 	jump(){
-		// if (this.jumpTime === 'undefined' || !this.jumpTime) this.jumpTime = 0;
-		// console.log(this.jumpTime)
-		// this.jumpTime++;
 		if (this.position.z <= this._PlayerConfig.get_value('size','z')/2 ) {
 			console.log('JUMPINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
-			this.position.z += 5
+			this.position.z += 5.0
+			this.stats.velocity.z = 1
 		}
+		this.stats.velocity.z = 0
 		// if (this.jumpTime >= 10 ) this.jumpTime = 0;
 	}
 	checkSkills(allmobs) {

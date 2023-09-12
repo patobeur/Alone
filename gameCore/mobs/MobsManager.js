@@ -19,9 +19,9 @@ class MobsManager {
 		this._scene = datas.scene
 		this._FrontboardManager = datas.FrontboardManager
 		this._GameConfig = datas.GameConfig
-
 		this.conslog = this._GameConfig.conslog
-		this._maxMobLimiteLv = 3
+		
+		this._maxMobLimiteLv = 5
 		this._AllMobs = []
 		this._CurrentMobImmat = 0
 		this._Formula = new Formula()
@@ -38,35 +38,18 @@ class MobsManager {
 		return this.get_allMobs()
 	}	
 
-	applyGravityToMob(mob) {
-		//  console.log('-------',mob.mesh)
-		let gravity = 0.001
 
-
-
-		// let measure = mob.mesh.geometry.parameters.depth/2
-		// console.log( measure );
-		// let halfHeight = mob.mesh.size.z/2
-		// this._PlayerManager.saveOldPos()
-		// this._PlayerManager.position.z = (this._PlayerManager.position.z - halfHeight > gravity) ? (this._PlayerManager.position.z - halfHeight) - gravity : halfHeight
-		// this._PlayerManager.playerGroupe.position.z = this._PlayerManager.position.z
-	}
-	updateAllMobsPhaseB() {
+	updateAllMobsPhaseA() {
 		this._AllMobs.forEach(mob => {
-			this.applyGravityToMob(mob)
 			if(typeof this._playerGroupe === 'object'){
 				mob._update_VisualHp(this._playerGroupe);
-				mob.applyGravity(0.001);
-
-				
-
 			}
 			else {
 				console.log('not yet')
 			}
 		});
 	}
-	updateAllMobsPhaseA() {
+	updateAllMobsPhaseB() {
 		this._AllMobs.forEach(mob => {
 			if (mob.conf.states.dead !== true ) {//&& !_JEU.get_pause()) {
 				if (mob._isdead()) {
@@ -76,6 +59,10 @@ class MobsManager {
 				}
 				else {
 
+					if (mob.conf.states.isGoingToCollide.current < 1) {
+						// console.log(this._playerGroupe)
+						// this._detecterCollisionPredictionPlayer(mob,this._playerGroupe);
+					}
 					if (mob.conf.ia.changeAction.cur === 0) {
 						mob.ia.iaAction();
 					}
@@ -102,8 +89,13 @@ class MobsManager {
 						mob._update_BBox();
 					}
 				}
+				
 			}
-				if (mob) mob.conf.states.isGoingToCollide.current = 0
+			if (mob) mob.conf.states.isGoingToCollide.current = 0
+
+
+			// Gravity
+			mob.applyGravity(0.001);
 		});
     }
 	set_PlayerDatas(playerGroupe){
@@ -133,7 +125,7 @@ class MobsManager {
                 if (this._detecterCollisionPrediction(mob,autreMob)) {
 					// ca se touche
 					// ca se touche
-        mob.conf.position.z += mob.conf.mesh.size.z*5
+        			mob.conf.position.z += mob.conf.mesh.size.z*5
 					mob.conf.stats.isGoingToCollide = 1
 					// console.log('ca se touche !?!')
                     this._handleCollisionWith(mob,autreMob);
@@ -145,6 +137,37 @@ class MobsManager {
 				}
             }
         }
+    }
+	_detecterCollisionPredictionPlayer(mob,player) {
+        // let bbox1 = new THREE.Box3().setFromObject(mob.mesh);
+        // Créer une boîte englobante pour la nouvelle position prédite
+        // let mobSize = mob.conf.mesh.size;
+		// let predictedPosition = {
+		// 	x: mob.conf.position.x - Math.sin(mob.conf.theta.cur) * mob.conf.speed,
+		// 	y: mob.conf.position.y + Math.cos(mob.conf.theta.cur) * mob.conf.speed,
+		// 	z: mob.conf.position.z
+		// }
+        // let mobSizeB = player.conf.mesh.size;
+		// let predictedPositionB = {
+		// 	x: player.conf.position.x - Math.sin(player.conf.theta.cur) * player.conf.speed,
+		// 	y: player.conf.position.y + Math.cos(player.conf.theta.cur) * player.conf.speed,
+		// 	z: player.conf.position.z
+		// }
+
+        // let predictedBbox = new THREE.Box3().setFromCenterAndSize(
+        //     predictedPosition,
+        //     // new THREE.Vector3(mobSize.x / 2, mobSize.y / 2, mobSize.z / 2)
+        //     new THREE.Vector3(mobSize.x , mobSize.y , mobSize.z )
+        // );
+        // let predictedBboxB = new THREE.Box3().setFromCenterAndSize(
+        //     predictedPositionB,
+        //     // new THREE.Vector3(mobSize.x / 2, mobSize.y / 2, mobSize.z / 2)
+        //     new THREE.Vector3(mobSizeB.x , mobSizeB.y , mobSizeB.z )
+        // );
+
+        // // Vérifier si les boîtes englobantes se chevauchent
+		// let intersect = predictedBboxB.intersectsBox(predictedBbox)
+        // return intersect;
     }
 	_detecterCollisionPrediction(mob,autreMob) {
         // let bbox1 = new THREE.Box3().setFromObject(mob.mesh);
@@ -215,11 +238,11 @@ class MobsManager {
 		
 
 		this._AllMobs.push(newmob)
-		this._scene.add(newmob.mesh)
 
 		// set the new immat
 		this._CurrentMobImmat = this._AllMobs.length
 		this._FrontboardManager.addMobCounter(this._AllMobs.length)
+		this._scene.add(newmob.mesh)
 		return this._AllMobs[this._CurrentMobImmat - 1]
 	}
 	get_allMobs() {

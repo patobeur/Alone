@@ -158,7 +158,12 @@ class MobConfig {
 			config.mobs.mesh.altitude = 10
 			config.mobs.mesh.opacity = .8
 			config.mobs.mesh.childs = {
-				front: false
+				front: {
+					color: 'white',
+					wireframe: false,
+					size: { x: .25, y: 1, z: .5 },
+					position: { x: 0, y: 1, z: 0 }, // from parent center
+				}
 			}
 
 		}
@@ -171,7 +176,12 @@ class MobConfig {
 			config.mobs.ia.dirAmplitude = 0
 			config.mobs.mesh.opacity = .6
 			config.mobs.mesh.childs = {
-				front: false
+				front: {
+					color: 'white',
+					wireframe: false,
+					size: { x: .25, y: .5, z: .25 },
+					position: { x: 0, y: .5, z: 0 }, // from parent center
+				}
 			}
 		}
 		return { ...config }

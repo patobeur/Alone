@@ -18,8 +18,11 @@ import {MobsManager} from './mobs/MobsManager.js';
 import {TouchMe} from './mecanics/TouchMe.js';
 class gameCore {
 	v= "0.0.1"
+	// ------------------------------
+	defaultMobsNumber = 101
 	stats = null
 	_conslog = false
+	// ------------------------------
 	_Formula = null
 	_GameConfig = null
 	_SceneManager = null
@@ -37,7 +40,6 @@ class gameCore {
 	_WindowActive = null
 	_MobsManager = null
 	_ModelsManager  = null
-	defaultMobsNumber = 21
 	// _TouchMe = null
     // --------------------------------------
 	_previousREFRESH = null
@@ -77,7 +79,7 @@ class gameCore {
 		this._FloorsManager = new FloorsManager(this._GameConfig)
 
 		this._FullScreenManager = new FullScreenManager()
-		// this._WindowActive = new WindowActive(this._GameConfig);
+		this._WindowActive = new WindowActive(this._GameConfig);
 		// this._TouchMe = new TouchMe()
 		// ----------------------------------------------------
         this.camera = this._CameraManager.cameras[0]
@@ -211,27 +213,34 @@ class gameCore {
 			!this._pause &&	((this._WindowActive != null 
 			&& this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))
 		) {
+
 			this._LightsManager.upadteSun()
-			this._threejs.render(this.scene, this.camera);
 			this._PlayerManager.checkMoves();
 			this._PlayerManager.checkSkills(this.allMobs);
 			// this._PlayerManager.checkZooming();
 
+			
 			this._PlayerManager.check_playerOrbiter();
 			this.applyGravityToPlayerGroupe()
+
 			this._PlayerManager.playerUpdateIfMove();
 
+			// Camera folow
 			this._CameraManager.FollowPlayer(this._PlayerManager.position,this._PlayerManager.oldPosition,0)
+
 			// REGENS AND BUFF
 			this._PlayerManager.regen();
+
+			// mobs
 			// if (this.allMobs) {
-				this._MobsManager.updateAllMobsPhaseB()
 				this._MobsManager.updateAllMobsPhaseA()
+				this._MobsManager.updateAllMobsPhaseB()
 				this.allMobs = this._MobsManager.getOnlyLivings()[0]
 			// }
 
-		  // 	if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
+		  	// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 		  // }
+			this._threejs.render(this.scene, this.camera);
 		}
 		this._REFRESH();	
 		this._Step(t - this._previousREFRESH);
@@ -241,17 +250,16 @@ class gameCore {
 	  });
 	}	
 	applyGravityToPlayerGroupe() {
-		if (this.grav === 'undefined' || !this.grav) this.grav = 0;
 		let gravity = 0.001
-		// console.log(this.grav)
-		this.grav++;
-		if (this.grav >= 2 ) {
+		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
+		this.tics++;
+		if (this.tics >= 2 ) {
+			this._PlayerManager.saveOldPos()
 
 			let halfHeight = this._PlayerManager._PlayerConfig.get_value('size','x')/2
-			this._PlayerManager.saveOldPos()
-			this._PlayerManager.position.z = (this._PlayerManager.position.z - halfHeight > gravity) ? (this._PlayerManager.position.z - halfHeight) - gravity : halfHeight
-			this._PlayerManager.playerGroupe.position.z = this._PlayerManager.position.z
-			this.grav = 0
+			this._PlayerManager.playerGroupe.position.z = this._PlayerManager.position.z = (this._PlayerManager.position.z - halfHeight > gravity) ? (this._PlayerManager.position.z - halfHeight) - gravity + this._PlayerManager.stats.velocity.z : halfHeight
+
+			this.tics = 0
 		}
 	}
 	get_pause() {

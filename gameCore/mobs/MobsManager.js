@@ -21,7 +21,7 @@ class MobsManager {
 		this._GameConfig = datas.GameConfig
 		this.conslog = this._GameConfig.conslog
 		
-		this._maxMobLimiteLv = 5
+		this._maxMobLimiteLv = 7
 		this._AllMobs = []
 		this._CurrentMobImmat = 0
 		this._Formula = new Formula()

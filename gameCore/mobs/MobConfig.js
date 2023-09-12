@@ -167,20 +167,54 @@ class MobConfig {
 			}
 
 		}
-		if (this.typeNum === 5 || this.typeNum > 5) {// BIG MANTA
-			config.mobs.mesh.color = 0xff0020
+		if (this.typeNum === 5) {// BIG MANTA
+			config.mobs.mesh.color = 0x0000FF
 			config.mobs.speed = 1
 			config.mobs.mesh.size = { x: 8, y: 8, z: .2 }
 			config.mobs.mesh.altitude = 10
 			config.mobs.ia.changeAction.max = 50
 			config.mobs.ia.dirAmplitude = 0
-			config.mobs.mesh.opacity = .6
+			config.mobs.mesh.opacity = .5
 			config.mobs.mesh.childs = {
 				front: {
 					color: 'white',
 					wireframe: false,
 					size: { x: .25, y: .5, z: .25 },
 					position: { x: 0, y: .5, z: 0 }, // from parent center
+				}
+			}
+		}
+		if (this.typeNum === 6 ) {// BIG poto
+			config.mobs.mesh.color = 0xFFFFFF
+			config.mobs.speed = 1
+			config.mobs.mesh.size = { x: .5, y: .5, z: 3 }
+			config.mobs.mesh.altitude = 0
+			config.mobs.ia.changeAction.max = 50
+			config.mobs.ia.dirAmplitude = 0
+			// config.mobs.mesh.opacity = .6
+			config.mobs.mesh.childs = {
+				front: {
+					color: 'red',
+					wireframe: false,
+					size: { x: .25, y: .5, z: .25 },
+					position: { x: 0, y: 0, z: 3 }, // from parent center
+				}
+			}
+		}
+		if (this.typeNum === 7 || this.typeNum > 6) {// BIG poto
+			config.mobs.mesh.color = 0xcccccc
+			config.mobs.speed = 1
+			config.mobs.mesh.size = { x: 1, y: 3, z: 1 }
+			config.mobs.mesh.altitude = 0
+			config.mobs.ia.changeAction.max = 50
+			config.mobs.ia.dirAmplitude = 0
+			// config.mobs.mesh.opacity = .6
+			config.mobs.mesh.childs = {
+				front: {
+					color: 'blue',
+					wireframe: false,
+					size: { x: .5, y: 1, z: .5 },
+					position: { x: 0, y: -1, z: 1 }, // from parent center
 				}
 			}
 		}

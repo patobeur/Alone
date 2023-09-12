@@ -22,7 +22,7 @@ class LightsManager {
 		// this._init_BulbsLights()
 
 		this._init_SunLight()
-		this._init_Sol()
+		// this._init_Sol()
 		// this._init_HemiLigth()
 		this._init_AmbientLight()
 		// this._init_DirectionalLight()
@@ -44,12 +44,16 @@ class LightsManager {
 		var elapsed = this.clock.elapsedTime;
 		var speed = 0.4
 		if(typeof this.SunLight != 'undefined'){
-			speed = this.SunLight.position.z > 0 ? 0.01 : 0.4; 
+			// speed = this.SunLight.position.z > 0 ? 0.01 : 0.4; 
 			//satellite
 			// if (this.SunLight.position.z >= 0) {speed = 0.4}else{speed = 0.8}
 			// this.SunLight.position.x = (Math.sin(elapsed*speed) * 1);
 			// this.SunLight.position.z = (Math.cos(elapsed*speed) * 1);
-			// // console.log(this._Formula.get_NextOrbitPosXYZ(this.SolMesh))
+			
+			this._Formula.get_NextOrbitPosXYZ2(
+				this.SunLight,
+				false
+			);
 			// this.SolMesh.position.x +=  (Math.sin(elapsed*speed) * 1);
 			// this.SolMesh.position.z +=  (Math.cos(elapsed*speed) * 1);
 			// this.SolMesh.position.x = nec.x
@@ -104,11 +108,11 @@ class LightsManager {
 			name: 'bulb_Sol',
 			color: 0xffffff,
 			power: 1,
-			position: new THREE.Vector3(0, 0, 20),
+			position: new THREE.Vector3(30, 30, 30),
 			size: ( 5, 16, 5),
 			mat : {
 				color: 0xFFFFFF00,
-				emissive: 'yellow',
+				emissive: 0xFFFFFF,
 				emissiveIntensity: 2,
 			}
 		}
@@ -132,7 +136,7 @@ class LightsManager {
 		this.SunLight.shadow.camera.right = -100;
 		this.SunLight.shadow.camera.top = 100;
 		this.SunLight.shadow.camera.bottom = -100;
-
+		this.SunLight.theta = {x:0,y:0,z:0}
 		// this.SUNGroupe.add(this.SunLight)
 		// this.SUNGroupe.add(this.Sol)
 		// this.SUNGroupe.add(bulbLight)
@@ -167,8 +171,6 @@ class LightsManager {
 		this._ambientLight = new THREE.AmbientLight(
 			0xffffff,
 			.6
-						// this._GameConfig.get_ambientLight('color'),
-			// this._GameConfig.get_ambientLight('intensity')
 		)
 		this._ambientLight.name = this._GameConfig.get_ambientLight('name');
 	}

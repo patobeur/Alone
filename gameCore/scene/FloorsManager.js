@@ -55,7 +55,7 @@ class FloorsManager {
 								const checkerboard = mapLoader.load(this._GameConfig.floors.mode.path);
 								checkerboard.encoding = THREE.sRGBEncoding;
 								checkerboard.anisotropy = this._GameConfig.MaxAnisotropy;
-								checkerboard.repeat.set((this._GameConfig.floors.size.x/16)*2, (this._GameConfig.floors.size.y/16)*2);
+								checkerboard.repeat.set((this._GameConfig.floors.size.x/this._GameConfig.floors.repeat[0])*2, (this._GameConfig.floors.size.y/this._GameConfig.floors.repeat[1])*2);
 						
 								checkerboard.wrapS = THREE.RepeatWrapping;
 								checkerboard.wrapT = THREE.RepeatWrapping;
@@ -100,7 +100,7 @@ class FloorsManager {
 				size: { x: 16, y: 32, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
-				repeat: (20,20),
+				repeat: [8,8],
 				spawns: [
 					{ x: 0, y: -15.5, z: 100 },
 					{ x: 0, y: 0, z: 0 },
@@ -109,27 +109,29 @@ class FloorsManager {
 			1: {
 				name: 'groundOne',
 				fullName: 'Ground-One',
-				imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
 				imagesize: {x:512,y:512},
 				// imagepath:'./gameCore/3dAssets/textures/grid64_512.png',
 				type: 'PlaneGeometry',
 				mode: {
 					type:'PlaneGeometry',
-					path:'./gameCore/3dAssets/textures/stone_floor_736x736.jpg',
+					// path:'./gameCore/3dAssets/textures/stone_floor_736x736.jpg',
+					// path:'./gameCore/3dAssets/textures/6cdrkhtj.bmp',
+					path:'./gameCore/3dAssets/textures/ir72y7af.bmp',
+					// path:'./gameCore/3dAssets/textures/1uhl6dea.bmp',
+					// path:'./gameCore/3dAssets/textures/86177tuu.bmp',
 					size: {x:512,y:512}
 				},
-				size: { x: 32, y: 50, z: .1 },
+				size: { x: 150, y: 150, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
-				repeat: (20,20),
+				repeat: [8,8],
 				spawns: [
-					{ x: 0, y: -24.5, z: 20},
+					{ x: 0, y: -30, z: 20 },
 					{ x: 0, y: 0, z: 0},
 				],
 			}
 		}
 		let config = floorsconfig[this._currentImmat]
-		config.repeat = (20,20)
 		// get position if not
 		// if(typeof config.position === 'undefined') config.position = { x: -(config.size.x/2), y: -(config.size.y/2), z: -(config.size.z/2) };
 		return config

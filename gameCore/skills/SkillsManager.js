@@ -3,12 +3,17 @@ import {Formula}  from '/Alone/gameCore/mecanics/Formula.js';
 class SkillsManager {
 	conslog = true
 	order = 0
-	constructor(skillname, playerPosition, rotation, fromfloor = 1, Scene, faction) {
+	constructor(skillname, playerGroupe, canonpart, fromfloor = 1, Scene, faction) {
+
 		this.formula = new Formula()
 		this.scene = Scene
 		// this.fromfloor = fromfloor / 2;
+		this._playerGroupe = playerGroupe
+		this.sourceCanon = canonpart
+var playerPosition = canonpart.position
+var rotation = this._playerGroupe.rotation
 
-		this.skillDatas = this._getSkill(skillname, playerPosition, rotation, faction);
+		this.skillDatas = this._getSkill(skillname, this._playerGroupe.position, rotation, faction);
 
 		this.receiveShadow = true;
 		this.castShadow = true;
@@ -24,16 +29,16 @@ class SkillsManager {
 		this.touchedMobs = []
 		if (this.conslog) console.info('SkillsManager Mounted !','conslog:',this.conslog)
 	}
-	_getSkill(skillname, playerPosition, rotation, faction) {
+	_getSkill(skillname, sourceCanon, rotation, faction) {
 		skillname = JSON.parse(JSON.stringify(skillname));
-		playerPosition = JSON.parse(JSON.stringify(playerPosition));
+		sourceCanon = JSON.parse(JSON.stringify(sourceCanon));
 		rotation = JSON.parse(JSON.stringify(rotation._z));
 
 		let skill = this._setSkills(skillname);
 
-		skill.x = playerPosition.x;
-		skill.y = playerPosition.y;
-		skill.z = playerPosition.z + (skill.fromfloor ? skill.fromfloor : 0);
+		skill.x = sourceCanon.x;
+		skill.y = sourceCanon.y;
+		skill.z = sourceCanon.z + (skill.fromfloor ? skill.fromfloor : 0);
 		skill.rotation = rotation;
 
 		return skill

@@ -171,9 +171,9 @@ class Formula {
 		// 	}
 		if (distance > 0) {
 			// console.log('player check orbital force')
-			x2 = centerX + ((distance) * (Math.cos(obj.theta.x[0])));
-			y2 = centerY + ((distance) * (Math.sin(obj.theta.y[0])));
-			z2 = centerZ + ((distance) * (Math.cos(obj.theta.z[0])));
+			x2 = centerX + ((distance) * (Math.cos(obj.theta.x[0]*5)));
+			y2 = centerY + ((distance) * (Math.sin(obj.theta.y[0]*5)));
+			z2 = centerZ + ((distance) * (Math.cos(obj.theta.z[0]*5)));
 		}
 		else {
 			x2 = centerX + (centerW * (Math.cos(obj.theta.x[0])));

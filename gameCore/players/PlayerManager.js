@@ -237,20 +237,20 @@ class PlayerManager {
 		// if (this.torche) this.playerGroupe.add(this.torche);
 		this.playerGroupe.add(this.PlayerMesh)
 
-		let canonPart = new THREE.Mesh(
+		this.canonPart = new THREE.Mesh(
 			new THREE.BoxGeometry(.25, .4, .25),
 			new THREE.MeshPhongMaterial({ 
 				color: 'green',//this.playerColor, 
 				wireframe: false
 			})
 		);
-		canonPart.name = "Cannon";
-		canonPart.material.transparent = false
-		// canonPart.material.opacity = 0
-		canonPart.position.set(.20, .5, .25);
-		canonPart.receiveShadow = true//this.receiveShadow;
-		canonPart.castShadow = true//this.castShadow;
-		this.playerGroupe.add(canonPart);
+		this.canonPart.name = "Cannon";
+		this.canonPart.material.transparent = false
+		// this.canonPart.material.opacity = 0
+		this.canonPart.position.set(.20, .5, .25);
+		this.canonPart.receiveShadow = true//this.receiveShadow;
+		this.canonPart.castShadow = true//this.castShadow;
+		this.playerGroupe.add(this.canonPart);
 		this.playerGroupe.position.set(this.position.x, this.position.y, this.position.z);
 	}
 	playerUpdateIfMove() {
@@ -335,8 +335,8 @@ class PlayerManager {
 				// constructor(skillname, position, rotation, fromfloor = 1, Scene, faction, experienceF)
 				let skill = new SkillsManager(
 					skillname,
-					this.playerGroupe.position,
-					this.playerGroupe.rotation,
+					this.playerGroupe,
+					this.canonPart,
 					this.hauteur,
 					this.scene,
 					'good',

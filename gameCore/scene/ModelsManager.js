@@ -1,7 +1,12 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-
 import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
+
+// Why not this ?
+// import * as THREE from '/Alone/vendor/three.module.js';
+// import {FBXLoader} from '/Alone/vendor/FBXLoader.js';
+// import {GLTFLoader} from '/Alone/vendor/GLTFLoader.js';
+
 class ModelsManager {
 	conslog = true
 	order=1
@@ -24,7 +29,6 @@ class ModelsManager {
 		this._Init()
 	}
 	_Init() {
-		// this._LOADER = new THREE.GLTFLoader();
 		this._FBXLOADER = new FBXLoader();
 		// this.LoadAnimatedModel()
 		this._MeshDatasList = this.get_MeshDatasList()

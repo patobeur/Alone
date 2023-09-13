@@ -1,7 +1,7 @@
-// import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
 // import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-// import {InteractionManager} from './modules/three.interactive.js';
-// import * as InteractionManager from '/Alone/gameCore/modules/three.interactive.js';
+// import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
+// import * as THREE from '/Alone/node_modules/three/build/three.module.js';
+// import {GLTFLoader} from '/Alone/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';

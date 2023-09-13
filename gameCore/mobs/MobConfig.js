@@ -201,7 +201,7 @@ class MobConfig {
 				}
 			}
 		}
-		if (this.typeNum === 7 || this.typeNum > 6) {// BIG poto
+		if (this.typeNum === 7 || this.typeNum > 6) {// tanky
 			config.mobs.mesh.color = 0xcccccc
 			config.mobs.speed = 1
 			config.mobs.mesh.size = { x: 1, y: 3, z: 1 }
@@ -214,7 +214,7 @@ class MobConfig {
 					color: 'blue',
 					wireframe: false,
 					size: { x: .5, y: 1, z: .5 },
-					position: { x: 0, y: -1, z: 1 }, // from parent center
+					position: { x: 0, y: 1.2, z: .5 }, // from parent center
 				}
 			}
 		}

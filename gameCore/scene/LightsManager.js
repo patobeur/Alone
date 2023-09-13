@@ -29,10 +29,10 @@ class LightsManager {
 		
 		// this.lights.push(this.light)
 		// this.lights.push(this._hemiLight)
+		this.lights.push(this.SolMesh)
 		this.lights.push(this.SUNGroupe)
 		this.lights.push(this._ambientLight)
-		this.lights.push(this.SolMesh)
-		this.lights.push(this.SunLight)
+		// this.lights.push(this.SunLight)
 		
 
 		// this.lights.push(this._directionalLight)
@@ -170,7 +170,7 @@ class LightsManager {
 	_init_AmbientLight() {
 		this._ambientLight = new THREE.AmbientLight(
 			0xffffff,
-			.6
+			1
 		)
 		this._ambientLight.name = this._GameConfig.get_ambientLight('name');
 	}

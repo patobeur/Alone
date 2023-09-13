@@ -1,9 +1,8 @@
-// import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 // import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
-// import * as THREE from '/Alone/node_modules/three/build/three.module.js';
-// import {GLTFLoader} from '/Alone/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
+
 import {WindowActive} from './front/WindowActive.js';
 import {FullScreenManager} from './features/FullScreenManager.js';
 import {Formula}  from './mecanics/Formula.js';
@@ -57,11 +56,9 @@ class gameCore {
 		this.HowManyMobs = datas && datas.HowManyMobs 
 			? datas.HowManyMobs 
 			: this.defaultMobsNumber;
-		this._Init()
+		this._InitA()
 	}
-	_Init() {
-		
-
+	_InitA() {
 		if(typeof Stats === 'function') this.stats = new Stats();
 		if (this.stats != null){
 			this.stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -107,17 +104,36 @@ class gameCore {
 			this.plan,
 			this._conslog
 		)
-		this._ModelsManager = new ModelsManager(this._GameConfig,this.scene)
-
+		this._InitB()
+	}
+	_InitB() {
+		this._ModelsManager = new ModelsManager(this._GameConfig, this.scene, (allModelsAndAnimations) => {
+			// Cette fonction de rappel sera appelée lorsque tous les modèles et animations seront chargés.
+			// Vous pouvez continuer à initialiser votre jeu ici en utilisant allModelsAndAnimations.
+			this.allModels = allModelsAndAnimations
+			console.log('DONEEEEEEEEEEEEEEEEEEEEEEEEEE',allModelsAndAnimations)
+			this._InitC(); // Appelez votre fonction d'initialisation
+		  });
+	}
+	_InitC() {
 		// ADD MOBS
-		this._MobsManager = new MobsManager({
-			GameConfig: this._GameConfig,
-			scene: this.scene,
-			FrontboardManager: this._FrontboardManager
-		});
-		this.allmob = this._MobsManager.addMobs(this.HowManyMobs, 'mobs')
+		console.log('models ok',this.allModels)
+		console.log('models ok',this.allModels['character']['Kimono_Female'])
+		
+		  // Jouez l'animation par défaut ici
+		const charGltf = this.allModels['character']['Kimono_Female'].gltf 
+		this.MegaMixer = new THREE.AnimationMixer(charGltf.scene);
+		this.MegaClip = THREE.AnimationClip.findByName(charGltf.animations, 'Idle');
+		this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
+		this.MegaAction.play(); // Joue l'animation par défaut
 
 		
+		const charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf 
+		this.MegaMixer2 = new THREE.AnimationMixer(charGltf.scene);
+		this.MegaClip2 = THREE.AnimationClip.findByName(charGltf.animations, 'Death');
+		this.MegaAction2 = this.MegaMixer.clipAction(this.MegaClip);
+		this.MegaAction2.play(); // Joue l'animation par défaut
+		// charGltf.scene.position.set(0,0, 5)
 
 		// ----------------------------
 		// PLAYER ----------------
@@ -129,8 +145,12 @@ class gameCore {
 			this.scene
 		)
 
-		
-		// ----------------------------
+		this._MobsManager = new MobsManager({
+			GameConfig: this._GameConfig,
+			scene: this.scene,
+			FrontboardManager: this._FrontboardManager
+		});
+		this.allMobs = this._MobsManager.addMobs(this.HowManyMobs, 'mobs')
 		// Set player data in _MobsManager Class
 		this._MobsManager.set_PlayerDatas(this._PlayerManager.playerGroupe)
 
@@ -139,12 +159,7 @@ class gameCore {
 		// ADD OrbitControls --------
 		// this.controls = this._SceneManager.setAndGet_OrbitControls(
 		// 	this.camera
-		// )
-		
-
-		// ADD MOBS
-
-		// this._clock = this._SceneManager.get_Clock()
+		// )		
 		
 		// un loader d'images pour les texures des futures object 3d
 		if (this._ImagesManager != null) this._ImagesManager = new ImagesManager();
@@ -165,61 +180,27 @@ class gameCore {
 
 		if (this._WindowActive != null) this._WindowActive.init()
 
+		// this._ModelsManager.LoadAnimatedModelFromMain()
 
-		// this.MobsManager = new MobsManager({
-		// 	SConfig: this._GameConfig,
-		// 	Scene: this.scene,
-		// 	FrontM: this._FrontM
-		// });
-
-		// // ADD MOBS
-		// this.allMobs = this.MobsManager.addMobs(this.HowManyMobs, 'mobs')
-
-		this._ModelsManager.LoadAnimatedModel()
 		// START
 		this.START();
 	}
 	START (){
 		this._REFRESH();
 	}
-	// _REFRESH() {
-	//   requestAnimationFrame((t) => {
-  
-	// 	this._REFRESH();
-  
-	// 	this._threejs.render(this._scene, this._camera);
-	// 	this._Step(t - this._previousREFRESH);
-	// 	this._previousREFRESH = t;
-	//   });
-	// }
-  
+	
 	_Step(timeElapsed) {
 		const timeElapsedS = timeElapsed * 0.001;
-		if (this._ModelsManager.mixers) {
-			this._ModelsManager.mixers.map(m => m.update(timeElapsedS));
-		}
-	
-		if (this._controls) {
-		  this._controls.Update(timeElapsedS);
-		}
-	  }
-	_REFRESH() {
-	  requestAnimationFrame((t) => {
-		if (this.stats != null) this.stats.begin();
-		if (this._previousREFRESH === null) this._previousREFRESH = t;
 
-		if (
-			!this._pause &&	((this._WindowActive != null 
-			&& this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))
-		) {
-
+		
+		if (!this._pause &&	((this._WindowActive != null && this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))) {
 			this._LightsManager.upadteSun()
 			this._PlayerManager.checkMoves();
 			this._PlayerManager.checkSkills(this.allMobs);
-			// this._PlayerManager.checkZooming();
-
+			this._PlayerManager.checkZooming();
 			
 			this._PlayerManager.check_playerOrbiter();
+
 			this.applyGravityToPlayerGroupe()
 
 			this._PlayerManager.playerUpdateIfMove();
@@ -230,22 +211,34 @@ class gameCore {
 			// REGENS AND BUFF
 			this._PlayerManager.regen();
 
-			// mobs
-			// if (this.allMobs) {
+			// MOBS
+			if (typeof this.allMobs === 'object' && this.allMobs.length>0) {
 				this._MobsManager.updateAllMobsPhaseA()
 				this._MobsManager.updateAllMobsPhaseB()
 				this.allMobs = this._MobsManager.getOnlyLivings()[0]
-			// }
+			}
 
 		  	// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
-		  // }
+
+			// ANIMATIONS 
+			this.MegaMixer.update(timeElapsed)
+
+			// RENDER 
 			this._threejs.render(this.scene, this.camera);
 		}
+		if (this._controls) {
+		  this._controls.Update(timeElapsedS);
+		}
+		
+	  }
+	_REFRESH() {
+	  requestAnimationFrame((t) => {
+		if (this.stats != null) this.stats.begin();
+		if (this._previousREFRESH === null) this._previousREFRESH = t;
 		this._REFRESH();	
 		this._Step(t - this._previousREFRESH);
 		this._previousREFRESH = t;
-
-		if (this.stats != null)this.stats.end();
+		if (this.stats != null) this.stats.end();
 	  });
 	}	
 	applyGravityToPlayerGroupe() {

@@ -35,7 +35,8 @@ class MobsManager {
 				mobType ?? 'mobs'
 			)	
 		}
-		return this.get_allMobs()
+		let request = this.get_allMobs()
+		return request
 	}	
 
 
@@ -246,7 +247,9 @@ class MobsManager {
 		return this._AllMobs[this._CurrentMobImmat - 1]
 	}
 	get_allMobs() {
-		return this._AllMobs.length > 0 ? this._AllMobs : false;
+		
+		let request = this._AllMobs.length > 0 ? this._AllMobs : false;
+		return request
 	}
 	get_distanceFromPlayer(playerPosition, mob) {
 		let dist = mob.bbox.distanceToPoint(othermob.mesh.position)

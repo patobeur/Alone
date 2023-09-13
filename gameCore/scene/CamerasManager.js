@@ -27,7 +27,7 @@ class CamerasManager {
 				far: 1000.0,
 				position: new THREE.Vector3(0, 0, 2),
 				// others
-				zoom: { step: 5, zmin: 5, zmax:25 },
+				zoom: { step: 5, zmin: 5, zmax:300 },
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
 				followDecalage: new THREE.Vector3(0, -15, 10),
@@ -79,19 +79,24 @@ class CamerasManager {
 		return camera
 	}
 	handleZoom(zooming,CameraNum){
+		CameraNum=0
 		let apresZoom = zooming === 'out' 
 			? this._CamerasConfig[CameraNum].zoom.step 
 			: -this._CamerasConfig[CameraNum].zoom.step
 
-		// this.cameras[CameraNum].position.z = Math.min(
-		// 	Math.max(
-		// 		this._CamerasConfig[CameraNum].zoom.zmin,
-		// 		this.cameras[CameraNum].position.z + (
-		// 			apresZoom
-		// 			)
-		// 	),
-		// 	this._CamerasConfig[CameraNum].zoom.zmax
-		// 	);
+			this._CamerasConfig[CameraNum].followDecalage.z = Math.min(
+				Math.max(
+					this._CamerasConfig[CameraNum].zoom.zmin,
+					this._CamerasConfig[CameraNum].position.z + (
+						apresZoom
+						)
+				),
+				this._CamerasConfig[CameraNum].zoom.zmax
+			);
+			// this.cameras[CameraNum].position.x =this._CamerasConfig[CameraNum].position.x
+			// this.cameras[CameraNum].position.y =this._CamerasConfig[CameraNum].position.y
+			// this.cameras[CameraNum].position.z = this._CamerasConfig[CameraNum].position.z
+			// console.log(this.cameras[CameraNum].position.z)
 	}
 	handleZoom2(zooming,CameraNum){
 		const MINZOOM = 7

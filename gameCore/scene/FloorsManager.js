@@ -113,7 +113,9 @@ class FloorsManager {
 				type: 'PlaneGeometry',
 				mode: {
 					type:'PlaneGeometry',
-					path:'./gameCore/3dAssets/textures/grid64_512.png',
+					// path:'./gameCore/3dAssets/textures/grid64_512_blanc.png',
+					// path:'./gameCore/3dAssets/textures/grid64_512.png',
+					path:'./gameCore/3dAssets/textures/stone_floor_736x736.jpg',
 					size: {x:512,y:512}
 				},
 				size: { x: 150, y: 150, z: .1 },

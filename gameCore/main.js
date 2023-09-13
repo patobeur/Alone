@@ -1,6 +1,6 @@
-import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-import {InteractionManager} from '/Alone/gameCore/modules/three.interactive.js';
+// import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
+// import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+// import {InteractionManager} from './modules/three.interactive.js';
 // import * as InteractionManager from '/Alone/gameCore/modules/three.interactive.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
@@ -28,12 +28,12 @@ class gameCore {
 	_Formula = null
 	_GameConfig = null
 	_SceneManager = null
-    _FloorsManager = null;
+	_FloorsManager = null;
 		floor = null;
-    _LightsManager = null;
+	_LightsManager = null;
 		lights = []
-    _CamerasManager = null;
-        camera = null;
+	_CamerasManager = null;
+		camera = null;
 	_FrontboardManager = null
 	_FullScreenManager = null
 	_PlayerManager = null
@@ -43,7 +43,7 @@ class gameCore {
 	_MobsManager = null
 	_ModelsManager  = null
 	// _TouchMe = null
-    // --------------------------------------
+	// --------------------------------------
 	_previousREFRESH = null
 	// _pause = false;
 	// _pauseModalText;

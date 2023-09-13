@@ -1,6 +1,7 @@
-
-// import defaultExport from '/Alone/node_modules/stats.js/src/stats.js';
-// import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
+import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
+// import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import {InteractionManager} from '/Alone/gameCore/modules/three.interactive.js';
+// import * as InteractionManager from '/Alone/gameCore/modules/three.interactive.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
 import {WindowActive} from './front/WindowActive.js';
@@ -16,8 +17,10 @@ import {FrontboardManager} from './front/FrontboardManager.js';
 import {PlayerManager} from './players/PlayerManager.js';
 import {MobsManager} from './mobs/MobsManager.js';
 import {TouchMe} from './mecanics/TouchMe.js';
+
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class gameCore {
-	v= "0.0.1"
+	v = "0.0.1"
 	// ------------------------------
 	defaultMobsNumber = 101
 	stats = null
@@ -58,6 +61,8 @@ class gameCore {
 		this._Init()
 	}
 	_Init() {
+		
+
 		if(typeof Stats === 'function') this.stats = new Stats();
 		if (this.stats != null){
 			this.stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -66,11 +71,13 @@ class gameCore {
 
         this._Formula = new Formula()
 		this._GameConfig = new GameConfig(this._conslog)
+
 		// ----------------------------------------------------
 		this._SceneManager = new SceneManager(this._GameConfig)
         this._LightsManager = new LightsManager(this._GameConfig)	
 		this._CameraManager = new CamerasManager(this._conslog)
 		this._DomManager = new DomManager(this._conslog)
+
 		this._FrontboardManager = new FrontboardManager(this._DomManager,this._conslog)
 		// ----------------------------------------------------
 		this._threejs = this._SceneManager.setAndGet_WebGLRenderer()
@@ -80,6 +87,12 @@ class gameCore {
 
 		this._FullScreenManager = new FullScreenManager()
 		this._WindowActive = new WindowActive(this._GameConfig);
+
+
+		
+
+
+
 		// this._TouchMe = new TouchMe()
 		// ----------------------------------------------------
         this.camera = this._CameraManager.cameras[0]
@@ -108,10 +121,7 @@ class gameCore {
 		
 
 		// ----------------------------
-		// ----------------------------
-		// ----------------------------
-		// LOAD MODELS 
-
+		// PLAYER ----------------
 		this._PlayerManager = new PlayerManager(
 			false,//{x:0, y:-64, z:15},
 			this._GameConfig,
@@ -119,28 +129,31 @@ class gameCore {
 			this._CameraManager,
 			this.scene
 		)
+
+		
+		// ----------------------------
+		// Set player data in _MobsManager Class
 		this._MobsManager.set_PlayerDatas(this._PlayerManager.playerGroupe)
-		// ------------------------
-		// OrbitControls --------
-		// --------------------		
+
+		
+
+		// ADD OrbitControls --------
 		// this.controls = this._SceneManager.setAndGet_OrbitControls(
 		// 	this.camera
 		// )
-		// --------------------	
-		// ----------------------	
-		// ------------------------
 		
 
 		// ADD MOBS
 
 		// this._clock = this._SceneManager.get_Clock()
+		
+		// un loader d'images pour les texures des futures object 3d
+		if (this._ImagesManager != null) this._ImagesManager = new ImagesManager();
 
-		// // un loader d'images pour les texures des futures object 3d
-		// // il faut charger GLTFLoader.js dans la page html
-		// // this._ImagesManager = new ImagesManager();
-		// this._domEvents = new THREEx.DomEvents(this._PCamera, this._Renderer.domElement)
-			// // test objects (viré par ce que ca gene)
-		// // this._clikableThings = new Things(this._domEvents, this.scene);
+
+		// test objects (viré par ce que ca gene)
+		// this._domEvents = new THREEx.DomEvents(this.camera, this._threejs.domElement)
+		// this._clikableThings = new Things(this._domEvents, this.scene);
 
 
 
@@ -149,16 +162,9 @@ class gameCore {
 		this._FrontboardManager.setPlayersAndMobs([this._PlayerManager], this.allMobs)
 		this.scene.add(this._PlayerManager.playerGroupe)
 
-		this._FullScreenManager.init()
-		console.log("_WindowActive")
-		console.log(this._WindowActive)
-		console.log(typeof this._WindowActive)
+		if (this._FullScreenManager != null) this._FullScreenManager.init()
 
-		if (this._WindowActive != null) {
-			this._WindowActive.init()
-		} else {
-			console.log(' no WindowActive')
-		}
+		if (this._WindowActive != null) this._WindowActive.init()
 
 
 		// this.MobsManager = new MobsManager({
@@ -169,12 +175,6 @@ class gameCore {
 
 		// // ADD MOBS
 		// this.allMobs = this.MobsManager.addMobs(this.HowManyMobs, 'mobs')
-
-		
-		// GO RENDER
-		// console.log('------')
-		// console.log('SCENE:',this.scene)
-		// console.log('all mount done')
 
 		this._ModelsManager.LoadAnimatedModel()
 		// START

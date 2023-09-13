@@ -1,5 +1,5 @@
 import {Stats} from '/Alone/node_modules/stats.js/src/Stats.js';
-// import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 import {InteractionManager} from '/Alone/gameCore/modules/three.interactive.js';
 // import * as InteractionManager from '/Alone/gameCore/modules/three.interactive.js';
 
@@ -18,7 +18,6 @@ import {PlayerManager} from './players/PlayerManager.js';
 import {MobsManager} from './mobs/MobsManager.js';
 import {TouchMe} from './mecanics/TouchMe.js';
 
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class gameCore {
 	v = "0.0.1"
 	// ------------------------------

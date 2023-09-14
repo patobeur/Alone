@@ -104,36 +104,33 @@ class gameCore {
 			this.plan,
 			this._conslog
 		)
-		this._InitB()
-	}
-	_InitB() {
 		this._ModelsManager = new ModelsManager(this._GameConfig, this.scene, (allModelsAndAnimations) => {
 			// Cette fonction de rappel sera appelée lorsque tous les modèles et animations seront chargés.
-			// Vous pouvez continuer à initialiser votre jeu ici en utilisant allModelsAndAnimations.
 			this.allModels = allModelsAndAnimations
-			console.log('DONEEEEEEEEEEEEEEEEEEEEEEEEEE',allModelsAndAnimations)
-			this._InitC(); // Appelez votre fonction d'initialisation
+			this._InitB(); 
 		  });
 	}
+	_InitB() {
+		console.log('_InitA DONE allModelsAndAnimations :',this.allModels)
+		this._InitC()
+	}
 	_InitC() {
-		// ADD MOBS
-		console.log('models ok',this.allModels)
-		console.log('models ok',this.allModels['character']['Kimono_Female'])
-		
-		  // Jouez l'animation par défaut ici
-		const charGltf = this.allModels['character']['Kimono_Female'].gltf 
-		this.MegaMixer = new THREE.AnimationMixer(charGltf.scene);
-		this.MegaClip = THREE.AnimationClip.findByName(charGltf.animations, 'Idle');
+		// Jouez l'animation par défaut ici
+		this.charGltf = this.allModels['character']['Kimono_Female'].gltf 
+		this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
+		this.MegaClip = THREE.AnimationClip.findByName(this.charGltf.animations, 'Idle');
 		this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
 		this.MegaAction.play(); // Joue l'animation par défaut
 
 		
-		const charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf 
-		this.MegaMixer2 = new THREE.AnimationMixer(charGltf.scene);
-		this.MegaClip2 = THREE.AnimationClip.findByName(charGltf.animations, 'Death');
-		this.MegaAction2 = this.MegaMixer.clipAction(this.MegaClip);
+		this.charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf 
+		this.MegaMixer2 = new THREE.AnimationMixer(this.charGltf2.scene);
+		this.MegaClip2 = THREE.AnimationClip.findByName(this.charGltf2.animations, 'PickUp');
+		// this.MegaClip2.duration = 5
+		this.MegaAction2 = this.MegaMixer2.clipAction(this.MegaClip2);
+		console.log(this.MegaClip2.duration)
 		this.MegaAction2.play(); // Joue l'animation par défaut
-		// charGltf.scene.position.set(0,0, 5)
+		this.charGltf2.scene.position.set(0,0, 5)
 
 		// ----------------------------
 		// PLAYER ----------------
@@ -201,7 +198,6 @@ class gameCore {
 			
 			this._PlayerManager.check_playerOrbiter();
 
-			this.applyGravityToPlayerGroupe()
 
 			this._PlayerManager.playerUpdateIfMove();
 
@@ -220,8 +216,12 @@ class gameCore {
 
 		  	// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 
-			// ANIMATIONS 
+			// ANIMATE MOBS
 			this.MegaMixer.update(timeElapsed)
+			this.MegaMixer2.update(timeElapsed)
+
+			// GRAVITY 
+			this.applyGravityToPlayerGroupe()
 
 			// RENDER 
 			this._threejs.render(this.scene, this.camera);
@@ -233,12 +233,12 @@ class gameCore {
 	  }
 	_REFRESH() {
 	  requestAnimationFrame((t) => {
-		if (this.stats != null) this.stats.begin();
+		if (this.stats != null) this.stats.begin(); // affichage des stats begin
 		if (this._previousREFRESH === null) this._previousREFRESH = t;
 		this._REFRESH();	
 		this._Step(t - this._previousREFRESH);
 		this._previousREFRESH = t;
-		if (this.stats != null) this.stats.end();
+		if (this.stats != null) this.stats.end(); // affichage des stats end
 	  });
 	}	
 	applyGravityToPlayerGroupe() {

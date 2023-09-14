@@ -124,7 +124,6 @@ class PlayerManager {
 				this._ControlsManager.zooming = false
 			}
 		}
-		console.log('zooooooooooooooooooooom')
 	}
 	saveOldPos(){		
 		this.oldPosition.z = this.position.z

@@ -27,7 +27,7 @@ class CamerasManager {
 				far: 1000.0,
 				position: new THREE.Vector3(0, 0, 2),
 				// others
-				zoom: { step: 5, zmin: 5, zmax:300 },
+				zoom: { step: 5, zmin: 5, zmax:25 },
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
 				followDecalage: new THREE.Vector3(0, -15, 10),
@@ -79,46 +79,18 @@ class CamerasManager {
 		return camera
 	}
 	handleZoom(zooming,CameraNum){
-		CameraNum=0
 		let apresZoom = zooming === 'out' 
 			? this._CamerasConfig[CameraNum].zoom.step 
-			: -this._CamerasConfig[CameraNum].zoom.step
-
-			this._CamerasConfig[CameraNum].followDecalage.z = Math.min(
-				Math.max(
-					this._CamerasConfig[CameraNum].zoom.zmin,
-					this._CamerasConfig[CameraNum].position.z + (
-						apresZoom
-						)
-				),
-				this._CamerasConfig[CameraNum].zoom.zmax
-			);
-			// this.cameras[CameraNum].position.x =this._CamerasConfig[CameraNum].position.x
-			// this.cameras[CameraNum].position.y =this._CamerasConfig[CameraNum].position.y
-			// this.cameras[CameraNum].position.z = this._CamerasConfig[CameraNum].position.z
-			// console.log(this.cameras[CameraNum].position.z)
-	}
-	handleZoom2(zooming,CameraNum){
-		const MINZOOM = 7
-		let zoom = (zooming === 'out')
-			? this._CamerasConfig[CameraNum].zoom.step 
 			: -this._CamerasConfig[CameraNum].zoom.step;
-
-		this.cameras[CameraNum].position.z = Math.min(
-			Math.max(
-				MINZOOM,
-				this.cameras[CameraNum].position.z + zoom
-			),
-			this._CamerasConfig[CameraNum].zoom.zmax
-			);
+		let max = Math.max(this._CamerasConfig[CameraNum].zoom.zmin,this._CamerasConfig[CameraNum].followDecalage.z + apresZoom)
+		let min = Math.min(max,this._CamerasConfig[CameraNum].zoom.zmax)
+		this._CamerasConfig[CameraNum].followDecalage.z = min;
 	}
 	init_Cameras() {
 		this._CamerasConfig.forEach(config => {
 			if (config.active) {
 				let newcamera = this.get_Camera(config)
 				this.cameras.push(newcamera)
-				// if (this.conslog) console.info('newcamera', newcamera)
-				// if (this.conslog) console.info('newcamera.position', newcamera.position)
 			}
 		});
 	}
@@ -129,9 +101,9 @@ class CamerasManager {
 
 		// this.cameras[CameraNum].lookAt(position.x,position.y,position.z)
 		let vec = new THREE.Vector3(
-			position.x+this._CamerasConfig[CameraNum].lookatDecalage.x,
-			position.y+this._CamerasConfig[CameraNum].lookatDecalage.y,
-			position.z+this._CamerasConfig[CameraNum].lookatDecalage.z
+			position.x + this._CamerasConfig[CameraNum].lookatDecalage.x,
+			position.y + this._CamerasConfig[CameraNum].lookatDecalage.y,
+			position.z + this._CamerasConfig[CameraNum].lookatDecalage.z
 		)
 		this.cameras[CameraNum].lookAt(vec);
 	}

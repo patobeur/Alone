@@ -6,7 +6,10 @@ class FloorsManager {
 	floorConfig = null
 	order = 2
 	_maxAnisotropy
+	floorsRootPath = './gameCore/3dAssets/floors/'
+	backgroundsRootPath = './gameCore/3dAssets/backgrounds/'
 	constructor(GameConfig) {
+		
 		this._GameConfig = GameConfig
 		this._init()
 	}
@@ -35,10 +38,6 @@ class FloorsManager {
 				// somme updates
 				mesh.receiveShadow = true;
 				mesh.castShadow = true;
-				
-				// mesh.repeat.set(this._GameConfig.floors.size.x/16, this._GameConfig.floors.size.y/16);
-
-				// mesh.rotation.x = -Math.PI / 2;
 				mesh.name = 'floor_'+this._GameConfig.floors.name;
 				if (this._GameConfig.conslog) console.log(this._GameConfig.floors.size)
 				console.log(
@@ -49,25 +48,23 @@ class FloorsManager {
 				// groundMaterial = new THREE.MeshPhongMaterial({ map: texture })
 				break;
 			case 'PlaneGeometry':
-
-				if(this._GameConfig.floors.mode.path) {
+				if(this._GameConfig.floors.mode.fileName) {
 				const mapLoader = new THREE.TextureLoader();
-								const checkerboard = mapLoader.load(this._GameConfig.floors.mode.path);
-								checkerboard.encoding = THREE.sRGBEncoding;
-								checkerboard.anisotropy = this._GameConfig.MaxAnisotropy;
-								checkerboard.repeat.set((this._GameConfig.floors.size.x/this._GameConfig.floors.repeat[0])*2, (this._GameConfig.floors.size.y/this._GameConfig.floors.repeat[1])*2);
-						
-								checkerboard.wrapS = THREE.RepeatWrapping;
-								checkerboard.wrapT = THREE.RepeatWrapping;
-								mesh = new THREE.Mesh(
-									new THREE.PlaneGeometry(this._GameConfig.floors.size.x, this._GameConfig.floors.size.y, 10, 10),
-									new THREE.MeshStandardMaterial({map: checkerboard})
-								);
-								mesh.castShadow = false;
-								mesh.receiveShadow = true;
-								// mesh.position.z= 0
-								// mesh.rotation.x = -Math.PI / 2;
-								if (this._GameConfig.conslog) console.log(mesh)
+					const boardTexture = mapLoader.load(this.floorsRootPath+this._GameConfig.floors.mode.fileName);
+					boardTexture.encoding = THREE.sRGBEncoding;
+					boardTexture.anisotropy = this._GameConfig.MaxAnisotropy;
+					boardTexture.repeat.set((this._GameConfig.floors.size.x/this._GameConfig.floors.repeat[0])*2, (this._GameConfig.floors.size.y/this._GameConfig.floors.repeat[1])*2);
+			
+					boardTexture.wrapS = THREE.RepeatWrapping;
+					boardTexture.wrapT = THREE.RepeatWrapping;
+					mesh = new THREE.Mesh(
+						new THREE.PlaneGeometry(this._GameConfig.floors.size.x, this._GameConfig.floors.size.y, 10, 10),
+						new THREE.MeshStandardMaterial({map: boardTexture})
+					);
+					mesh.castShadow = false;
+					mesh.receiveShadow = true;
+					mesh.name = 'floor_'+this._GameConfig.floors.name;
+					if (this._GameConfig.conslog) console.log(mesh)
 				}
 				break;
 			default:
@@ -105,9 +102,9 @@ class FloorsManager {
 				imagesize: {x:512,y:512},
 				mode: {
 					type:'PlaneGeometry',
-					// path:'./gameCore/3dAssets/textures/grid64_512_blanc.png',
-					// path:'./gameCore/3dAssets/textures/grid64_512.png',
-					path:'./gameCore/3dAssets/textures/stone_floor_736x736.jpg',
+					// path: 'grid64_512_blanc.png',
+					// path: 'grid64_512.png',
+					fileName:'stone_floor_736x736.jpg',
 					size: {x:512,y:512}
 				},
 				size: { x: 150, y: 150, z: .1 },
@@ -127,17 +124,17 @@ class FloorsManager {
 	}
 	get_plan(){
 		const mapLoader = new THREE.TextureLoader();
-		// const checkerboard = mapLoader.load('./gameCore/3dAssets/textures/grid64_512.png');
-		const checkerboard = mapLoader.load('./gameCore/htmlAssets/img/backgrounds/2k_stars_milky_way.jpg');
-		checkerboard.anisotropy = this._maxAnisotropy;
-		checkerboard.wrapS = THREE.RepeatWrapping;
-		checkerboard.wrapT = THREE.RepeatWrapping;
-		checkerboard.repeat.set(20, 20);
-		checkerboard.encoding = THREE.sRGBEncoding;
+		// const backgroundScene = mapLoader.load('./gameCore/3dAssets/textures/grid64_512.png');
+		const backgroundScene = mapLoader.load(this.backgroundsRootPath+'2k_stars_milky_way.jpg');
+		backgroundScene.anisotropy = this._maxAnisotropy;
+		backgroundScene.wrapS = THREE.RepeatWrapping;
+		backgroundScene.wrapT = THREE.RepeatWrapping;
+		backgroundScene.repeat.set(20, 20);
+		backgroundScene.encoding = THREE.sRGBEncoding;
 
 		const mesh = new THREE.Mesh(
 			new THREE.PlaneGeometry(1000, 1000, 10, 10),
-			new THREE.MeshStandardMaterial({map: checkerboard}));
+			new THREE.MeshStandardMaterial({map: backgroundScene}));
 		// mesh.castShadow = false;
 		mesh.position.z= -7
 		// mesh.receiveShadow = true;

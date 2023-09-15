@@ -1,24 +1,24 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
-import {ModelsManager} from '/gameCore/scene/ModelsManager.js';
+import {ModelsManager} from './gameCore/scene/ModelsManager.js';
 
-import {WindowActive} from '/gameCore/front/WindowActive.js';
-import {FullScreenManager} from '/gameCore/features/FullScreenManager.js';
-import {Formula}  from '/gameCore/mecanics/Formula.js';
-import {GameConfig} from '/gameCore/scene/GameConfig.js';
-import {SceneManager} from '/gameCore/scene/SceneManager.js';
-import {FloorsManager} from '/gameCore/scene/FloorsManager.js';
-import {LightsManager} from '/gameCore/scene/LightsManager.js';
-import {CamerasManager} from '/gameCore/scene/CamerasManager.js';
-import {DomManager} from '/gameCore/front/DomManager.js';
-import {FrontboardManager} from '/gameCore/front/FrontboardManager.js';
-import {PlayerManager} from '/gameCore/players/PlayerManager.js';
-import {MobsManager} from '/gameCore/mobs/MobsManager.js';
-import {TouchMe} from '/gameCore/mecanics/TouchMe.js';
+import {WindowActive} from './gameCore/front/WindowActive.js';
+import {FullScreenManager} from './gameCore/features/FullScreenManager.js';
+import {Formula}  from './gameCore/mecanics/Formula.js';
+import {GameConfig} from './gameCore/scene/GameConfig.js';
+import {SceneManager} from './gameCore/scene/SceneManager.js';
+import {FloorsManager} from './gameCore/scene/FloorsManager.js';
+import {LightsManager} from './gameCore/scene/LightsManager.js';
+import {CamerasManager} from './gameCore/scene/CamerasManager.js';
+import {DomManager} from './gameCore/front/DomManager.js';
+import {FrontboardManager} from './gameCore/front/FrontboardManager.js';
+import {PlayerManager} from './gameCore/players/PlayerManager.js';
+import {MobsManager} from './gameCore/mobs/MobsManager.js';
+import {TouchMe} from './gameCore/mecanics/TouchMe.js';
 
 // import {Stats} from '/gameCore/nodemodules/stats.js/src/Stats.js';
 class gameCore {
-	v = "0.0.1"
+	v = "0.0.2"
 	// ------------------------------
 	defaultMobsNumber = 101
 	stats = null

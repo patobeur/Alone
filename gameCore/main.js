@@ -2,7 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 import {ModelsManager} from '/gameCore/scene/ModelsManager.js';
 
-import {WindowActive} from './front/WindowActive.js';
+import {WindowActive} from '/gameCore/front/WindowActive.js';
 import {FullScreenManager} from '/gameCore/features/FullScreenManager.js';
 import {Formula}  from '/gameCore/mecanics/Formula.js';
 import {GameConfig} from '/gameCore/scene/GameConfig.js';

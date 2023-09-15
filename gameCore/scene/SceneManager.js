@@ -1,6 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 class SceneManager {
+	rootpath = '../htmlAssets/img/backgrounds/'
 	conslog = true;
 	order = 0;
 	_GameConfig;
@@ -23,7 +24,7 @@ class SceneManager {
 		// Scene
 		this._Scene = new THREE.Scene();
 		this.set_SceneBackground(
-			'/gameCore/htmlAssets/img/backgrounds/',
+			this.rootpath,
 			['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg',]
 		)
 		this.lights.forEach(light => {
@@ -110,7 +111,7 @@ class SceneManager {
 	//      -------------------
 	addcubees(){
 		const textureLoader = new THREE.TextureLoader();
-		textureLoader.setPath('/gameCore/htmlAssets/img/backgrounds/');
+		textureLoader.setPath(this.rootpath);
 		const texture = textureLoader.load('posx.jpg');
 		const material = new THREE.MeshBasicMaterial({map:texture});
 		// Ou utilisez un matériau plus complexe comme MeshStandardMaterial :
@@ -128,7 +129,7 @@ class SceneManager {
 
 	}
 	addcubee(){
-		this.CubeTextureLoader.setPath( '/gameCore/htmlAssets/img/backgrounds/' );
+		this.CubeTextureLoader.setPath(this.rootpath);
 		const textureCube = this.CubeTextureLoader.load([
 			'posx.jpg', 'posx.jpg','posx.jpg', 'posx.jpg','posx.jpg', 'posx.jpg'
 		]);

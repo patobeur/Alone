@@ -389,9 +389,9 @@ export { ModelsManager };
 // import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
 
 // // Why not this ?
-// // import * as THREE from '/Alone/vendor/three.module.js';
-// // import {FBXLoader} from '/Alone/vendor/FBXLoader.js';
-// // import {GLTFLoader} from '/Alone/vendor/GLTFLoader.js';
+// // import * as THREE from '/vendor/three.module.js';
+// // import {FBXLoader} from '/vendor/FBXLoader.js';
+// // import {GLTFLoader} from '/vendor/GLTFLoader.js';
 
 // class ModelsManager {
 // 	conslog = true

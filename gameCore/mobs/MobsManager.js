@@ -49,7 +49,7 @@ class MobsManager {
 	}
 	updateAllMobsPhaseB() {
 		this._AllMobs.forEach(mob => {
-			if (mob.conf.states.dead !== true ) {//&& !_JEU.get_pause()) {
+			if (mob.conf.states.dead !== true ) {
 				if (mob._isdead()) {
 					mob.conf.states.dead = true;
 					mob._removeFromSceneAndDispose();
@@ -87,13 +87,14 @@ class MobsManager {
 						mob._update_BBox();
 					}
 				}
-				
 			}
+			else {
+				// man !! this mob is not alive !!!
+			}
+			// reset collider
 			if (mob) mob.conf.states.isGoingToCollide.current = 0
-
-
 			// Gravity
-			mob.applyGravity(0.001);
+			if (mob) mob.applyGravity(this._GameConfig.gravity);
 		});
     }
 	set_PlayerDatas(playerGroupe){

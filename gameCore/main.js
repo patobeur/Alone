@@ -242,14 +242,13 @@ class gameCore {
 	  });
 	}	
 	applyGravityToPlayerGroupe() {
-		let gravity = 0.001
 		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
 		this.tics++;
 		if (this.tics >= 2 ) {
 			this._PlayerManager.saveOldPos()
 
 			let halfHeight = this._PlayerManager._PlayerConfig.get_value('size','x')/2
-			this._PlayerManager.playerGroupe.position.z = this._PlayerManager.position.z = (this._PlayerManager.position.z - halfHeight > gravity) ? (this._PlayerManager.position.z - halfHeight) - gravity + this._PlayerManager.stats.velocity.z : halfHeight
+			this._PlayerManager.playerGroupe.position.z = this._PlayerManager.position.z = (this._PlayerManager.position.z - halfHeight > this._GameConfig.gravity) ? (this._PlayerManager.position.z - halfHeight) - this._GameConfig.gravity + this._PlayerManager.stats.velocity.z : halfHeight
 
 			this.tics = 0
 		}

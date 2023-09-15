@@ -18,7 +18,7 @@ class Mob {
         this._set_Mesh();
         return this;
     }
-	applyGravity(grav = 0.001) {
+	applyGravity(grav) {
 		let gravity = grav
 		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
 		this.tics++;

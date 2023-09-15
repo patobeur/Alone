@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 class SceneManager {
-	rootpath = '../htmlAssets/img/backgrounds/'
+	rootpath = '/gameCore/htmlAssets/img/backgrounds/'
 	conslog = true;
 	order = 0;
 	_GameConfig;
@@ -109,39 +109,39 @@ class SceneManager {
 	}
 	// TEST -------------------
 	//      -------------------
-	addcubees(){
-		const textureLoader = new THREE.TextureLoader();
-		textureLoader.setPath(this.rootpath);
-		const texture = textureLoader.load('posx.jpg');
-		const material = new THREE.MeshBasicMaterial({map:texture});
-		// Ou utilisez un matériau plus complexe comme MeshStandardMaterial :
-		// const material = new THREE.MeshStandardMaterial({
-		// 	 map: texture, 
-		// 	 roughness: 0, 
-		// 	 metalness: 0 
-		// });
+	// addcubees(){
+	// 	const textureLoader = new THREE.TextureLoader();
+	// 	textureLoader.setPath(this.rootpath);
+	// 	const texture = textureLoader.load('posx.jpg');
+	// 	const material = new THREE.MeshBasicMaterial({map:texture});
+	// 	// Ou utilisez un matériau plus complexe comme MeshStandardMaterial :
+	// 	// const material = new THREE.MeshStandardMaterial({
+	// 	// 	 map: texture, 
+	// 	// 	 roughness: 0, 
+	// 	// 	 metalness: 0 
+	// 	// });
 		
-		const geometry = new THREE.BoxGeometry(1, 1, 1); // Par exemple, une boîte
-		const mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(3, 3, 3);
-		this._Scene.add(mesh); // Ajoutez le maillage à votre scène
-		console.log(this._Scene)
+	// 	const geometry = new THREE.BoxGeometry(1, 1, 1); // Par exemple, une boîte
+	// 	const mesh = new THREE.Mesh(geometry, material);
+	// 	mesh.position.set(3, 3, 3);
+	// 	this._Scene.add(mesh); // Ajoutez le maillage à votre scène
+	// 	console.log(this._Scene)
 
-	}
-	addcubee(){
-		this.CubeTextureLoader.setPath(this.rootpath);
-		const textureCube = this.CubeTextureLoader.load([
-			'posx.jpg', 'posx.jpg','posx.jpg', 'posx.jpg','posx.jpg', 'posx.jpg'
-		]);
-		const material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube } );
+	// }
+	// addcubee(){
+	// 	this.CubeTextureLoader.setPath(this.rootpath);
+	// 	const textureCube = this.CubeTextureLoader.load([
+	// 		'posx.jpg', 'posx.jpg','posx.jpg', 'posx.jpg','posx.jpg', 'posx.jpg'
+	// 	]);
+	// 	const material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube } );
 
-		const geometry = new THREE.BoxGeometry(1, 1, 1); // Par exemple, une boîte
-		const mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(2, 2, 2);
-		this._Scene.add(mesh); // Ajoutez le maillage à votre scène
+	// 	const geometry = new THREE.BoxGeometry(1, 1, 1); // Par exemple, une boîte
+	// 	const mesh = new THREE.Mesh(geometry, material);
+	// 	mesh.position.set(2, 2, 2);
+	// 	this._Scene.add(mesh); // Ajoutez le maillage à votre scène
 		
 
-	}
+	// }
 	addAxes(){				
 		const xbox = new THREE.Mesh(
 			new THREE.BoxGeometry(1000, 1, 1),

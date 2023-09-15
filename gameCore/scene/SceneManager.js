@@ -2,7 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 class SceneManager {
 	// rootpath = '/gameCore/htmlAssets/img/backgrounds/'
-	rootpath = '/gameCore/htmlAssets/img/backgrounds/'
+	rootpath = '../gameCore/htmlAssets/img/backgrounds/'
 	conslog = true;
 	order = 0;
 	_GameConfig;

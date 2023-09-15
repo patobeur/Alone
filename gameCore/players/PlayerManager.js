@@ -1,4 +1,4 @@
-import {Formula}  from '/gameCore/mecanics/Formula.js';
+import {Formula}  from '../mecanics/Formula.js';
 import {PlayerConfig} from './PlayerConfig.js';
 import {ControlsManager} from './ControlsManager.js';
 import {SkillsManager} from '/gameCore/skills/SkillsManager.js';

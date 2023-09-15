@@ -65,6 +65,7 @@ class SceneManager {
 		return this._Scene
 	}
 	set_SceneBackground(path,images){
+		path = path + '?scenemanager'
 		this.CubeTextureLoader.setPath(path);
 		const texture = this.CubeTextureLoader.load(images);
 		this._Scene.background = texture;

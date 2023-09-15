@@ -78,7 +78,6 @@ class FloorsManager {
 		}
 		// create mesh
 		if(! mesh === false){
-			console.log(mesh)
 			// si une position est indiqué
 			// if(!typeof this._GameConfig.floors.position === 'undefined') mesh.position.set(this._GameConfig.floors.position);
 			return mesh;
@@ -90,13 +89,7 @@ class FloorsManager {
 			0: {
 				name: 'groundZero',
 				fullName: 'Lobby Room',
-				// imagepath:'./gameCore/3dAssets/textures/gridstone64_512.png',
-				// imagesize: {x:512,y:512},
-				// imagepath:'./gameCore/3dAssets/textures/grid64_512_blanc.png',
-				type: 'BoxGeometry',
-				mode: {
-					type:'BoxGeometry',
-				},
+				mode: {type:'BoxGeometry',},
 				size: { x: 16, y: 32, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
@@ -110,7 +103,6 @@ class FloorsManager {
 				name: 'groundOne',
 				fullName: 'Ground-One',
 				imagesize: {x:512,y:512},
-				type: 'PlaneGeometry',
 				mode: {
 					type:'PlaneGeometry',
 					// path:'./gameCore/3dAssets/textures/grid64_512_blanc.png',

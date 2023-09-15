@@ -32,7 +32,6 @@ class SceneManager {
 					light.castShadow = true;
 				} 
 				this._Scene.add(light);
-				console.info('adding',light)
 			} 
 		});
 		

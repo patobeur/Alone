@@ -1,6 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 class SceneManager {
+	// rootpath = '/gameCore/htmlAssets/img/backgrounds/'
 	rootpath = '/gameCore/htmlAssets/img/backgrounds/'
 	conslog = true;
 	order = 0;
@@ -65,7 +66,6 @@ class SceneManager {
 		return this._Scene
 	}
 	set_SceneBackground(path,images){
-		path = path + '?scenemanager'
 		this.CubeTextureLoader.setPath(path);
 		const texture = this.CubeTextureLoader.load(images);
 		this._Scene.background = texture;

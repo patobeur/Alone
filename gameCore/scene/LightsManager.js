@@ -1,5 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-import {Formula}  from '/gameCore/mecanics/Formula.js?1';
+import {Formula}  from '../gameCore/mecanics/Formula.js?2';
 class LightsManager {
 	conslog = true
 	_GameConfig;

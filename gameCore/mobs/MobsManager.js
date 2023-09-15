@@ -1,7 +1,7 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-import {Formula}  from '../mecanics/Formula.js?3';
-import {MobConfig} from './MobConfig.js';
+import {Formula}  from '../mecanics/Formula.js?mobs';
+import {MobConfig} from './MobConfig.js?mobs';
 import {Mob} from './Mob.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class MobsManager {
 	conslog = true;
 	_GameConfig;

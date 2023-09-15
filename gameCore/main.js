@@ -82,7 +82,7 @@ class gameCore {
 		this._FloorsManager = new FloorsManager(this._GameConfig)
 
 		this._FullScreenManager = new FullScreenManager()
-		this._WindowActive = new WindowActive(this._GameConfig);
+		// this._WindowActive = new WindowActive(this._GameConfig);
 
 
 		
@@ -128,7 +128,6 @@ class gameCore {
 		this.MegaClip2 = THREE.AnimationClip.findByName(this.charGltf2.animations, 'PickUp');
 		// this.MegaClip2.duration = 5
 		this.MegaAction2 = this.MegaMixer2.clipAction(this.MegaClip2);
-		console.log(this.MegaClip2.duration)
 		this.MegaAction2.play(); // Joue l'animation par défaut
 		this.charGltf2.scene.position.set(0,0, 5)
 

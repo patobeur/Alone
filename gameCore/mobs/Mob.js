@@ -1,5 +1,5 @@
-import {Formula}  from '../mecanics/Formula.js?4';
-import {MobsIa} from './MobsIa.js';
+import {Formula}  from '../mecanics/Formula.js?mob';
+import {MobsIa} from './MobsIa.js?mob';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class Mob {
 	conslog = true

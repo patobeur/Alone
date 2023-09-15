@@ -1,5 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-import {Stats} from '/node_modules/stats.js/src/Stats.js';
+import {Stats} from '../node_modules/stats.js/src/Stats.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
 

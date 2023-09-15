@@ -1,7 +1,5 @@
-
-// import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
-
+// import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 class ModelsManager {
   conslog = true;
   _LOADER;
@@ -10,7 +8,6 @@ class ModelsManager {
   allMeshsAndDatas = {};
   mixers = [];
   allFbx = [];
-
   constructor(gameConfig, scene, fonctionretour) {
     this.fonctionretour = fonctionretour;
     this._scene = scene;

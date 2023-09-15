@@ -1,22 +1,23 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+// import * as THREE from './nodemodules/three/build/three.module.js';
 
-import {ModelsManager} from './scene/ModelsManager.js?main';
+import {ModelsManager} from './scene/ModelsManager.js';
 
-import {WindowActive} from './front/WindowActive.js?main';
-import {FullScreenManager} from './features/FullScreenManager.js?main';
-import {Formula}  from './mecanics/Formula.js?main';
-import {GameConfig} from './scene/GameConfig.js?main';
-import {SceneManager} from './scene/SceneManager.js?main';
-import {FloorsManager} from './scene/FloorsManager.js?main';
-import {LightsManager} from './scene/LightsManager.js?main';
-import {CamerasManager} from './scene/CamerasManager.js?main';
-import {DomManager} from './front/DomManager.js?main';
-import {FrontboardManager} from './front/FrontboardManager.js?main';
-import {PlayerManager} from './players/PlayerManager.js?main';
-import {MobsManager} from './mobs/MobsManager.js?main';
-import {TouchMe} from './mecanics/TouchMe.js?main';
+import {WindowActive} from './front/WindowActive.js';
+import {FullScreenManager} from './features/FullScreenManager.js';
+import {Formula}  from './mecanics/Formula.js';
+import {GameConfig} from './scene/GameConfig.js';
+import {SceneManager} from './scene/SceneManager.js';
+import {FloorsManager} from './scene/FloorsManager.js';
+import {LightsManager} from './scene/LightsManager.js';
+import {CamerasManager} from './scene/CamerasManager.js';
+import {DomManager} from './front/DomManager.js';
+import {FrontboardManager} from './front/FrontboardManager.js';
+import {PlayerManager} from './players/PlayerManager.js';
+import {MobsManager} from './mobs/MobsManager.js';
+import {TouchMe} from './mecanics/TouchMe.js';
 
-// import {Stats} from './nodemodules/stats.js/src/Stats.js?main';
+// import {Stats} from './nodemodules/stats.js/src/Stats.js';
 class gameCore {
 	v = "0.0.3"
 	// ------------------------------

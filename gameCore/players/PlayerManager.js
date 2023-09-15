@@ -1,7 +1,7 @@
 import {Formula}  from '../mecanics/Formula.js?3';
 import {PlayerConfig} from './PlayerConfig.js';
 import {ControlsManager} from './ControlsManager.js';
-import {SkillsManager} from '../SkillsManager.js?3';
+import {SkillsManager} from '../skills/SkillsManager.js?3';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
 class PlayerManager {

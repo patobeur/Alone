@@ -1,5 +1,5 @@
-import {Formula}  from '/gameCore/mecanics/Formula.js';
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import {Formula}  from '../mecanics/Formula.js?mobsia';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js?mobsia';
 class MobsIa {
 	constructor(mobConf) {
 		this.mobConf = mobConf

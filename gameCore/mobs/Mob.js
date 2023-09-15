@@ -1,6 +1,6 @@
 import {Formula}  from '../mecanics/Formula.js?mob';
 import {MobsIa} from './MobsIa.js?mob';
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js?mob';
 class Mob {
 	conslog = true
 	_Scene

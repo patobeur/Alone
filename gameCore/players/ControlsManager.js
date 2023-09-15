@@ -1,5 +1,5 @@
-import {Formula}  from '/gameCore/mecanics/Formula.js';
-import {TouchMe} from '/gameCore/mecanics/TouchMe.js';
+import {Formula}  from '../mecanics/Formula.js?4';
+import {TouchMe} from '../mecanics/TouchMe.js?4';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
 class ControlsManager {

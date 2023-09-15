@@ -1,5 +1,4 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-import {Stats} from './nodemodules/stats.js/src/Stats.js';
 
 import {ModelsManager} from './scene/ModelsManager.js';
 
@@ -17,6 +16,7 @@ import {PlayerManager} from './players/PlayerManager.js';
 import {MobsManager} from './mobs/MobsManager.js';
 import {TouchMe} from './mecanics/TouchMe.js';
 
+// import {Stats} from './nodemodules/stats.js/src/Stats.js';
 class gameCore {
 	v = "0.0.1"
 	// ------------------------------

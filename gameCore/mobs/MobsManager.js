@@ -2,16 +2,21 @@ import {Formula}  from '../mecanics/Formula.js?mobs';
 import {MobConfig} from './MobConfig.js?mobs';
 import {Mob} from './Mob.js';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+
+// import * as SkeletonUtils from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/utils/SkeletonUtils.js';
+
 class MobsManager {
 	conslog = true;
 	_GameConfig;
 	_CurrentMobImmat
 	_Formula
 	_maxMobLimiteLv
+	_allModels
 	_AllMobs
 	_scene
 	_FrontboardManager
 	_playerGroupe = null
+	_SkeletonUtils
 	constructor(datas) {
 		this._scene = datas.scene
 		this._FrontboardManager = datas.FrontboardManager
@@ -29,7 +34,7 @@ class MobsManager {
 			let name = this.get_AName(8)
 			let mob = this.addOne(
 				name,
-				mobType ?? 'mobs'
+				mobType ?? 'mobs',				
 			)	
 		}
 		let request = this.get_allMobs()
@@ -97,6 +102,9 @@ class MobsManager {
 			if (mob) mob.applyGravity(this._GameConfig.gravity);
 		});
     }
+	setModels(allModels){
+		this._allModels = allModels
+	}
 	set_PlayerDatas(playerGroupe){
 		this._playerGroupe = playerGroupe
 	}
@@ -212,10 +220,9 @@ class MobsManager {
 
 		let RandomMob = this._Formula.rand(1, this._maxMobLimiteLv)
 		this.mobsConfig = new MobConfig(RandomMob)
-
-		//if (this.conslog) console.log('adding mob nickname:'+nickname,this.mobsConfig)
 		// i get a clone with the default config
 		let mobConf = this.mobsConfig.get_confData(mobType)
+
 
 		// adding basics to feet the needs
 		mobConf.immat = this._CurrentMobImmat
@@ -223,6 +230,7 @@ class MobsManager {
 		mobConf.speed = mobConf.speed / 50
 		//mobConf.divs.prima.size
 
+		// add floor conf to mob
 		mobConf.position = this._Formula.get_aleaPosOnFloor(this._GameConfig.floors.size)
 		mobConf.floor = this._GameConfig.floors
 		// mobConf.position.z = mobConf.mesh.altitude
@@ -230,10 +238,12 @@ class MobsManager {
 
 		mobConf.nickname = (!nickname === false) ? nickname : new String('UnNamed_') + mobConf.immat;
 		mobConf.theta.cur = this._Formula.rand(0, 360)
-		// add floor conf to mob
+
+		// add model
+		mobConf.mesh.model= this._allModels[mobConf.mesh.category][mobConf.mesh.modelName]
 
 		// push a fresh mob with fresh conf to allMob arrray
-		let newmob = new Mob(mobConf, this._scene,this._AllMobs)
+		let newmob = new Mob(mobConf, this._scene, this._AllMobs)
 		
 
 		this._AllMobs.push(newmob)

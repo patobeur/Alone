@@ -22,8 +22,8 @@ class gameCore {
 	v = "0.0.3"
 	// ------------------------------
 	defaultMobsNumber = 101
-	stats = null
 	_conslog = false
+	stats = null
 	// ------------------------------
 	_Formula = null
 	_GameConfig = null
@@ -53,10 +53,11 @@ class gameCore {
 	// _clikableThings = false;
 	// _loadingmanager = Object;
 	// _ImagesManager = Object;
-	constructor(datas={HowManyMobs:this.defaultMobsNumber}) {
+	constructor(datas={HowManyMobs:this.defaultMobsNumber}) {	
+		this._GameConfig = new GameConfig(this._conslog)
 		this.HowManyMobs = datas && datas.HowManyMobs 
-			? datas.HowManyMobs 
-			: this.defaultMobsNumber;
+				? datas.HowManyMobs 
+				: this.defaultMobsNumber;
 		this._InitA()
 	}
 	_InitA() {
@@ -67,7 +68,6 @@ class gameCore {
 		}
 
         this._Formula = new Formula()
-		this._GameConfig = new GameConfig(this._conslog)
 
 		// ----------------------------------------------------
 		this._SceneManager = new SceneManager(this._GameConfig)
@@ -147,6 +147,7 @@ class gameCore {
 			scene: this.scene,
 			FrontboardManager: this._FrontboardManager
 		});
+		this._MobsManager.setModels(this.allModels)
 		this.allMobs = this._MobsManager.addMobs(this.HowManyMobs, 'mobs')
 		// Set player data in _MobsManager Class
 		this._MobsManager.set_PlayerDatas(this._PlayerManager.playerGroupe)
@@ -260,7 +261,6 @@ class gameCore {
 
 
 let _JEU = null;
-
 window.addEventListener('DOMContentLoaded', () => {
   _JEU = new gameCore();
 });

@@ -64,11 +64,20 @@ class Mob {
 
 	}
 	_set_Mesh() {
+
+		
+// console.log('defaultAnimationName:',this.conf.mesh.defaultAnimationName)
+// console.log('modelName:',this.conf.mesh.modelName)
+// console.log('category:',this.conf.mesh.category)
+// console.log('category:',this.conf.mesh.model)
+// console.log('category:',this._allModels[mobConf.mesh.category][mobConf.mesh.modelName])
+
+
 		// if (this.conslog) console.log(this.conf)
 		// GROUP MESH
 		this.mesh = new THREE.Group();
 		
-		this.mesh.feun = {mob:true}
+		// this.mesh.feun = {mob:true}
 		this.mesh.position.set(
 			this.conf.position.x,
 			this.conf.position.y,
@@ -88,14 +97,17 @@ class Mob {
 			),
 			new THREE.MeshPhongMaterial({ color: this.conf.mesh.color, wireframe: this.conf.mesh.wireframe })
 		);
+		// console.log(this.conf.mesh.model)
+		// this.mobMesh = this.conf.mesh.model.mesh.clone()
+
 		this.mobMesh.name = this.conf.nickname;
 		this.mobMesh.castShadow = true;
 		this.mobMesh.receiveShadow = true;
 		
-		if (this.conf.mesh.opacity && this.mobMesh.material.transparent) {
-			this.mobMesh.material.transparent = true
-			this.mobMesh.material.opacity = this.conf.mesh.opacity
-		}
+		// if (this.conf.mesh.opacity && this.mobMesh.material.transparent) {
+		// 	this.mobMesh.material.transparent = true
+		// 	this.mobMesh.material.opacity = this.conf.mesh.opacity
+		// }
 		this.mesh.add(this.mobMesh)
 
 		// FRONT

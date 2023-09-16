@@ -33,6 +33,9 @@ class MobConfig {
 					altitude: 0,
 					color: 'black',
 					wireframe: false,
+					defaultAnimationName : 'Idle',
+					category:'character',
+					modelName:'Casual_Female',
 					childs: {
 						front: {
 							color: 'white',
@@ -87,6 +90,8 @@ class MobConfig {
 			config.mobs.stats.def.regen= .5
 		}
 		if (this.typeNum === 1) { // BIG BLUE FALSE PLAYER
+			config.mobs.mesh.category='character',
+			config.mobs.mesh.modelName='BaseCharacter',
 			config.mobs.mesh.color = 'blue'
 			config.mobs.speed = 3
 			config.mobs.mesh.size = { x: 1.5, y: 1.5, z: 1.5 }
@@ -111,6 +116,8 @@ class MobConfig {
 		}
 
 		if (this.typeNum === 2) { // BIG GREEN FALSE PLAYER
+			config.mobs.mesh.category='character',
+			config.mobs.mesh.modelName='Casual_Female',
 			config.mobs.mesh.color = 'green'
 			config.mobs.speed = 3
 			config.mobs.mesh.size = { x: 1.5, y: 1.5, z: 1.5 }
@@ -129,6 +136,8 @@ class MobConfig {
 		}
 
 		if (this.typeNum === 3 ) {  // BLACK SPEEDER
+			config.mobs.mesh.category='character',
+			config.mobs.mesh.modelName='Casual_Male',
 			config.mobs.mesh.color = 'black'
 			config.mobs.speed = 8
 			config.mobs.mesh.size = { x: .5, y: 1, z: .5 }
@@ -151,6 +160,8 @@ class MobConfig {
 
 		}
 		if (this.typeNum === 4) { // REGULAR MANTA
+			config.mobs.mesh.category='character',
+			config.mobs.mesh.modelName='Kimono_Female',
 			config.mobs.mesh.color = 0x00ff20
 			config.mobs.speed = 1
 			config.mobs.mesh.size = { x: 4, y: 4, z: .3 }
@@ -168,6 +179,8 @@ class MobConfig {
 
 		}
 		if (this.typeNum === 5) {// BIG MANTA
+			config.mobs.mesh.category='character',
+			config.mobs.mesh.modelName='Kimono_Male',
 			config.mobs.mesh.color = 0x0000FF
 			config.mobs.speed = 1
 			config.mobs.mesh.size = { x: 8, y: 8, z: .2 }
@@ -185,6 +198,8 @@ class MobConfig {
 			}
 		}
 		if (this.typeNum === 6 ) {// BIG poto
+			config.mobs.mesh.category='character',
+			config.mobs.mesh.modelName='Knight_Golden_Female',
 			config.mobs.mesh.color = 0xFFFFFF
 			config.mobs.speed = 1
 			config.mobs.mesh.size = { x: .5, y: .5, z: 3 }
@@ -202,6 +217,8 @@ class MobConfig {
 			}
 		}
 		if (this.typeNum === 7 || this.typeNum > 6) {// tanky
+			config.mobs.mesh.category='character',
+			config.mobs.mesh.modelName='Knight_Golden_Male',
 			config.mobs.mesh.color = 0xcccccc
 			config.mobs.speed = 1
 			config.mobs.mesh.size = { x: 1, y: 3, z: 1 }
@@ -218,6 +235,13 @@ class MobConfig {
 				}
 			}
 		}
+		
+		// Jouez l'animation par défaut ici
+		// config.mobs.mesh.charGltf = this.allModels['character']['Kimono_Female'].gltf 
+		// config.mobs.mesh.MegaMixer = new THREE.AnimationMixer(config.mobs.mesh.charGltf.scene);
+		// config.mobs.mesh.MegaClip = THREE.AnimationClip.findByName(config.mobs.mesh.charGltf.animations, config.mobs.mesh.defaultAnimation);
+		// config.mobs.mesh.MegaAction = config.mobs.mesh.MegaMixer.clipAction(config.mobs.mesh.MegaClip);
+		// config.mobs.mesh.MegaAction.play(); // Joue l'animation par défaut
 		return { ...config }
 	}
 	get_confData(parent, value = false) {

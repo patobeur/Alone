@@ -1,5 +1,5 @@
-import {Formula}  from '../mecanics/Formula.js?mobsia';
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js?mobsia';
+import { Formula } from '../mecanics/Formula.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class MobsIa {
 	constructor(mobConf) {
 		this.mobConf = mobConf
@@ -7,30 +7,30 @@ class MobsIa {
 	}
 	iaAction() {
 		if (this.mobConf.ia.changeAction.cur === 0) {
-		// 	// save old action
-		// 	// this.mobConf.ia.changeAction.lastAction = this.mobConf.ia.changeAction.currentAction
+			// 	// save old action
+			// 	// this.mobConf.ia.changeAction.lastAction = this.mobConf.ia.changeAction.currentAction
 
-		// 	// new random action
+			// 	// new random action
 			let randDir = this.Formula.rand(0, 10)
 			let _actionName = false
 			// console.log(this.mobConf.ia.changeAction.currentAction)
 			switch (randDir) {
 				case 10:
-					_actionName='_chooseDir'
+					_actionName = '_chooseDir'
 					break;
 				default:
 					break;
 			}
-			if(!_actionName===false) this._do_Action(_actionName)
+			if (!_actionName === false) this._do_Action(_actionName)
 
 		}
 	}
-	_do_Action(_actionName){
-		try{
+	_do_Action(_actionName) {
+		try {
 			this[_actionName]()
-		} catch(err){
-			if(err instanceof ReferenceError){
-				console.error("La fonction "+_actionName+" n'existe pas");
+		} catch (err) {
+			if (err instanceof ReferenceError) {
+				console.error("La fonction " + _actionName + " n'existe pas");
 			}
 		}
 
@@ -51,4 +51,4 @@ class MobsIa {
 	// 	)
 	// }
 }
-export {MobsIa}
+export { MobsIa }

@@ -94,6 +94,7 @@ class ModelsManager {
 			fullName:'Alice',
 			// path:'./gameCore/3dObjects/characters/base/BaseCharacter.gltf',
 			path:'./gameCore/3dObjects/characters/base/Casual_Female.gltf',
+			// path:'./gameCore/3dObjects/characters/base/X Bot.fbx',
 			positions:{x:-3,y:2,z:0,theta:0},
 			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,

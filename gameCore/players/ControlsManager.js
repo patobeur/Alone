@@ -1,206 +1,206 @@
-import {Formula}  from '../mecanics/Formula.js?4';
-import {TouchMe} from '../mecanics/TouchMe.js?4';
+import { Formula } from '../mecanics/Formula.js';
+import { TouchMe } from '../mecanics/TouchMe.js';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
 class ControlsManager {
-  conslog = true
-  _preventDefaultRightClick = true; // dev mod
-  _TouchM
-  pMouse
-  _GameConfig;
-  _touchDeviceActive;
-  zooming
-  constructor(Type,GameConfig) {
-    // this.conslog = GameConfig.conslog
-    this._Formula = new Formula()
-    this.order = 0;
-    this._GameConfig = GameConfig;
-    this.conslog = this._GameConfig.conslog;
-    
-    if (this.conslog) console.info('ControlsManager Mounted !', 'conslog:', this.conslog);
+	conslog = true
+	_preventDefaultRightClick = true; // dev mod
+	_TouchM
+	pMouse
+	_GameConfig;
+	_touchDeviceActive;
+	zooming
+	constructor(Type, GameConfig) {
+		// this.conslog = GameConfig.conslog
+		this._Formula = new Formula()
+		this.order = 0;
+		this._GameConfig = GameConfig;
+		this.conslog = this._GameConfig.conslog;
 
-    this._initProperties();
-    this.detectDevice = this._isTouchDevice();
-    this._setupDeviceControls();
-  }
+		if (this.conslog) console.info('ControlsManager Mounted !', 'conslog:', this.conslog);
 
-  _initProperties() {
-    this.zooming = false
-    // this.raycaster = new THREE.Raycaster();
-    this.oldintersect = null;
-    this.pMouse = new THREE.Vector2();
-    this.thetaDeg = 0;
+		this._initProperties();
+		this.detectDevice = this._isTouchDevice();
+		this._setupDeviceControls();
+	}
 
-    this.shoot1 = false;
-    this.shoot2 = false;
-    this.shoot3 = false;
-    this.shoot4 = false;
-    this.shoot5 = false;
+	_initProperties() {
+		this.zooming = false
+		// this.raycaster = new THREE.Raycaster();
+		this.oldintersect = null;
+		this.pMouse = new THREE.Vector2();
+		this.thetaDeg = 0;
 
-    this.space = false; // same ??
-    this.jump = false; // same ??
-    this.falling = false;
+		this.shoot1 = false;
+		this.shoot2 = false;
+		this.shoot3 = false;
+		this.shoot4 = false;
+		this.shoot5 = false;
 
-    this.forward = false;
-    this.left = false;
-    this.right = false;
-    this.reverse = false;
-    this.sleft = false;
-    this.sright = false;
-  }
+		this.space = false; // same ??
+		this.jump = false; // same ??
+		this.falling = false;
 
-  _isTouchDevice() {
-    const ontouchstart = 'ontouchstart' in window;
-    const maxTouchPoints = (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
-    const isMousePointer = window.matchMedia('(pointer:fine)').matches;
+		this.forward = false;
+		this.left = false;
+		this.right = false;
+		this.reverse = false;
+		this.sleft = false;
+		this.sright = false;
+	}
 
-    let touchEvent = false;
-    try {
-      touchEvent = document.createEvent("TouchEvent");
-    } catch (e) {}
+	_isTouchDevice() {
+		const ontouchstart = 'ontouchstart' in window;
+		const maxTouchPoints = (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+		const isMousePointer = window.matchMedia('(pointer:fine)').matches;
 
-    const detectedDevice = { touchEvent, ontouchstart, maxTouchPoints, isMousePointer };
+		let touchEvent = false;
+		try {
+			touchEvent = document.createEvent("TouchEvent");
+		} catch (e) { }
 
-    console.table(detectedDevice);
+		const detectedDevice = { touchEvent, ontouchstart, maxTouchPoints, isMousePointer };
 
-    return detectedDevice;
-  }
+		console.table(detectedDevice);
 
-  _setupDeviceControls() {
-    if (!this.detectDevice.isMousePointer && (this.detectDevice.touchEvent || this.detectDevice.ontouchstart || this.detectDevice.maxTouchPoints)) {
-      this._touchDeviceActive = true;
-      console.log('------------> Tactil device on ! 📱');
-      this._TouchM = new TouchMe(this);
-    }
+		return detectedDevice;
+	}
 
-    if (this.detectDevice.isMousePointer && this.detectDevice.maxTouchPoints === false) {
-      this._touchDeviceActive = false;
-      console.log('------------> Keyboard\'n\'mouse on ! 🖱️ + ⌨️');
-      this._addKeyboardListeners();
-      this._addMouseListeners();
-    }
-    if (this.detectDevice.isMousePointer && this.detectDevice.maxTouchPoints) {
-      this._touchDeviceActive = false;
-      console.log('------------> Keyboard\'n\'Pad on, Sorry you need to conect a Mouse and refresh [5] ! ⌨️');
-      this._addKeyboardListeners();
-      this._addMouseListeners();
-    }
-  }
+	_setupDeviceControls() {
+		if (!this.detectDevice.isMousePointer && (this.detectDevice.touchEvent || this.detectDevice.ontouchstart || this.detectDevice.maxTouchPoints)) {
+			this._touchDeviceActive = true;
+			console.log('------------> Tactil device on ! 📱');
+			this._TouchM = new TouchMe(this);
+		}
 
-  _addMouseListeners() {
-    const mire = document.createElement('div');
-    mire.className = 'mire';
-    document.body.appendChild(mire);
+		if (this.detectDevice.isMousePointer && this.detectDevice.maxTouchPoints === false) {
+			this._touchDeviceActive = false;
+			console.log('------------> Keyboard\'n\'mouse on ! 🖱️ + ⌨️');
+			this._addKeyboardListeners();
+			this._addMouseListeners();
+		}
+		if (this.detectDevice.isMousePointer && this.detectDevice.maxTouchPoints) {
+			this._touchDeviceActive = false;
+			console.log('------------> Keyboard\'n\'Pad on, Sorry you need to conect a Mouse and refresh [5] ! ⌨️');
+			this._addKeyboardListeners();
+			this._addMouseListeners();
+		}
+	}
 
-    const target = document.createElement('div');
-    target.className = 'target';
-    document.body.appendChild(target);
+	_addMouseListeners() {
+		const mire = document.createElement('div');
+		mire.className = 'mire';
+		document.body.appendChild(mire);
 
-    document.documentElement.oncontextmenu = event => {
-      if (this.conslog) console.log('right click');
-      if (this._preventDefaultRightClick) event.preventDefault();
-      this.shoot2 = true;
-    };
+		const target = document.createElement('div');
+		target.className = 'target';
+		document.body.appendChild(target);
 
-    document.documentElement.onclick = () => {
-      if (this.conslog) console.log('left click');
-      this.shoot1 = true;
-    };
+		document.documentElement.oncontextmenu = event => {
+			if (this.conslog) console.log('right click');
+			if (this._preventDefaultRightClick) event.preventDefault();
+			this.shoot2 = true;
+		};
 
-    document.documentElement.onwheel = event => {
-      event.preventDefault();
-      this._handleMouseWheel(event);
-    };
+		document.documentElement.onclick = () => {
+			if (this.conslog) console.log('left click');
+			this.shoot1 = true;
+		};
 
-    document.getElementById('game').onmousemove = event => {
-      this._handleMouseMove(event, target);
-    };
-  }
+		document.documentElement.onwheel = event => {
+			event.preventDefault();
+			this._handleMouseWheel(event);
+		};
 
-  _handleMouseWheel(event) {
-      if (event.ctrlKey===false && event.altKey===false) {
-        if (this.conslog) console.info(event)
-        this.zooming = event.deltaY > 0 ? 'out' : 'in'
-      }
-  }
+		document.getElementById('game').onmousemove = event => {
+			this._handleMouseMove(event, target);
+		};
+	}
 
-  _handleMouseMove(event, target) {
-    target.style.left = `${event.clientX - 5}px`;
-    target.style.top = `${event.clientY - 5}px`;
+	_handleMouseWheel(event) {
+		if (event.ctrlKey === false && event.altKey === false) {
+			if (this.conslog) console.info(event)
+			this.zooming = event.deltaY > 0 ? 'out' : 'in'
+		}
+	}
 
-    this.thetaDeg = this._Formula.get_DegreeWithTwoPos(window.innerWidth / 2, window.innerHeight / 2, event.clientX, event.clientY);
-    this.pMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.pMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  }
+	_handleMouseMove(event, target) {
+		target.style.left = `${event.clientX - 5}px`;
+		target.style.top = `${event.clientY - 5}px`;
 
-  _addKeyboardListeners() {
-    if (this.conslog) console.log('addKeyboardListeners');
+		this.thetaDeg = this._Formula.get_DegreeWithTwoPos(window.innerWidth / 2, window.innerHeight / 2, event.clientX, event.clientY);
+		this.pMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+		this.pMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	}
 
-    document.onkeydown = event => this._handleKeyDown(event);
-    document.onkeyup = event => this._handleKeyUp(event);
-  }
+	_addKeyboardListeners() {
+		if (this.conslog) console.log('addKeyboardListeners');
 
-  _handleKeyDown(event) {
-    const KEY_MAP = {
-      "&": () => this.shoot1 = true,
-      "é": () => this.shoot2 = true,
-      '"': () => this.shoot3 = true,
-      "'": () => this.shoot4 = true,
-      "(": () => this.shoot5 = true,
-      "-": () => this.shoot6 = true,
-      "è": () => this.shoot7 = true,
-      "_": () => this.shoot8 = true,
-      "ç": () => this.shoot9 = true,
-      "à": () => this.shoot10 = true,
-      "ArrowLeft": () => this.left = true,
-      "q": () => this.left = true,
-      "a": () => this.sleft = true,
-      "ArrowRight": () => this.right = true,
-      "d": () => this.right = true,
-      "e": () => this.sright = true,
-      "ArrowUp": () => this.forward = true,
-      "z": () => this.forward = true,
-      "ArrowDown": () => this.reverse = true,
-      "s": () => this.reverse = true,
-      " ": () => this.space = true,
-      "Space": () => this.space = true,
-    };
+		document.onkeydown = event => this._handleKeyDown(event);
+		document.onkeyup = event => this._handleKeyUp(event);
+	}
 
-    if (KEY_MAP[event.key]) {
-      if (this.conslog) console.log('EVENT',event);
-      if (this._preventDefaultRightClick) event.preventDefault();
-      KEY_MAP[event.key]();
-    }
-  }
+	_handleKeyDown(event) {
+		const KEY_MAP = {
+			"&": () => this.shoot1 = true,
+			"é": () => this.shoot2 = true,
+			'"': () => this.shoot3 = true,
+			"'": () => this.shoot4 = true,
+			"(": () => this.shoot5 = true,
+			"-": () => this.shoot6 = true,
+			"è": () => this.shoot7 = true,
+			"_": () => this.shoot8 = true,
+			"ç": () => this.shoot9 = true,
+			"à": () => this.shoot10 = true,
+			"ArrowLeft": () => this.left = true,
+			"q": () => this.left = true,
+			"a": () => this.sleft = true,
+			"ArrowRight": () => this.right = true,
+			"d": () => this.right = true,
+			"e": () => this.sright = true,
+			"ArrowUp": () => this.forward = true,
+			"z": () => this.forward = true,
+			"ArrowDown": () => this.reverse = true,
+			"s": () => this.reverse = true,
+			" ": () => this.space = true,
+			"Space": () => this.space = true,
+		};
 
-  _handleKeyUp(event) {
-    const KEY_MAP = {
-      "&": () => this.shoot1 = false,
-      "é": () => this.shoot2 = false,
-      '"': () => this.shoot3 = false,
-      "'": () => this.shoot4 = false,
-      "(": () => this.shoot5 = false,
-      "-": () => this.shoot6 = false,
-      "è": () => this.shoot7 = false,
-      "_": () => this.shoot8 = false,
-      "ç": () => this.shoot9 = false,
-      "à": () => this.shoot10 = false,
-      "ArrowLeft": () => this.left = false,
-      "q": () => this.left = false,
-      "a": () => this.sleft = false,
-      "ArrowRight": () => this.right = false,
-      "d": () => this.right = false,
-      "e": () => this.sright = false,
-      "ArrowUp": () => this.forward = false,
-      "z": () => this.forward = false,
-      "ArrowDown": () => this.reverse = false,
-      "s": () => this.reverse = false,
-      " ": () => this.space = false,
-      "Space": () => this.space = true,
-    };
+		if (KEY_MAP[event.key]) {
+			if (this.conslog) console.log('EVENT', event);
+			if (this._preventDefaultRightClick) event.preventDefault();
+			KEY_MAP[event.key]();
+		}
+	}
 
-    if (KEY_MAP[event.key]) KEY_MAP[event.key]();
-  }
+	_handleKeyUp(event) {
+		const KEY_MAP = {
+			"&": () => this.shoot1 = false,
+			"é": () => this.shoot2 = false,
+			'"': () => this.shoot3 = false,
+			"'": () => this.shoot4 = false,
+			"(": () => this.shoot5 = false,
+			"-": () => this.shoot6 = false,
+			"è": () => this.shoot7 = false,
+			"_": () => this.shoot8 = false,
+			"ç": () => this.shoot9 = false,
+			"à": () => this.shoot10 = false,
+			"ArrowLeft": () => this.left = false,
+			"q": () => this.left = false,
+			"a": () => this.sleft = false,
+			"ArrowRight": () => this.right = false,
+			"d": () => this.right = false,
+			"e": () => this.sright = false,
+			"ArrowUp": () => this.forward = false,
+			"z": () => this.forward = false,
+			"ArrowDown": () => this.reverse = false,
+			"s": () => this.reverse = false,
+			" ": () => this.space = false,
+			"Space": () => this.space = true,
+		};
+
+		if (KEY_MAP[event.key]) KEY_MAP[event.key]();
+	}
 
 	// _get_intersectionColorChange() {
 
@@ -242,4 +242,4 @@ class ControlsManager {
 
 	// }
 }
-export {ControlsManager}
+export { ControlsManager }

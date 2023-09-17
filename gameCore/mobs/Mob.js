@@ -1,12 +1,12 @@
-import {Formula}  from '../mecanics/Formula.js?mob';
-import {MobsIa} from './MobsIa.js?mob';
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js?mob';
+import { Formula } from '../mecanics/Formula.js';
+import { MobsIa } from './MobsIa.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class Mob {
 	conslog = true
 	_Scene
 	_AllMobs
 	_Formula
-	constructor(conf,Scene,AllMobs) {
+	constructor(conf, Scene, AllMobs) {
 		this._Formula = new Formula()
 		this._AllMobs = AllMobs
 		this._Scene = Scene
@@ -14,24 +14,24 @@ class Mob {
 		this._init()
 	}
 	_init() {
-        this.ia = new MobsIa(this.conf);
-        this._set_Mesh();
-        return this;
-    }
+		this.ia = new MobsIa(this.conf);
+		this._set_Mesh();
+		return this;
+	}
 	applyGravity(grav) {
 		let gravity = grav
 		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
 		this.tics++;
-		if (this.tics >= 2 ) {
-			if(this.conf.position.z - this.conf.mesh.size.z/2 > -this.conf.mesh.size.z/2) {
-				this.conf.position.z = (this.conf.position.z - this.conf.mesh.size.z/2) - gravity
+		if (this.tics >= 2) {
+			if (this.conf.position.z - this.conf.mesh.size.z / 2 > -this.conf.mesh.size.z / 2) {
+				this.conf.position.z = (this.conf.position.z - this.conf.mesh.size.z / 2) - gravity
 			}
 			this.tics = 0
 		}
 	}
-	_isdead(){
-		if(
-			this.conf.stats.hp.current <= 0 
+	_isdead() {
+		if (
+			this.conf.stats.hp.current <= 0
 			&& this.conf.status.immortal.current <= 0
 		) {
 			// if not immortal and hp lower than zero you die
@@ -65,23 +65,23 @@ class Mob {
 	}
 	_set_Mesh() {
 
-		
-// console.log('defaultAnimationName:',this.conf.mesh.defaultAnimationName)
-// console.log('modelName:',this.conf.mesh.modelName)
-// console.log('category:',this.conf.mesh.category)
-// console.log('category:',this.conf.mesh.model)
-// console.log('category:',this._allModels[mobConf.mesh.category][mobConf.mesh.modelName])
+
+		// console.log('defaultAnimationName:',this.conf.mesh.defaultAnimationName)
+		// console.log('modelName:',this.conf.mesh.modelName)
+		// console.log('category:',this.conf.mesh.category)
+		// console.log('category:',this.conf.mesh.model)
+		// console.log('category:',this._allModels[mobConf.mesh.category][mobConf.mesh.modelName])
 
 
 		// if (this.conslog) console.log(this.conf)
 		// GROUP MESH
 		this.mesh = new THREE.Group();
-		
+
 		// this.mesh.feun = {mob:true}
 		this.mesh.position.set(
 			this.conf.position.x,
 			this.conf.position.y,
-			this.conf.position.z + this.conf.mesh.z/2
+			this.conf.position.z + this.conf.mesh.z / 2
 		);
 		// altitude
 		// if (this.conf.mesh.altitude) { this.mesh.position.z += this.conf.mesh.altitude }
@@ -103,7 +103,7 @@ class Mob {
 		this.mobMesh.name = this.conf.nickname;
 		this.mobMesh.castShadow = true;
 		this.mobMesh.receiveShadow = true;
-		
+
 		// if (this.conf.mesh.opacity && this.mobMesh.material.transparent) {
 		// 	this.mobMesh.material.transparent = true
 		// 	this.mobMesh.material.opacity = this.conf.mesh.opacity
@@ -129,7 +129,7 @@ class Mob {
 		this._Scene.remove(object);
 	}
 	_trigger_Front() {
-		if(this.mobFront.on === true) {
+		if (this.mobFront.on === true) {
 			this.mobFront.on = false
 			this.mesh.remove(this.mobFront)
 		}
@@ -161,12 +161,12 @@ class Mob {
 	}
 	_update_VisualHp(playerGroupe) {
 		// const angleRadians = this.mesh.angleTo(playerGroupe);
-		let theta = this._Formula.get_DegreeWithTwoPos(this.mesh.position.x,this.mesh.position.y,playerGroupe.position.x,playerGroupe.position.y)
+		let theta = this._Formula.get_DegreeWithTwoPos(this.mesh.position.x, this.mesh.position.y, playerGroupe.position.x, playerGroupe.position.y)
 		// let theta = THREE.MathUtils.radToDeg(this._Formula.get_DegreeWithTwoPos(this.mesh.position.x,this.mesh.position.y,playerGroupe.position.x,playerGroupe.position.y))
-// console.log(playerGroupe)
-// console.log(theta)
+		// console.log(playerGroupe)
+		// console.log(theta)
 		// this.VisualHp.rotation.z =  theta
-		this.VisualHp.rotation.z =  .5
+		this.VisualHp.rotation.z = .5
 	}
 	_add_VisualHp() {
 		this.VisualHp = new THREE.Mesh(
@@ -183,7 +183,7 @@ class Mob {
 		this.VisualHp.position.set(
 			0,
 			0,//this.mobMesh.position.y - this.conf.mesh.size.y/2,
-			this.mobMesh.position.z + this.conf.mesh.size.z/2 + .4
+			this.mobMesh.position.z + this.conf.mesh.size.z / 2 + .4
 		);
 		this.mesh.add(this.VisualHp)
 	}
@@ -205,4 +205,4 @@ class Mob {
 	// 	}
 	// }
 }
-export {Mob}
+export { Mob }

@@ -1,4 +1,4 @@
-import {Formula}  from '../mecanics/Formula.js?skills';
+import { Formula } from '../mecanics/Formula.js';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class SkillsManager {
 	conslog = true
@@ -10,8 +10,8 @@ class SkillsManager {
 		// this.fromfloor = fromfloor / 2;
 		this._playerGroupe = playerGroupe
 		this.sourceCanon = canonpart
-var playerPosition = canonpart.position
-var rotation = this._playerGroupe.rotation
+		var playerPosition = canonpart.position
+		var rotation = this._playerGroupe.rotation
 
 		this.skillDatas = this._getSkill(skillname, this._playerGroupe.position, rotation, faction);
 
@@ -27,7 +27,7 @@ var rotation = this._playerGroupe.rotation
 		this.mesh;
 		this.ALLMOBSTEST;
 		this.touchedMobs = []
-		if (this.conslog) console.info('SkillsManager Mounted !','conslog:',this.conslog)
+		if (this.conslog) console.info('SkillsManager Mounted !', 'conslog:', this.conslog)
 	}
 	_getSkill(skillname, sourceCanon, rotation, faction) {
 		skillname = JSON.parse(JSON.stringify(skillname));
@@ -87,7 +87,7 @@ var rotation = this._playerGroupe.rotation
 	_update = () => {
 		if (!this.isColliding) {
 
-			
+
 			if (!this.durationEnds) {
 				this._setNextPosition();
 				this._setNextTransform();
@@ -101,40 +101,40 @@ var rotation = this._playerGroupe.rotation
 			}
 			// if (this.conslog && this.isColliding) console.log('isColliding ???',this.isColliding);
 			// this.isColliding = false
-			
+
 			this._setTouchedMobs()
-			
+
 			// if (this.isColliding === true && typeof this.touchedMobs === 'object'){
-			if (typeof this.touchedMobs === 'object' && this.touchedMobs.length > 0){
+			if (typeof this.touchedMobs === 'object' && this.touchedMobs.length > 0) {
 
 				// Mob dead
 				// this.touchedMobs[0].conf.states.dead = true
 				let damage = new Number(this.skillDatas.getDamage(this.touchedMobs[0]));
-				
+
 				if (this.conslog) console.log(this.skillDatas);
 				if (this.conslog) console.log('getDamage = ' + this.skillDatas.getDamage(this.touchedMobs[0]));
-				
+
 				let def = this.touchedMobs[0].conf.stats.def.current;
 				let finalDamage = damage - def;
-				if (this.conslog) console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage );
-				
+				if (this.conslog) console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage);
+
 				this.touchedMobs[0].conf.stats.hp.current -= finalDamage
-				if (this.conslog) console.log('mob = ' , this.touchedMobs[0].conf.stats );
-				
+				if (this.conslog) console.log('mob = ', this.touchedMobs[0].conf.stats);
+
 
 				// this.isColliding = true
 				// delete missile
-				
-				if(this.skillDatas.perforante != true) { 
+
+				if (this.skillDatas.perforante != true) {
 					// this.durationEnds = true;
 					this._endThis();
 				}
 				else {
-					if (this.conslog) console.log('Balles perforantes Mouhahahahaha !!!!',this.touchedMobs[0].conf.stats.hp.current,this.touchedMobs[0].mesh.uuid)
+					if (this.conslog) console.log('Balles perforantes Mouhahahahaha !!!!', this.touchedMobs[0].conf.stats.hp.current, this.touchedMobs[0].mesh.uuid)
 					this.isColliding = false
 					this.touchedMobs = []
 				}
-				
+
 			}
 			// this.MobsManager.updateAllMobs()
 		}
@@ -180,16 +180,16 @@ var rotation = this._playerGroupe.rotation
 		this.mesh.position.set(this.skillDatas.x, this.skillDatas.y, this.skillDatas.z);
 		// if SCALE found
 		if (this.skillDatas.scale) this.mesh.scale.set(
-			this.skillDatas.scale.current, 
-			this.skillDatas.scale.current, 
+			this.skillDatas.scale.current,
+			this.skillDatas.scale.current,
 			this.skillDatas.scale.current
-			)
+		)
 	}
-	_applyOpacity(){
+	_applyOpacity() {
 	}
 	_checkDuration() {
 		let duration = new Date().getTime() - this.birthDay.getTime();
-		if (duration >= this.skillDatas.duration ) {
+		if (duration >= this.skillDatas.duration) {
 			this.skillDatas.durationOff = true
 			this._endThis();
 		}
@@ -204,7 +204,7 @@ var rotation = this._playerGroupe.rotation
 				)
 			)
 		) this.end = true;
-		
+
 		clearInterval(this.render);
 		if (this.skillDatas.explosion) {
 			this._explode();
@@ -258,9 +258,9 @@ var rotation = this._playerGroupe.rotation
 					duration: 300, // duration of explosion
 					color: 'red' // color of explosion
 				},
-				lv:1,
-				faction:'neutral',
-				baseDamage:new Number(10),
+				lv: 1,
+				faction: 'neutral',
+				baseDamage: new Number(10),
 			},
 			cube: {
 				name: 'cube',
@@ -278,9 +278,9 @@ var rotation = this._playerGroupe.rotation
 				duration: 1000,
 				energyCost: 10,
 				recastTimer: 1000,
-				lv:1,
-				faction:'neutral',
-				baseDamage:new Number(15),
+				lv: 1,
+				faction: 'neutral',
+				baseDamage: new Number(15),
 			},
 			WeedWallLv1: {
 				name: 'Weed Wall',
@@ -299,12 +299,12 @@ var rotation = this._playerGroupe.rotation
 				addTheta: 0,
 				energyCost: 10,
 				recastTimer: 5000,
-				lv:1,
-				faction:'neutral',
-				baseDamage:new Number(0),
-				mesh: {opacity: 0.7},
-				material: {transparent: true},
-				immortaluntilduration:true
+				lv: 1,
+				faction: 'neutral',
+				baseDamage: new Number(0),
+				mesh: { opacity: 0.7 },
+				material: { transparent: true },
+				immortaluntilduration: true
 			},
 			doomdoom: {
 				name: 'Balle DoomDoom',
@@ -320,13 +320,13 @@ var rotation = this._playerGroupe.rotation
 				fromfloor: 0,
 				energyCost: 1,
 				recastTimer: 3000,
-				lv:1,
-				faction:'neutral',
-				perforante:true,
-				baseDamage:new Number(10000),
+				lv: 1,
+				faction: 'neutral',
+				perforante: true,
+				baseDamage: new Number(10000),
 				scale: { start: 5, end: 1, current: 3 },//min zero,
-				mesh: {opacity: 0.5},
-				material: {transparent: true},
+				mesh: { opacity: 0.5 },
+				material: { transparent: true },
 			},
 			doomdoom2: {
 				name: 'CleanWall',
@@ -345,20 +345,20 @@ var rotation = this._playerGroupe.rotation
 				addTheta: 0,
 				energyCost: 10,
 				recastTimer: 5000,
-				lv:1,
-				faction:'neutral',
-				baseDamage:new Number(0),
+				lv: 1,
+				faction: 'neutral',
+				baseDamage: new Number(0),
 				// mesh: {opacity: 1},
 				// material: {transparent: true},
-				immortaluntilduration:true
+				immortaluntilduration: true
 			},
 		}
-		skill[skillname].getDamage=(mob) => {
+		skill[skillname].getDamage = (mob) => {
 			// if (mob.stats.def.current)
 			// this.lv * this.baseDamage
 			let damage = new Number(0)
-			if (typeof mob.conf.stats.def.current === 'number'){
-				damage =  new Number(this.skillDatas.lv * this.skillDatas.baseDamage)
+			if (typeof mob.conf.stats.def.current === 'number') {
+				damage = new Number(this.skillDatas.lv * this.skillDatas.baseDamage)
 			}
 			return damage > 0 ? damage : false
 		}
@@ -383,79 +383,79 @@ var rotation = this._playerGroupe.rotation
 		const particleSpeed = 1; // vitesse des particules
 		const particleSize = 0.5; // taille des particules augmentée
 		const particleColor = this.skillDatas.explosion.color; // couleur des particules
-	
+
 		const particleGeometry = new THREE.BufferGeometry();
 		const positions = new Float32Array(particleCount * 3);
 		const velocities = new Float32Array(particleCount * 3);
 		const colors = new Float32Array(particleCount * 3); // un nouveau tableau pour les couleurs
-	
+
 		for (let i = 0; i < particleCount * 3; i += 3) {
 			// créer une direction aléatoire en coordonnées polaires
 			const direction = new THREE.Vector2(Math.random() * Math.PI * 2, Math.acos(2 * Math.random() - 1));
-			
+
 			// convertir les coordonnées polaires en coordonnées cartésiennes
 			const velocity = new THREE.Vector3();
 			velocity.setFromSphericalCoords(particleSpeed, direction.x, direction.y);
-			
+
 			// position initiale aléatoire en forme de cercle
 			positions[i] = velocity.x;
 			positions[i + 1] = velocity.y;
 			positions[i + 2] = velocity.z;
-			
+
 			// vitesse initiale aléatoire en direction de l'extérieur du cercle
 			velocities[i] = velocity.x;
 			velocities[i + 1] = velocity.y;
 			velocities[i + 2] = velocity.z;
-	
+
 			// des couleurs aléatoires pour chaque particule
 			colors[i] = Math.random();
 			colors[i + 1] = Math.random();
 			colors[i + 2] = Math.random();
 		}
-	
+
 		particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 		particleGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
 		particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3)); // définition de l'attribut color
-	
+
 		const particleMaterial = new THREE.PointsMaterial({
 			size: particleSize,
 			vertexColors: true // indiquer que nous utilisons des couleurs de sommets
 		});
-	
+
 		const particles = new THREE.Points(particleGeometry, particleMaterial);
 		particles.frustumCulled = false; // pour empêcher le système de particules d'être caché
-	
+
 		particles.tick = (delta) => {
 			const positions = particles.geometry.attributes.position.array;
 			const velocities = particles.geometry.attributes.velocity.array;
-	
+
 			for (let i = 0; i < positions.length; i++) {
 				positions[i] += velocities[i] * delta;
-	
+
 				// ralentir progressivement les particules
 				velocities[i] *= 0.99;
 			}
-	
+
 			particles.geometry.attributes.position.needsUpdate = true;
 		};
-	
+
 		return particles;
-	}	
+	}
 	_explode() {
 		const explosion = this._createExplosion();
 		explosion.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
 		this.scene.add(explosion);
-	
+
 		const animate = () => {
 			if (!this.scene) return;
 			requestAnimationFrame(animate);
 			const delta = clock.getDelta();
 			explosion.tick(delta);
 		};
-		
+
 		const clock = new THREE.Clock();
 		animate();
-	
+
 		setTimeout(
 			() => {
 				this.scene.remove(explosion);
@@ -482,4 +482,4 @@ var rotation = this._playerGroupe.rotation
 
 	// }
 }
-export {SkillsManager}
+export { SkillsManager }

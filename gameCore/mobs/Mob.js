@@ -23,7 +23,9 @@ class Mob {
 		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
 		this.tics++;
 		if (this.tics >= 2) {
-			if (this.conf.position.z - this.conf.mesh.size.z / 2 > -this.conf.mesh.size.z / 2) {
+			let altitude = this.conf.position.z - this.conf.mesh.size.z / 2
+			let minAltitude = this.conf.mesh.size.z / -2
+			if (altitude > minAltitude) {
 				this.conf.position.z = (this.conf.position.z - this.conf.mesh.size.z / 2) - gravity
 			}
 			this.tics = 0

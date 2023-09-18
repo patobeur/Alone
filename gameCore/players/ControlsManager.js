@@ -20,7 +20,6 @@ class ControlsManager {
 		if (this.conslog) console.info('ControlsManager Mounted !', 'conslog:', this.conslog);
 
 		this._initProperties();
-		this.detectDevice = this._isTouchDevice();
 		this._setupDeviceControls();
 	}
 
@@ -49,24 +48,9 @@ class ControlsManager {
 		this.sright = false;
 	}
 
-	_isTouchDevice() {
-		const ontouchstart = 'ontouchstart' in window;
-		const maxTouchPoints = (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
-		const isMousePointer = window.matchMedia('(pointer:fine)').matches;
-
-		let touchEvent = false;
-		try {
-			touchEvent = document.createEvent("TouchEvent");
-		} catch (e) { }
-
-		const detectedDevice = { touchEvent, ontouchstart, maxTouchPoints, isMousePointer };
-
-		console.table(detectedDevice);
-
-		return detectedDevice;
-	}
 
 	_setupDeviceControls() {
+		this.detectDevice = this._isTouchDevice();
 		if (!this.detectDevice.isMousePointer && (this.detectDevice.touchEvent || this.detectDevice.ontouchstart || this.detectDevice.maxTouchPoints)) {
 			this._touchDeviceActive = true;
 			console.log('------------> Tactil device on ! 📱');
@@ -85,6 +69,22 @@ class ControlsManager {
 			this._addKeyboardListeners();
 			this._addMouseListeners();
 		}
+	}
+	_isTouchDevice() {
+		const ontouchstart = 'ontouchstart' in window;
+		const maxTouchPoints = (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+		const isMousePointer = window.matchMedia('(pointer:fine)').matches;
+
+		let touchEvent = false;
+		try {
+			touchEvent = document.createEvent("TouchEvent");
+		} catch (e) { }
+
+		const detectedDevice = { touchEvent, ontouchstart, maxTouchPoints, isMousePointer };
+
+		console.table(detectedDevice);
+
+		return detectedDevice;
 	}
 
 	_addMouseListeners() {
@@ -125,6 +125,7 @@ class ControlsManager {
 	}
 
 	_handleMouseMove(event, target) {
+		// refresh div pos
 		target.style.left = `${event.clientX - 5}px`;
 		target.style.top = `${event.clientY - 5}px`;
 

@@ -13,11 +13,9 @@ class CamerasManager {
 	}
 	Init() {
 		if (this.conslog) console.info('CamerasManager Mounted !')
-
 		this.init_Cameras()// -- CAMERA
-
 	}
-	get_config(){
+	get_config() {
 		let cams = [
 			{
 				name: 'PlayerCamera',
@@ -27,13 +25,13 @@ class CamerasManager {
 				far: 1000.0,
 				position: new THREE.Vector3(0, 0, 2),
 				// others
-				zoom: { step: 5, zmin: 5, zmax:25 },
+				zoom: { step: 5, zmin: 5, zmax: 25 },
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
 				followDecalage: new THREE.Vector3(0, -15, 10),
 				lookatDecalage: new THREE.Vector3(0, 2, 2),
-				zooming:false,
-				active:true
+				zooming: false,
+				active: true
 			},
 			{
 				name: 'TopDown',
@@ -43,13 +41,13 @@ class CamerasManager {
 				far: 1000.0,
 				position: new THREE.Vector3(0, 0, 15),
 				// others
-				zoom: { step: 5, zmin: 5, zmax:25 },
+				zoom: { step: 5, zmin: 5, zmax: 25 },
 				followDecalage: new THREE.Vector3(0, 0, 0),
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
 				lookatDecalage: new THREE.Vector3(0, 0, 0),
-				zooming:false,
-				active:true
+				zooming: false,
+				active: true
 			}
 		]
 		return cams
@@ -67,7 +65,7 @@ class CamerasManager {
 			config.position.z + config.followDecalage.z,
 		)
 		// this.cameras[CameraNum].lookAt(targetPos);
-		
+
 		// this.cameras[CameraNum].lookAt(targetPos);
 		// camera.lookAt(
 		// 	camera.lookAt.x + config.lookatDecalage.x,
@@ -78,12 +76,12 @@ class CamerasManager {
 		camera.updateProjectionMatrix();
 		return camera
 	}
-	handleZoom(zooming,CameraNum){
-		let apresZoom = zooming === 'out' 
-			? this._CamerasConfig[CameraNum].zoom.step 
+	handleZoom(zooming, CameraNum) {
+		let apresZoom = zooming === 'out'
+			? this._CamerasConfig[CameraNum].zoom.step
 			: -this._CamerasConfig[CameraNum].zoom.step;
-		let max = Math.max(this._CamerasConfig[CameraNum].zoom.zmin,this._CamerasConfig[CameraNum].followDecalage.z + apresZoom)
-		let min = Math.min(max,this._CamerasConfig[CameraNum].zoom.zmax)
+		let max = Math.max(this._CamerasConfig[CameraNum].zoom.zmin, this._CamerasConfig[CameraNum].followDecalage.z + apresZoom)
+		let min = Math.min(max, this._CamerasConfig[CameraNum].zoom.zmax)
 		this._CamerasConfig[CameraNum].followDecalage.z = min;
 	}
 	init_Cameras() {
@@ -94,21 +92,21 @@ class CamerasManager {
 			}
 		});
 	}
-	FollowPlayer(position,oldPosition,CameraNum){
-		this.cameras[CameraNum].position.x = position.x + this._CamerasConfig[CameraNum].followDecalage.x
-		this.cameras[CameraNum].position.y = position.y + this._CamerasConfig[CameraNum].followDecalage.y
-		this.cameras[CameraNum].position.z = position.z + this._CamerasConfig[CameraNum].followDecalage.z
+	FollowPlayer(futurPositions, CameraNum) {
+		this.cameras[CameraNum].position.x = futurPositions.x + this._CamerasConfig[CameraNum].followDecalage.x
+		this.cameras[CameraNum].position.y = futurPositions.y + this._CamerasConfig[CameraNum].followDecalage.y
+		this.cameras[CameraNum].position.z = futurPositions.z + this._CamerasConfig[CameraNum].followDecalage.z
 
-		// this.cameras[CameraNum].lookAt(position.x,position.y,position.z)
+		// this.cameras[CameraNum].lookAt(futurPositions.x,futurPositions.y,futurPositions.z)
 		let vec = new THREE.Vector3(
-			position.x + this._CamerasConfig[CameraNum].lookatDecalage.x,
-			position.y + this._CamerasConfig[CameraNum].lookatDecalage.y,
-			position.z + this._CamerasConfig[CameraNum].lookatDecalage.z
+			futurPositions.x + this._CamerasConfig[CameraNum].lookatDecalage.x,
+			futurPositions.y + this._CamerasConfig[CameraNum].lookatDecalage.y,
+			futurPositions.z + this._CamerasConfig[CameraNum].lookatDecalage.z
 		)
 		this.cameras[CameraNum].lookAt(vec);
 	}
-	set_CameraLookAt(targetPos,CameraNum) {
+	set_CameraLookAt(targetPos, CameraNum) {
 		this.cameras[CameraNum].lookAt(targetPos);
 	}
 }
-export {CamerasManager}
+export { CamerasManager }

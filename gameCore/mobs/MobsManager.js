@@ -132,7 +132,7 @@ class MobsManager {
 				if (this._detecterCollisionPrediction(mob, autreMob)) {
 					// ca se touche
 					// ca se touche
-					mob.conf.position.z += mob.conf.mesh.size.z * 5
+					mob.conf.position.z += mob.conf.mesh.size.z * 20
 					mob.conf.stats.isGoingToCollide = 1
 					// console.log('ca se touche !?!')
 					this._handleCollisionWith(mob, autreMob);

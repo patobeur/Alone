@@ -98,40 +98,41 @@ class PlayerManager {
 		// console.log()
 	}
 	applyGravity() {
+		let AAAAAAAAA = this.PlayerConfig
 		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
 		this.tics++;
 		if (this.tics >= 0) {
-			let halfHeight = this.PlayerConfig.config.size.x / 2
-			let currentAltitude = this.PlayerConfig.config.futurPositions.z - halfHeight
-			this.PlayerConfig.config.currentAltitude = this.PlayerConfig.config.futurPositions.z - halfHeight
-			// let fall = 0 - this._GameConfig.gravity - this.PlayerConfig.config.velocity.z
-			let fall = 0 + this._GameConfig.gravity - this.PlayerConfig.config.velocity.z
+			let halfHeight = AAAAAAAAA.config.size.x / 2
+			let currentAltitude = AAAAAAAAA.config.futurPositions.z - halfHeight
+			AAAAAAAAA.config.currentAltitude = AAAAAAAAA.config.futurPositions.z - halfHeight
+			// let fall = 0 - this._GameConfig.gravity - AAAAAAAAA.config.velocity.z
+			let fall = 0 + this._GameConfig.gravity - AAAAAAAAA.config.velocity.z
 			// let fall = 1
 			// console.log(currentAltitude)
 
 			if ((currentAltitude >= fall)) {//this._GameConfig.gravity
 
-				this.PlayerConfig.config.futurPositions.z -= fall
+				AAAAAAAAA.config.futurPositions.z -= fall
 				// console.log(
-				// 	'j:', this.PlayerConfig.config.status.jumping,
-				// 	'cur:', this.PlayerConfig.config.actions.jumping.current,
+				// 	'j:', AAAAAAAAA.config.status.jumping,
+				// 	'cur:', AAAAAAAAA.config.actions.jumping.current,
 				// 	'alt:', currentAltitude,
 				// 	'>=',
-				// 	'v_z:', this.PlayerConfig.config.velocity.z,
+				// 	'v_z:', AAAAAAAAA.config.velocity.z,
 				// 	'g:', this._GameConfig.gravity,
 				// 	'f:', fall,
 				// )
 				this.playerGroupe.position.set(
-					this.PlayerConfig.config.futurPositions.x,
-					this.PlayerConfig.config.futurPositions.y,
-					this.PlayerConfig.config.futurPositions.z
+					AAAAAAAAA.config.futurPositions.x,
+					AAAAAAAAA.config.futurPositions.y,
+					AAAAAAAAA.config.futurPositions.z
 				);
 			}
 
 
-			// this.PlayerConfig.config.futurPositions.z =
+			// AAAAAAAAA.config.futurPositions.z =
 			// 	(currentAltitude >= this._GameConfig.gravity)
-			// 		? this.PlayerConfig.config.futurPositions.z - fall
+			// 		? AAAAAAAAA.config.futurPositions.z - fall
 			// 		: halfHeight
 
 

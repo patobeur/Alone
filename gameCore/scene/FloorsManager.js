@@ -112,7 +112,7 @@ class FloorsManager {
 				receiveShadow: true,
 				repeat: [64, 64],
 				spawns: [
-					{ x: 0, y: -30, z: 0 },
+					{ x: 0, y: -30, z: 20 },
 					{ x: 0, y: 0, z: 5 },
 				],
 			}

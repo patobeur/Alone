@@ -1,5 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
-// import * as THREE from './nodemodules/three/build/three.module.js';
+// import * as THREE from './node_modules/three/build/three.module.js';
 
 import { ModelsManager } from './scene/ModelsManager.js';
 
@@ -17,7 +17,7 @@ import { PlayerManager } from './players/PlayerManager.js';
 import { MobsManager } from './mobs/MobsManager.js';
 import { TouchMe } from './mecanics/TouchMe.js';
 
-// import { Stats } from './nodemodules/stats.js/src/Stats.js';
+// import { Stats } from './node_modules/stats.js/src/Stats.js';
 class gameCore {
 	v = "0.0.3"
 	// ------------------------------
@@ -194,8 +194,10 @@ class gameCore {
 
 
 		if (!this._pause && ((this._WindowActive != null && this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))) {
+
 			this._LightsManager.upadteSun()
-			this._PlayerManager.applyGravity()
+
+			this._PlayerManager.saveOldPos()
 			this._PlayerManager.checkRotation();
 			this._PlayerManager.checkMoves();
 			this._PlayerManager.checkActions();
@@ -224,6 +226,7 @@ class gameCore {
 			// GRAVITY 
 
 
+			this._PlayerManager.applyGravity()
 			this._PlayerManager.applyFuturPositionsToPlayerGroupePosition()
 
 			// Camera folow

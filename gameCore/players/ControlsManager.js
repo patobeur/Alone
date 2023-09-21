@@ -106,9 +106,8 @@ class ControlsManager {
 			if (this.conslog) console.log('left click');
 			this.shoot1 = true;
 		};
-
 		document.documentElement.onwheel = event => {
-			event.preventDefault();
+			// event.preventDefault();
 			this._handleMouseWheel(event);
 		};
 
@@ -164,7 +163,7 @@ class ControlsManager {
 			"ArrowDown": () => this.reverse = true,
 			"s": () => this.reverse = true,
 			" ": () => this.space = true,
-			"Space": () => this.space = true,
+			// "Space": () => this.space = true,
 		};
 
 		if (KEY_MAP[event.key]) {
@@ -196,8 +195,8 @@ class ControlsManager {
 			"z": () => this.forward = false,
 			"ArrowDown": () => this.reverse = false,
 			"s": () => this.reverse = false,
-			" ": () => this.space = false,
-			"Space": () => this.space = true,
+			// " ": () => this.space = false,
+			// "Space": () => this.space = false,
 		};
 
 		if (KEY_MAP[event.key]) KEY_MAP[event.key]();

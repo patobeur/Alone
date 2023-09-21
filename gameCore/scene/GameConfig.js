@@ -12,7 +12,8 @@ class GameConfig {
 	#spotLight = false;
 	#orbitcontrols = true;
 	order = 0
-	gravity = 0.001
+	gravity = 0.3
+	basejump_z = 0.5
 	constructor(conslog) {
 		this.conslog = conslog
 		this.#Init()
@@ -25,16 +26,16 @@ class GameConfig {
 			intensity: new Number(0.0),
 			shadowMapenabled: true,
 			shadowMaptype: 'THREE.PCFSoftShadowMap',
-			colorManagement:true,
+			colorManagement: true,
 			outputEncoding: 'THREE.SRGBColorSpace'
 		}
 		this.#ambientLight = {
-			name:'ambientLight',
+			name: 'ambientLight',
 			color: 0xFF0000,
 			intensity: 0.1
 		}
 		this.#directionalLight = {
-			name:'directionalLight',
+			name: 'directionalLight',
 			color: 0xFFFFFF,
 			intensity: .2,
 			castShadow: true,
@@ -57,7 +58,7 @@ class GameConfig {
 			lookat: new THREE.Vector3(0, 0, 0),
 		}
 		this.#spotLight = {
-			name:'spotLight',
+			name: 'spotLight',
 			color: 0xffffff,
 			intensity: 0.5,
 			position: new THREE.Vector3(1, 1, 1),
@@ -78,12 +79,12 @@ class GameConfig {
 			},
 			lookat: new THREE.Vector3(0, 0, 0),
 		}
-		if (this.conslog) console.info('Config Mounted !','conslog:',this.conslog)
+		if (this.conslog) console.info('Config Mounted !', 'conslog:', this.conslog)
 	}
 
-	set_value(varName,data) {
+	set_value(varName, data) {
 		this[varName] = data
-		if (this.conslog) console.log(varName+ 'set to : '+this[varName])
+		if (this.conslog) console.log(varName + 'set to : ' + this[varName])
 	}
 	get_renderer(value) {
 		if (this.#renderer && this.#renderer[value]) {
@@ -108,4 +109,4 @@ class GameConfig {
 		return this.#orbitcontrols
 	}
 }
-export {GameConfig}
+export { GameConfig }

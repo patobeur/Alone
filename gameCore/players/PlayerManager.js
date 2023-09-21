@@ -26,11 +26,10 @@ class PlayerManager {
 			hp: { name: 'Hit Point', current: 25, max: 100, regen: .1, backgroundColor: 'rgba(250, 59, 9, 0.644)' },
 			energy: { name: 'Energy', current: 100, max: 100, regen: 1.5, backgroundColor: 'rgba(9, 223, 20, 0.644)' },
 			def: { name: 'defense', current: 1, max: 100, regen: 3, backgroundColor: 'rgba(9, 59, 223, 0.644)' },
-			velocity: this.PlayerConfig.config.velocity
 		}
-		this.futurPositions = { x: 0, y: 0, z: 0 };
-		this.oldPosition = { x: 0, y: 0, z: 0 };
-		this.futurRotation = { x: 0, y: 0, z: 0 };
+		// this.futurPositions = { x: 0, y: 0, z: 0 };
+		// this.oldPosition = { x: 0, y: 0, z: 0 };
+		// this.futurRotation = { x: 0, y: 0, z: 0 };
 
 
 
@@ -98,6 +97,78 @@ class PlayerManager {
 		if (this.conslog) console.log('PlayerManager Mounted !')
 		// console.log()
 	}
+	applyGravity() {
+		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
+		this.tics++;
+		if (this.tics >= 0) {
+			let halfHeight = this.PlayerConfig.config.size.x / 2
+			let currentAltitude = this.PlayerConfig.config.futurPositions.z - halfHeight
+			this.PlayerConfig.config.currentAltitude = this.PlayerConfig.config.futurPositions.z - halfHeight
+			// let fall = 0 - this._GameConfig.gravity - this.PlayerConfig.config.velocity.z
+			let fall = 0 + this._GameConfig.gravity - this.PlayerConfig.config.velocity.z
+			// let fall = 1
+			// console.log(currentAltitude)
+
+			if ((currentAltitude >= fall)) {//this._GameConfig.gravity
+
+				this.PlayerConfig.config.futurPositions.z -= fall
+				// console.log(
+				// 	'j:', this.PlayerConfig.config.status.jumping,
+				// 	'cur:', this.PlayerConfig.config.actions.jumping.current,
+				// 	'alt:', currentAltitude,
+				// 	'>=',
+				// 	'v_z:', this.PlayerConfig.config.velocity.z,
+				// 	'g:', this._GameConfig.gravity,
+				// 	'f:', fall,
+				// )
+				this.playerGroupe.position.set(
+					this.PlayerConfig.config.futurPositions.x,
+					this.PlayerConfig.config.futurPositions.y,
+					this.PlayerConfig.config.futurPositions.z
+				);
+			}
+
+
+			// this.PlayerConfig.config.futurPositions.z =
+			// 	(currentAltitude >= this._GameConfig.gravity)
+			// 		? this.PlayerConfig.config.futurPositions.z - fall
+			// 		: halfHeight
+
+
+			this.tics = 0
+		}
+	}
+	checkActions() {
+		// is jumping
+		if (this._ControlsManager.space === true && this.PlayerConfig.config.status.jumping === false) this.PlayerConfig.config.status.jumping = true; this.jump();
+
+
+
+		// this.PlayerConfig.config.status.jumping = false
+
+		// others
+	}
+	jump() {
+		// if (this.PlayerConfig.config.status.jumping === true && this.PlayerConfig.config.actions.jumping.current > 0) 
+		// IF JUMPING STARTED
+		if (this.PlayerConfig.config.status.jumping === true) {
+			if (this.PlayerConfig.config.actions.jumping.current === 0) {
+				console.log('start jumping', this.PlayerConfig.config.actions.jumping.current)
+				this.PlayerConfig.config.velocity.z = 1
+			}
+			if (this.PlayerConfig.config.actions.jumping.current >= this.PlayerConfig.config.actions.jumping.max) {
+				console.log('end jumping', this.PlayerConfig.config.actions.jumping.current)
+				this.PlayerConfig.config.actions.jumping.current = 0
+				this.PlayerConfig.config.status.jumping = false
+				this.PlayerConfig.config.velocity.z = 0
+				this._ControlsManager.space = false
+			}
+			if (this.PlayerConfig.config.status.jumping === true && this.PlayerConfig.config.actions.jumping.current < this.PlayerConfig.config.actions.jumping.max) {
+				console.log('current ++')
+				this.PlayerConfig.config.actions.jumping.current++
+			}
+		}
+	}
 	// get_GridCoords=(position)=>{
 	// 	console.log('grid',this._GameConfig.floor)
 	// }
@@ -111,9 +182,9 @@ class PlayerManager {
 		}
 	}
 	saveOldPos() {
-		this.PlayerConfig.config.oldPosition.x = this.PlayerConfig.config.position.x
-		this.PlayerConfig.config.oldPosition.y = this.PlayerConfig.config.position.y
-		this.PlayerConfig.config.oldPosition.z = this.PlayerConfig.config.position.z
+		// this.PlayerConfig.oldPosition.x = this.PlayerConfig.position.x
+		// this.PlayerConfig.oldPosition.y = this.PlayerConfig.position.y
+		// this.PlayerConfig.oldPosition.z = this.PlayerConfig.position.z
 	}
 	areGroupsColliding(mob) {
 		let group = this.PlayerMesh
@@ -252,16 +323,6 @@ class PlayerManager {
 		this.playerGroupe.add(this.canonPart);
 		this.playerGroupe.position.set(this.PlayerConfig.config.futurPositions.x, this.PlayerConfig.config.futurPositions.y, this.PlayerConfig.config.futurPositions.z);
 	}
-	// UpdateFuturPositionsIfMove() {
-	// 	if (this._ControlsManager) {
-	// 		// update FuturPositions
-	// 		// if (this._ControlsManager.left || this._ControlsManager.right) this.playerGroupe.position.x = this.PlayerConfig.config.futurPositions.x
-	// 		// if (this._ControlsManager.forward || this._ControlsManager.reverse) this.playerGroupe.position.y = this.PlayerConfig.config.futurPositions.y
-	// 		// if (this._ControlsManager.space) this.playerGroupe.position.z = this.PlayerConfig.config.futurPositions.z //; direction.angle = 90 || 270 }
-	// 		// update FuturPositions
-	// 		return ((this._ControlsManager.left || this._ControlsManager.right) || (this._ControlsManager.forward || this._ControlsManager.reverse))
-	// 	}
-	// }
 	checkRotation() {
 		this.PlayerConfig.config.futurRotation.z = this._ControlsManager.thetaDeg
 		this.playerGroupe.rotation.z = THREE.MathUtils.degToRad(this.PlayerConfig.config.futurRotation.z);
@@ -278,18 +339,11 @@ class PlayerManager {
 		}
 	}
 	applyFuturPositionsToPlayerGroupePosition() {
-		this.playerGroupe.position.set(this.PlayerConfig.config.futurPositions.x, this.PlayerConfig.config.futurPositions.y, this.PlayerConfig.config.futurPositions.z);
-	}
-	jump() {
-		if (this._ControlsManager.space === true && this.PlayerConfig.config.futurPositions.z <= this.PlayerConfig.config.size.z / 2) {
-			console.log('JUMPINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
-			this.PlayerConfig.config.futurPositions.z += 20.0
-			this.PlayerConfig.config.stats.velocity.z = 0.003
-		}
-	}
-	checkActions() {
-		if (this._ControlsManager.space === true) this.jump();
-		this._ControlsManager.space === false
+		this.playerGroupe.position.set(
+			this.PlayerConfig.config.futurPositions.x,
+			this.PlayerConfig.config.futurPositions.y,
+			this.PlayerConfig.config.futurPositions.z
+		);
 	}
 	checkSkills(allmobs) {
 		if (this._ControlsManager) {
@@ -321,21 +375,27 @@ class PlayerManager {
 		}
 	}
 
-	applyGravity() {
-		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
-		this.tics++;
-		if (this.tics >= 0) {
-			let halfHeight = this.PlayerConfig.config.size.x / 2
-			console.log('gravity', this._GameConfig.gravity, 'halfHeight', halfHeight, this.PlayerConfig.config.futurPositions.z, this.PlayerConfig.config.stats.velocity.z)
-			// // this._PlayerManager.saveOldPos()
+	// applyGravity2() {
+	// 	if (this.tics === 'undefined' || !this.tics) this.tics = 0;
+	// 	this.tics++;
+	// 	if (this.tics >= 0) {
+	// 		let halfHeight = this.PlayerConfig.config.size.x / 2
+	// 		let currentAltitude = this.PlayerConfig.config.futurPositions.z - halfHeight
+	// 		let fall = this._GameConfig.gravity + this.PlayerConfig.config.velocity.z
 
-			this.PlayerConfig.config.futurPositions.z =
-				(this.PlayerConfig.config.futurPositions.z - halfHeight >= this._GameConfig.gravity)
-					? (this.PlayerConfig.config.futurPositions.z - halfHeight) - this._GameConfig.gravity + this.PlayerConfig.config.stats.velocity.z
-					: halfHeight
-			this.tics = 0
-		}
-	}
+	// 		console.log(
+	// 			currentAltitude,
+	// 			'>=',
+	// 			this._GameConfig.gravity,
+	// 			'fall', fall)
+
+	// 		this.PlayerConfig.config.futurPositions.z =
+	// 			(currentAltitude >= this._GameConfig.gravity)
+	// 				? (currentAltitude) - fall
+	// 				: halfHeight
+	// 		this.tics = 0
+	// 	}
+	// }
 	// ----------------------------------------------------------------------------------
 	// Shoot manager
 	// ----------------------------------------------------------------------------------

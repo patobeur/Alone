@@ -1,21 +1,22 @@
 import { Formula } from '../mecanics/Formula.js';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class MobsIa {
-	constructor(mobConf) {
-		this.mobConf = mobConf
+	constructor(mobConfig) {
+		this.mobConfig = mobConfig
 		this.Formula = new Formula()
 	}
 	iaAction() {
-		if (this.mobConf.ia.changeAction.cur === 0) {
+		if (this.mobConfig.ia.changeAction.cur === 0) {
 			// 	// save old action
-			// 	// this.mobConf.ia.changeAction.lastAction = this.mobConf.ia.changeAction.currentAction
+			// 	// this.mobConfig.ia.changeAction.lastAction = this.mobConfig.ia.changeAction.currentAction
 
 			// 	// new random action
-			let randDir = this.Formula.rand(0, 10)
+			let randDir = this.Formula.rand(0, 2)
 			let _actionName = false
-			// console.log(this.mobConf.ia.changeAction.currentAction)
+			// console.log(this.mobConfig.ia.changeAction.currentAction)
 			switch (randDir) {
-				case 10:
+				case 1:
+				case 2:
 					_actionName = '_chooseDir'
 					break;
 				default:
@@ -35,20 +36,12 @@ class MobsIa {
 		}
 
 	}
-	_doNothing() {
-		// do nothing
-	}
+	// _doNothing() {
+	// 	// do nothing
+	// }
 	_chooseDir() {
 		let dir = this.Formula.rand(0, 1) > .5 ? 1 : -1;
-		this.mobConf.theta.cur += Math.floor(dir * this.mobConf.ia.dirAmplitude)
-		this.mobConf.theta.cur += Math.floor(dir * this.mobConf.ia.dirAmplitude)
-		// console.log(this.mobConf.ia.dirAmplitude, this.mobConf.theta.cur)
+		this.mobConfig.theta.cur += Math.floor(dir * this.mobConfig.ia.dirAmplitude)
 	}
-	// _changeDir() {
-	// 	this.mobConf.theta.cur = this.Formula.rand(
-	// 		this.mobConf.theta.min,
-	// 		this.mobConf.theta.max
-	// 	)
-	// }
 }
 export { MobsIa }

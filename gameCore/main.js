@@ -21,7 +21,7 @@ import { TouchMe } from './mecanics/TouchMe.js';
 class gameCore {
 	v = "0.0.3"
 	// ------------------------------
-	defaultMobsNumber = 101
+	defaultMobsNumber = 150
 	_conslog = false
 	stats = null
 	// ------------------------------
@@ -75,7 +75,7 @@ class gameCore {
 		this._CameraManager = new CamerasManager(this._conslog)
 		this._DomManager = new DomManager(this._conslog)
 
-		this._FrontboardManager = new FrontboardManager(this._DomManager, this._conslog)
+		this._FrontboardManager = new FrontboardManager(this._DomManager)
 		// ----------------------------------------------------
 		this._threejs = this._SceneManager.setAndGet_WebGLRenderer()
 		this._GameConfig.set_value('MaxAnisotropy', this._threejs.capabilities.getMaxAnisotropy())
@@ -105,32 +105,38 @@ class gameCore {
 			this.plan,
 			this._conslog
 		)
-		this._ModelsManager = new ModelsManager(this._GameConfig, this.scene, (allModelsAndAnimations) => {
-			// Cette fonction de rappel sera appelée lorsque tous les modèles et animations seront chargés.
-			this.allModels = allModelsAndAnimations
-			this._InitB();
-		});
+
+		// MODEL MANAGER
+		this._ModelsManager = new ModelsManager(
+			this._GameConfig,
+			this.scene,
+			(allModelsAndAnimations) => {
+				// Cette fonction de rappel sera appelée lorsque tous les modèles et animations seront chargés.
+				this.allModels = allModelsAndAnimations
+				this._InitB();
+			}
+		);
 	}
 	_InitB() {
 		console.log('_InitA DONE allModelsAndAnimations :', this.allModels)
 		this._InitC()
 	}
 	_InitC() {
-		// Jouez l'animation par défaut ici
-		this.charGltf = this.allModels['character']['Kimono_Female'].gltf
-		this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
-		this.MegaClip = THREE.AnimationClip.findByName(this.charGltf.animations, 'Idle');
-		this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
-		this.MegaAction.play(); // Joue l'animation par défaut
+		// // Jouez l'animation par défaut ici
+		// this.charGltf = this.allModels['character']['Kimono_Female'].gltf
+		// this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
+		// this.MegaClip = THREE.AnimationClip.findByName(this.charGltf.animations, 'Idle');
+		// this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
+		// this.MegaAction.play(); // Joue l'animation par défaut
 
 
-		this.charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf
-		this.MegaMixer2 = new THREE.AnimationMixer(this.charGltf2.scene);
-		this.MegaClip2 = THREE.AnimationClip.findByName(this.charGltf2.animations, 'PickUp');
-		// this.MegaClip2.duration = 5
-		this.MegaAction2 = this.MegaMixer2.clipAction(this.MegaClip2);
-		this.MegaAction2.play(); // Joue l'animation par défaut
-		this.charGltf2.scene.position.set(0, 0, 5)
+		// this.charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf
+		// this.MegaMixer2 = new THREE.AnimationMixer(this.charGltf2.scene);
+		// this.MegaClip2 = THREE.AnimationClip.findByName(this.charGltf2.animations, 'PickUp');
+		// // this.MegaClip2.duration = 5
+		// this.MegaAction2 = this.MegaMixer2.clipAction(this.MegaClip2);
+		// this.MegaAction2.play(); // Joue l'animation par défaut
+		// this.charGltf2.scene.position.set(0, 0, 5)
 
 		// ----------------------------
 		// PLAYER ----------------
@@ -145,13 +151,16 @@ class gameCore {
 		this._MobsManager = new MobsManager({
 			GameConfig: this._GameConfig,
 			scene: this.scene,
-			FrontboardManager: this._FrontboardManager
+			FrontboardManager: this._FrontboardManager,
+			CameraManager: this._CameraManager
 		});
 
-		this._MobsManager.setModels(this.allModels)
+		this._MobsManager.set_Models(this.allModels)
+		this._MobsManager.set_Camera(this.camera)
+		this._MobsManager.set_PlayerDatas(this._PlayerManager.playerGroupe)
+
 		this.allMobs = this._MobsManager.addMobs(this.HowManyMobs, 'mobs')
 		// Set player data in _MobsManager Class
-		this._MobsManager.set_PlayerDatas(this._PlayerManager.playerGroupe)
 
 
 
@@ -172,7 +181,10 @@ class gameCore {
 
 
 
-		this._FrontboardManager.setPlayersAndMobs([this._PlayerManager], this.allMobs)
+		this._FrontboardManager.setPlayersAndMobs(
+			[this._PlayerManager],
+			this.allMobs
+		)
 
 		this.scene.add(this._PlayerManager.playerGroupe)
 
@@ -214,14 +226,15 @@ class gameCore {
 			if (typeof this.allMobs === 'object' && this.allMobs.length > 0) {
 				this._MobsManager.updateAllMobsPhaseA()
 				this._MobsManager.updateAllMobsPhaseB()
+				this._MobsManager.updateAllMobsPhaseC()
 				this.allMobs = this._MobsManager.getOnlyLivings()[0]
 			}
 
 			// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 
 			// Update MOBS animations
-			this.MegaMixer.update(timeElapsed)
-			this.MegaMixer2.update(timeElapsed)
+			if (this.MegaMixer) this.MegaMixer.update(timeElapsed)
+			if (this.MegaMixer2) this.MegaMixer2.update(timeElapsed)
 
 			// GRAVITY 
 

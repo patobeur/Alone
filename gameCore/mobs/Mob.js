@@ -6,43 +6,60 @@ class Mob {
 	_Scene
 	_AllMobs
 	_Formula
-	constructor(conf, Scene, AllMobs) {
+	constructor(conf, Scene, AllMobs, handleMobCallback) {
 		this._Formula = new Formula()
 		this._AllMobs = AllMobs
 		this._Scene = Scene
-		this.conf = conf
+		this.config = conf
+		this.handleMobCallback = handleMobCallback
 		this._init()
 	}
 	_init() {
-		this.ia = new MobsIa(this.conf);
+		this.ia = new MobsIa(this.config);
 		this._set_Mesh();
 		return this;
 	}
-	applyGravity(grav) {
-		let gravity = grav
-		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
-		this.tics++;
-		if (this.tics >= 2) {
-			let altitude = this.conf.position.z - this.conf.mesh.size.z / 2
-			let minAltitude = this.conf.mesh.size.z / 2
-			if (altitude > minAltitude) {
-				this.conf.position.z = (this.conf.position.z - this.conf.mesh.size.z / 2) - gravity
-			}
-			this.tics = 0
-		}
+	// applyGravity(grav) {
+	// 	let gravity = grav
+	// 	if (this.tics === 'undefined' || !this.tics) this.tics = 0;
+	// 	this.tics++;
+	// 	if (this.tics >= 2) {
+	// 		let altitude = this.config.position.z - this.config.mesh.size.z / 2
+	// 		let minAltitude = this.config.mesh.size.z / 2
+	// 		if (altitude > gravity) {
+	// 			// this.config.position.z = (zdthis.config.position.z - (this.config.mesh.size.z / 2)) - gravity
+	// 			this.config.position.z -= gravity
+	// 		}
+	// 		this.tics = 0
+	// 	}
+	// }
+	applyGravity(gravity = 0) {
+		if ((this.config.position.z >= gravity)) this.config.position.z -= gravity
 	}
 	_isdead() {
 		if (
-			this.conf.stats.hp.current <= 0
-			&& this.conf.status.immortal.current <= 0
+			this.config.stats.hp.current <= 0
+			&& this.config.status.immortal.current <= 0
 		) {
 			// if not immortal and hp lower than zero you die
-			this.conf.states.dead = true
+			this.config.states.dead = true
+			let datas = {
+				dead: true,
+				uuid: this.mesh.uuid
+			}
+			this.handleMobCallback(datas)
 			// this._trigger_Front()
 			this._removeFromSceneAndDispose()
 			return true
 		}
 		return false
+	}
+	_removeFromSceneAndDispose() {
+		const object = this._Scene.getObjectByProperty('uuid', this.mesh.uuid);
+		// if (this.conslog) console.log('removeFromSceneAndDispose',object)
+		// if (!object.geometry === 'undefined') object.geometry.dispose();
+		// if (!object.material === 'undefined') object.material.dispose();
+		this._Scene.remove(object);
 	}
 	areGroupsColliding(mob) {
 		// Obtenez les boîtes englobantes des deux groupes
@@ -55,23 +72,23 @@ class Mob {
 	}
 	_keepMoving() {
 
-		this.conf.position.x = this.conf.position.x - Math.sin(this.conf.theta.cur) * this.conf.speed
-		this.conf.position.y = this.conf.position.y + Math.cos(this.conf.theta.cur) * this.conf.speed
+		this.config.position.x = this.config.position.x - Math.sin(this.config.theta.cur) * this.config.speed
+		this.config.position.y = this.config.position.y + Math.cos(this.config.theta.cur) * this.config.speed
 
 		// limits
-		if (this.conf.position.x < -(this.conf.floor.size.x / 2)) this.conf.position.x = this.conf.floor.size.x / 2
-		if (this.conf.position.x > (this.conf.floor.size.x / 2)) this.conf.position.x = -(this.conf.floor.size.x / 2)
-		if (this.conf.position.y < -(this.conf.floor.size.y / 2)) this.conf.position.y = this.conf.floor.size.y / 2
-		if (this.conf.position.y > (this.conf.floor.size.y / 2)) this.conf.position.y = -(this.conf.floor.size.y / 2)
+		if (this.config.position.x < -(this.config.floor.size.x / 2)) this.config.position.x = this.config.floor.size.x / 2
+		if (this.config.position.x > (this.config.floor.size.x / 2)) this.config.position.x = -(this.config.floor.size.x / 2)
+		if (this.config.position.y < -(this.config.floor.size.y / 2)) this.config.position.y = this.config.floor.size.y / 2
+		if (this.config.position.y > (this.config.floor.size.y / 2)) this.config.position.y = -(this.config.floor.size.y / 2)
 
 	}
 	_set_Mesh() {
 
 
-		// console.log('defaultAnimationName:',this.conf.mesh.defaultAnimationName)
-		// console.log('modelName:',this.conf.mesh.modelName)
-		// console.log('category:',this.conf.mesh.category)
-		// console.log('category:',this.conf.mesh.model)
+		// console.log('defaultAnimationName:',this.config.mesh.defaultAnimationName)
+		// console.log('modelName:',this.config.mesh.modelName)
+		// console.log('category:',this.config.mesh.category)
+		// console.log('category:',this.config.mesh.model)
 		// console.log('category:',this._allModels[mobConf.mesh.category][mobConf.mesh.modelName])
 
 
@@ -81,39 +98,39 @@ class Mob {
 
 		// this.mesh.feun = {mob:true}
 		this.mesh.position.set(
-			this.conf.position.x,
-			this.conf.position.y,
-			this.conf.position.z + this.conf.mesh.z / 2
+			this.config.position.x,
+			this.config.position.y,
+			this.config.position.z + this.config.mesh.z / 2
 		);
 		// altitude
-		// if (this.conf.mesh.altitude) { this.mesh.position.z += this.conf.mesh.altitude }
+		// if (this.config.mesh.altitude) { this.mesh.position.z += this.config.mesh.altitude }
 
-		this.mesh.name = this.conf.nickname + '_Group';
+		this.mesh.name = this.config.nickname + '_Group';
 
 		// BODY MESH
 		this.mobMesh = new THREE.Mesh(
 			new THREE.BoxGeometry(
-				this.conf.mesh.size.x,
-				this.conf.mesh.size.y,
-				this.conf.mesh.size.z
+				this.config.mesh.size.x,
+				this.config.mesh.size.y,
+				this.config.mesh.size.z
 			),
-			new THREE.MeshPhongMaterial({ color: this.conf.mesh.color, wireframe: this.conf.mesh.wireframe })
+			new THREE.MeshPhongMaterial({ color: this.config.mesh.color, wireframe: this.config.mesh.wireframe })
 		);
-		// console.log(this.conf.mesh.model)
-		// this.mobMesh = this.conf.mesh.model.mesh.clone()
+		// console.log(this.config.mesh.model)
+		// this.mobMesh = this.config.mesh.model.mesh.clone()
 
-		this.mobMesh.name = this.conf.nickname;
+		this.mobMesh.name = this.config.nickname;
 		this.mobMesh.castShadow = true;
 		this.mobMesh.receiveShadow = true;
 
-		// if (this.conf.mesh.opacity && this.mobMesh.material.transparent) {
+		// if (this.config.mesh.opacity && this.mobMesh.material.transparent) {
 		// 	this.mobMesh.material.transparent = true
-		// 	this.mobMesh.material.opacity = this.conf.mesh.opacity
+		// 	this.mobMesh.material.opacity = this.config.mesh.opacity
 		// }
 		this.mesh.add(this.mobMesh)
 
 		// FRONT
-		if (typeof this.conf.mesh.childs.front === 'object' && this.conf.mesh.childs.front) {
+		if (typeof this.config.mesh.childs.front === 'object' && this.config.mesh.childs.front) {
 			this._add_Front()
 		}
 		this._add_VisualHp()
@@ -122,13 +139,6 @@ class Mob {
 		// this.bbhelper = new THREE.Box3Helper(this.bbox, 0x00ff00);
 
 
-	}
-	_removeFromSceneAndDispose() {
-		const object = this._Scene.getObjectByProperty('uuid', this.mesh.uuid);
-		// if (this.conslog) console.log('removeFromSceneAndDispose',object)
-		// object.geometry.dispose();
-		// object.material.dispose();
-		this._Scene.remove(object);
 	}
 	_trigger_Front() {
 		if (this.mobFront.on === true) {
@@ -143,21 +153,21 @@ class Mob {
 	_add_Front() {
 		this.mobFront = new THREE.Mesh(
 			new THREE.BoxGeometry(
-				this.conf.mesh.childs.front.size.x,
-				this.conf.mesh.childs.front.size.y,
-				this.conf.mesh.childs.front.size.z
+				this.config.mesh.childs.front.size.x,
+				this.config.mesh.childs.front.size.y,
+				this.config.mesh.childs.front.size.z
 			),
 			new THREE.MeshPhongMaterial({
-				color: this.conf.mesh.childs.front.color ?? this.conf.mesh.color,
-				wireframe: this.conf.mesh.childs.front.wireframe ?? false
+				color: this.config.mesh.childs.front.color ?? this.config.mesh.color,
+				wireframe: this.config.mesh.childs.front.wireframe ?? false
 			})
 		);
 		this.mobFront.position.set(
-			this.mobMesh.position.x + this.conf.mesh.childs.front.position.x,
-			this.mobMesh.position.y + this.conf.mesh.childs.front.position.y,
-			this.mobMesh.position.z + this.conf.mesh.childs.front.position.z
+			this.mobMesh.position.x + this.config.mesh.childs.front.position.x,
+			this.mobMesh.position.y + this.config.mesh.childs.front.position.y,
+			this.mobMesh.position.z + this.config.mesh.childs.front.position.z
 		);
-		this.mobFront.name = this.conf.nickname + '_Front';
+		this.mobFront.name = this.config.nickname + '_Front';
 		this.mobFront.on = true;
 		this.mesh.add(this.mobFront)
 	}
@@ -184,13 +194,12 @@ class Mob {
 		);
 		this.VisualHp.position.set(
 			0,
-			0,//this.mobMesh.position.y - this.conf.mesh.size.y/2,
-			this.mobMesh.position.z + this.conf.mesh.size.z / 2 + .4
+			0,//this.mobMesh.position.y - this.config.mesh.size.y/2,
+			this.mobMesh.position.z + this.config.mesh.size.z / 2 + .4
 		);
 		this.mesh.add(this.VisualHp)
 	}
 	_update_BBox() {
-		// this.bbox = new THREE.Box3().setFromObject(this.mobMesh);
 		this.bbox = new THREE.Box3().setFromObject(this.mobMesh);
 		// this.bbox.copy(this.mobMesh.geometry.boundingBox).applyMatrix4(this.mobMesh.matrixWorld)
 	}

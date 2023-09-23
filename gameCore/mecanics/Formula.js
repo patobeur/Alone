@@ -146,34 +146,31 @@ class Formula {
 		// 		obj.theta[0] = obj.theta[0] - obj.theta[2]
 		// 	}
 	}
-	get_NextOrbitPosXYZ2 = (obj, centerObj = false) => {
+	get_NextOrbitPosOrbiter = (obj, centerObj = false) => {
 
 		if (centerObj === false) { centerObj = { position: { x: 0, y: 0, z: 0 } } }
-		let distance = obj.centerDistance
-		// let distance = this.getDistanceXYZ(obj, centerObj)
 
-		if (obj.theta[0] > obj.theta[1]) {
-			obj.theta[0] = obj.theta[0] - obj.theta[1]
-		}
-		// if (obj.theta && centerObj) {
-		// 	// sun pos
+		let distance = this.getDistanceXY(obj, centerObj)
+
+		if (obj.theta[0] > obj.theta[1]) obj.theta[0] = obj.theta[0] - obj.theta[1];
+
+		// center pos
 		let centerX = 0;
 		let centerY = 0;
 		let centerZ = 0;
+
 		let centerW = .1;
 		let centerH = .1;
 		let centerD = .1;
-		// 	// new pos
+		// new pos
 		let x2 = 0
 		let y2 = 0
 		let z2 = 0
-		// 	if (obj.objtype === 'player') {
-		// 	}
+
 		if (distance > 0) {
-			// console.log('player check orbital force')
-			x2 = centerX + ((distance) * (Math.cos(obj.theta.x[0]*5)));
-			y2 = centerY + ((distance) * (Math.sin(obj.theta.y[0]*5)));
-			z2 = centerZ + ((distance) * (Math.cos(obj.theta.z[0]*5)));
+			x2 = centerX + ((distance) * (Math.cos(obj.theta.x[0] * 5)));
+			y2 = centerY + ((distance) * (Math.sin(obj.theta.y[0] * 5)));
+			z2 = centerZ + ((distance) * (Math.cos(obj.theta.z[0] * 5)));
 		}
 		else {
 			x2 = centerX + (centerW * (Math.cos(obj.theta.x[0])));
@@ -184,24 +181,24 @@ class Formula {
 
 		// console.log(obj)
 		// 	// saving new pos in obj
-			if (obj.theta.x[2] > 0) {
-				obj.position.x = x2// - (obj.geometry.parameters.width / 2)
-				obj.theta.x[0] = obj.theta.x[0] + obj.theta.x[2];
-				// obj.rotation.x = THREE.MathUtils.degToRad(obj.theta.x[0])
-			}
-			if (obj.theta.y[2] > 0) {
-				obj.position.y = y2// - (obj.geometry.parameters.height / 2)
-				obj.theta.y[0] = obj.theta.y[0] + obj.theta.y[2];
-				// obj.rotation.y = THREE.MathUtils.degToRad(obj.theta.y[0])
-			}
-			if (obj.theta.z[2] > 0) {
-				obj.position.z = z2// - (obj.geometry.parameters.depth/ 2)
-				obj.theta.z[0] = obj.theta.z[0] + obj.theta.z[2];
-				// obj.rotation.z = THREE.MathUtils.degToRad(obj.theta.z[0])
-			}
-			if (obj.target) {
-				obj.target.position.set(0, 0, 0);
-			}
+		if (obj.theta.x[2] > 0) {
+			obj.position.x = x2// - (obj.geometry.parameters.width / 2)
+			obj.theta.x[0] = obj.theta.x[0] + obj.theta.x[2];
+			// obj.rotation.x = THREE.MathUtils.degToRad(obj.theta.x[0])
+		}
+		if (obj.theta.y[2] > 0) {
+			obj.position.y = y2// - (obj.geometry.parameters.height / 2)
+			obj.theta.y[0] = obj.theta.y[0] + obj.theta.y[2];
+			// obj.rotation.y = THREE.MathUtils.degToRad(obj.theta.y[0])
+		}
+		if (obj.theta.z[2] > 0) {
+			obj.position.z = z2// - (obj.geometry.parameters.depth/ 2)
+			obj.theta.z[0] = obj.theta.z[0] + obj.theta.z[2];
+			// obj.rotation.z = THREE.MathUtils.degToRad(obj.theta.z[0])
+		}
+		if (obj.target) {
+			obj.target.position.set(centerObj.positions);
+		}
 	}
 	get_CartesianFromLatLngDist = (pt) => {
 		let lat = (90 - pt.lat) * Math.PI / 180
@@ -228,7 +225,7 @@ class Formula {
 		// )
 		return theta;
 	}
-		
+
 	// check_collisionsDirectives = (obj, objB) => {
 
 	// 	// if (obj.collide.collidesocial) {
@@ -275,7 +272,7 @@ class Formula {
 		return token;
 	}
 }
-export {Formula}
+export { Formula }
 
 // 	function addCss(stringcss, styleid) {
 // 		let style = document.createElement('style');

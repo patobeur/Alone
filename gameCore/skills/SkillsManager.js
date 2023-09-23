@@ -1,17 +1,27 @@
 import { Formula } from '../mecanics/Formula.js';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class SkillsManager {
-	conslog = true
+	conslog = false
 	order = 0
 	constructor(skillname, playerGroupe, canonpart, fromfloor = 1, Scene, faction) {
+		// let skillname = datas.skillname
+		// this._playerGroupe = datas.playerGroupe
+		// this.sourceCanon = datas.canonpart
+		// let fromfloor = datas.fromfloor
+		// this.scene = datas.Scene
+		// let faction = datas.faction
+
 
 		this.formula = new Formula()
+
+
 		this.scene = Scene
-		// this.fromfloor = fromfloor / 2;
 		this._playerGroupe = playerGroupe
+
 		this.sourceCanon = canonpart
-		var playerPosition = canonpart.position
+		// var playerPosition = canonpart.position
 		var rotation = this._playerGroupe.rotation
+		// this.fromfloor = fromfloor / 2;
 
 		this.skillDatas = this._getSkill(skillname, this._playerGroupe.position, rotation, faction);
 
@@ -108,18 +118,18 @@ class SkillsManager {
 			if (typeof this.touchedMobs === 'object' && this.touchedMobs.length > 0) {
 
 				// Mob dead
-				// this.touchedMobs[0].conf.states.dead = true
+				// this.touchedMobs[0].config.states.dead = true
 				let damage = new Number(this.skillDatas.getDamage(this.touchedMobs[0]));
 
 				if (this.conslog) console.log(this.skillDatas);
 				if (this.conslog) console.log('getDamage = ' + this.skillDatas.getDamage(this.touchedMobs[0]));
 
-				let def = this.touchedMobs[0].conf.stats.def.current;
+				let def = this.touchedMobs[0].config.stats.def.current;
 				let finalDamage = damage - def;
 				if (this.conslog) console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage);
 
-				this.touchedMobs[0].conf.stats.hp.current -= finalDamage
-				if (this.conslog) console.log('mob = ', this.touchedMobs[0].conf.stats);
+				this.touchedMobs[0].config.stats.hp.current -= finalDamage
+				if (this.conslog) console.log('mob = ', this.touchedMobs[0].config.stats);
 
 
 				// this.isColliding = true
@@ -130,7 +140,7 @@ class SkillsManager {
 					this._endThis();
 				}
 				else {
-					if (this.conslog) console.log('Balles perforantes Mouhahahahaha !!!!', this.touchedMobs[0].conf.stats.hp.current, this.touchedMobs[0].mesh.uuid)
+					if (this.conslog) console.log('Balles perforantes Mouhahahahaha !!!!', this.touchedMobs[0].config.stats.hp.current, this.touchedMobs[0].mesh.uuid)
 					this.isColliding = false
 					this.touchedMobs = []
 				}
@@ -357,7 +367,7 @@ class SkillsManager {
 			// if (mob.stats.def.current)
 			// this.lv * this.baseDamage
 			let damage = new Number(0)
-			if (typeof mob.conf.stats.def.current === 'number') {
+			if (typeof mob.config.stats.def.current === 'number') {
 				damage = new Number(this.skillDatas.lv * this.skillDatas.baseDamage)
 			}
 			return damage > 0 ? damage : false

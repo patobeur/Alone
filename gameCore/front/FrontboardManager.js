@@ -14,7 +14,7 @@ class FrontboardManager {
 			def: { name: 'defense', current: 0, max: 100, regen: 0, backgroundColor: 'rgba(9, 59, 223, 0.644)' },
 			test: { name: 'test', current: 0, max: 100, regen: 0, backgroundColor: 'rgba(9, 59, 223, 0.644)' }
 		}
-		this.FrontPlayer;
+		// this.FrontPlayer;
 		this._init();
 	}
 	_init() {
@@ -69,7 +69,7 @@ class FrontboardManager {
 	_setFrontMobsCounter() {
 		// console.log(LEJEU)
 		this.FrontMobsCounter = this.DDom.createEle({
-			tag: 'div', id: 'mobscounter', className: 'mobscounter', textContent: "1/25"
+			tag: 'div', id: 'mobscounter', className: 'mobscounter', textContent: "0/25"
 		})
 		document.body.appendChild(this.FrontMobsCounter)
 	}
@@ -93,5 +93,8 @@ class FrontboardManager {
 	addMobCounter = (number) => {
 		this.FrontMobsCounter.textContent = number
 	}
+	setMobCounter(number) {
+		this.FrontMobsCounter.textContent = number
+	}
 }
-export {FrontboardManager}
+export { FrontboardManager }

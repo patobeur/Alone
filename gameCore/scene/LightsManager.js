@@ -50,10 +50,10 @@ class LightsManager {
 			// this.SunLight.position.x = (Math.sin(elapsed*speed) * 1);
 			// this.SunLight.position.z = (Math.cos(elapsed*speed) * 1);
 
-			this._Formula.get_NextOrbitPosXYZ2(
-				this.SunLight,
-				false
-			);
+			// this._Formula.get_NextOrbitPosXYZ2(
+			// 	this.SunLight,
+			// 	false
+			// );
 			// this.SolMesh.position.x +=  (Math.sin(elapsed*speed) * 1);
 			// this.SolMesh.position.z +=  (Math.cos(elapsed*speed) * 1);
 			// this.SolMesh.position.x = nec.x

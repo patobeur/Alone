@@ -24,8 +24,8 @@ class PlayerConfig {
 				fawling: false,
 			},
 			orbiter: {
-				position: { x: 0, y: .1, z: .6 },
-				size: { x: .25, y: .25, z: .1 },
+				position: { x: 0, y: 0.1, z: 0.6 },
+				size: { x: 0.25, y: 0.25, z: 0.1 },
 				color: 'green',
 				wireframe: false
 			},

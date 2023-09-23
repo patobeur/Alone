@@ -69,7 +69,7 @@ class PlayerManager {
 	#init(startPos) {
 		// START POSITION
 		if (startPos) {
-			this.futurPositions = {
+			this.PlayerConfig.config.futurPositions = {
 				x: startPos.x ? startPos.x : 0,
 				y: startPos.y ? startPos.y : 0,
 				z: startPos.z ? startPos.z : 0 + (this.PlayerConfig.config.size.z / 2),
@@ -82,13 +82,20 @@ class PlayerManager {
 			let newpos = {
 				x: this._GameConfig.floors.spawns[defaultSpawnNum].x,
 				y: this._GameConfig.floors.spawns[defaultSpawnNum].y,
-				z: this._GameConfig.floors.spawns[defaultSpawnNum].z + (this.PlayerConfig.config.size.z / 2),
+				z: this._GameConfig.floors.spawns[defaultSpawnNum].z// + (this.PlayerConfig.config.size.z / 2),
 			};
 			this.PlayerConfig.config.futurPositions = newpos
 
 		}
 		this.#addMeshToModel();
 		this.#addModelToGroupe();
+
+		this.playerGroupe.position.set(
+			this.PlayerConfig.config.futurPositions.x,
+			this.PlayerConfig.config.futurPositions.y,
+			this.PlayerConfig.config.futurPositions.z
+		);
+
 		this.#addPlayerOrbiter();
 		// SkillsManager
 		this.missiles = [];
@@ -96,6 +103,43 @@ class PlayerManager {
 		this.SkillsImmat = this.skillsInUse.length - 1;
 		if (this.conslog) console.log('PlayerManager Mounted !')
 		// console.log()
+	}
+	#addPlayerOrbiter() {
+		let size = this.PlayerConfig.config.orbiter.size
+		let color = this.PlayerConfig.config.orbiter.color;
+		let wireframe = this.PlayerConfig.config.orbiter.wireframe
+
+		let material = new THREE.MeshPhongMaterial({ color: color, wireframe: wireframe });
+		this.playerOrbiter = new THREE.Mesh(new THREE.BoxGeometry(size.x, size.y, size.z), material);
+		this.playerOrbiter.name = "playerOrbiter";
+		this.playerOrbiter.castShadow = true;
+		this.playerOrbiter.receiveShadow = true;
+		this.playerOrbiter.matrixAutoUpdate = true;
+		this.playerOrbiter.material.transparent = false
+		// this.playerOrbiter.material.opacity = .8
+
+		this.playerOrbiter.position.set(
+			this.PlayerConfig.config.orbiter.position.x,// - (size.x / 2),
+			this.PlayerConfig.config.orbiter.position.y,// - (size.y / 2),
+			this.PlayerConfig.config.orbiter.position.z,// - (size.z / 2)
+		);
+		// this.updateMyPos()
+		// this.playerOrbiter.centerDistance = this._Formula.getDistanceXY(this.playerGroupe, this.playerOrbiter);
+		this.step = 1 / 10
+		this.playerOrbiter.theta = {
+			x: [0, 360, this.step],
+			y: [0, 360, this.step],
+			z: [0, 360, 0],
+			delay: { current: 0, max: 1000 }
+		};
+		this.playerGroupe.add(this.playerOrbiter);
+	}
+	updatePlayerOrbiter() {
+		if (this.playerOrbiter) {
+			this._Formula.get_NextOrbitPosOrbiter(
+				this.playerOrbiter
+			);
+		}
 	}
 	applyGravity() {
 		let AAAAAAAAA = this.PlayerConfig
@@ -198,45 +242,6 @@ class PlayerManager {
 	// 	if (this.conslog) console.log(player,allmobs)
 	// 	this.otherPlayerCheckIfMoveOrSkillsActions(allmobs,player);
 	// }
-	#addPlayerOrbiter(conf) {
-		let pos = this.PlayerConfig.config.orbiter.position
-		let size = this.PlayerConfig.config.orbiter.size
-		let color = this.PlayerConfig.config.orbiter.color;
-
-		let material = new THREE.MeshPhongMaterial({ color: this.PlayerConfig.config.orbiter.color, wireframe: this.PlayerConfig.config.orbiter.wireframe });
-		this.playerOrbiter = new THREE.Mesh(new THREE.BoxGeometry(size.x, size.y, size.z), material);
-		this.playerOrbiter.name = "playerOrbiter";
-		this.playerOrbiter.castShadow = true;
-		this.playerOrbiter.receiveShadow = true;
-		this.playerOrbiter.matrixAutoUpdate = true;
-		this.playerOrbiter.material.transparent = false
-		// this.playerOrbiter.material.opacity = .8
-
-
-		this.playerOrbiter.position.set(
-			this.PlayerConfig.config.futurPositions.x + pos.x - (size.x / 2),
-			this.PlayerConfig.config.futurPositions.y + pos.y - (size.y / 2),
-			this.PlayerConfig.config.futurPositions.z + pos.z - (size.z / 2)
-		);
-		// this.updateMyPos()
-		this.playerOrbiter.centerDistance = this._Formula.getDistanceXY(this.playerGroupe, this.playerOrbiter);
-		this.step = 1 / 10
-		this.playerOrbiter.theta = {
-			x: [0, 360, this.step],
-			y: [0, 360, this.step],
-			z: [0, 360, 0],
-			delay: { current: 0, max: 1000 }
-		};
-		this.playerGroupe.add(this.playerOrbiter);
-	}
-	updatePlayerOrbiter() {
-		if (this.playerOrbiter) {
-			this._Formula.get_NextOrbitPosXYZ2(
-				this.playerOrbiter,
-				this.playerGroupe
-			);
-		}
-	}
 	regen() {
 		// this.stats.energy.current += this.stats.energy.regen
 		if (this.regenTimer.current === this.regenTimer.max) {
@@ -322,7 +327,8 @@ class PlayerManager {
 		this.canonPart.receiveShadow = true//this.receiveShadow;
 		this.canonPart.castShadow = true//this.castShadow;
 		this.playerGroupe.add(this.canonPart);
-		this.playerGroupe.position.set(this.PlayerConfig.config.futurPositions.x, this.PlayerConfig.config.futurPositions.y, this.PlayerConfig.config.futurPositions.z);
+
+
 	}
 	checkRotation() {
 		this.PlayerConfig.config.futurRotation.z = this._ControlsManager.thetaDeg

@@ -12,8 +12,8 @@ class GameConfig {
 	#spotLight = false;
 	#orbitcontrols = true;
 	order = 0
-	gravity = 0.3
-	basejump_z = 0.5
+	gravity = 0.2
+	basejump_z = 0.6
 	constructor(conslog) {
 		this.conslog = conslog
 		this.#Init()

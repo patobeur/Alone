@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class FloorsManager {
 	_GameConfig
-	_currentImmat = 1
+	_currentImmat = 1 // current floor
 	floor = null
 	floorConfig = null
 	order = 2
@@ -88,13 +88,14 @@ class FloorsManager {
 				fullName: 'Lobby Room',
 				mode: { type: 'BoxGeometry', },
 				size: { x: 16, y: 32, z: .1 },
-				color: 0x1c1c1c,
+				color: 0xEAEAEA,
 				receiveShadow: true,
 				repeat: [8, 8],
 				spawns: [
-					{ x: 0, y: -15.5, z: 100 },
+					{ x: 0, y: -15.5, z: 5 },
 					{ x: 0, y: 0, z: 0 },
 				],
+				mobs: { number: 10 }
 			},
 			1: {
 				name: 'groundOne',
@@ -102,12 +103,10 @@ class FloorsManager {
 				imagesize: { x: 512, y: 512 },
 				mode: {
 					type: 'PlaneGeometry',
-					// path: 'grid64_512_blanc.png',
-					// path: 'grid64_512.png',
 					fileName: 'stone_floor_736x736.jpg',
 					size: { x: 512, y: 512 }
 				},
-				size: { x: 150, y: 150, z: .1 },
+				size: { x: 350, y: 350, z: .1 },
 				color: 0x1c1c1c,
 				receiveShadow: true,
 				repeat: [64, 64],
@@ -115,6 +114,7 @@ class FloorsManager {
 					{ x: 0, y: -30, z: 20 },
 					{ x: 0, y: 0, z: 5 },
 				],
+				mobs: { number: 101 }
 			}
 		}
 		let config = floorsconfig[this._currentImmat]

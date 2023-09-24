@@ -95,7 +95,7 @@ class ModelsManager {
 			// path:'./gameCore/3dObjects/characters/base/BaseCharacter.gltf',
 			path:'./gameCore/3dObjects/characters/base/Casual_Female.gltf',
 			// path:'./gameCore/3dObjects/characters/base/X Bot.fbx',
-			positions:{x:-3,y:2,z:0,theta:0},
+			positions:{x:0,y:0,z:0},
 			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'idle'
@@ -106,7 +106,7 @@ class ModelsManager {
 			fullName:'Alice',
 			// path:'./gameCore/3dObjects/characters/base/BaseCharacter.gltf',
 			path:'./gameCore/3dObjects/characters/base/Casual_Male.gltf',
-			positions:{x:-3,y:16,z:0,theta:0},
+			positions:{x:1,y:0,z:0},
 			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'idle'
@@ -116,7 +116,7 @@ class ModelsManager {
 			fullName:'Bob',
 			category:'character',
 			path:'./gameCore/3dObjects/characters/base/Kimono_Female.gltf',
-			positions:{x:-5,y:7,z:0,theta:0},
+			positions:{x:2,y:0,z:0},
 			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'idle'
@@ -126,7 +126,7 @@ class ModelsManager {
 			fullName:'Bob',
 			category:'character',
 			path:'./gameCore/3dObjects/characters/base/Kimono_Male.gltf',
-			positions:{x:-5,y:2,z:0,theta:0},
+			positions:{x:3,y:0,z:0},
 			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'idle'
@@ -136,7 +136,7 @@ class ModelsManager {
 			fullName:'Audrey',
 			category:'character',
 			path:'./gameCore/3dObjects/characters/base/Knight_Golden_Female.gltf',
-			positions:{x:2,y:-2,z:0,theta:0},
+			positions:{x:4,y:0,z:0},
 			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'Idle'
@@ -166,8 +166,8 @@ class ModelsManager {
 			fullName:'Basic fire',
 			category:'decor',
 			path:'./gameCore/3dObjects/fire/scene.gltf',
-			positions:{x:3,y:12,z:0},
-			rotations:{x:Math.PI/2,y:Math.PI/2,z:false},
+			positions:{x:5,y:0,z:0},
+			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'idle'
 		},
@@ -176,8 +176,8 @@ class ModelsManager {
 			fullName:'Pug',
 			category:'decor',
 			path:'./gameCore/3dObjects/characters/base/Pug.gltf',
-			positions:{x:1,y:-10,z:0},
-			rotations:{x:Math.PI/2,y:Math.PI/2,z:false},
+			positions:{x:6,y:0,z:0},
+			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'idle'
 		},
@@ -186,8 +186,8 @@ class ModelsManager {
 			fullName:'BaseCharacter',
 			category:'character',
 			path:'./gameCore/3dObjects/characters/base/BaseCharacter.gltf',
-			positions:{x:3,y:8,z:0},
-			rotations:{x:Math.PI/2,y:Math.PI/2,z:false},
+			positions:{x:7,y:-1,z:0},
+			rotations:{x:Math.PI/2,y:false,z:false},
 			scales:false,
 			anime:'idle'
 		}

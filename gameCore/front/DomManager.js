@@ -35,7 +35,28 @@ class DomManager {
 	// 		document.getElementsByTagName('head')[0].appendChild(script);
 	// 	}
 	// }
-
+	addCss(stringcss, styleid = false) {
+		let style = document.createElement('style');
+		// style.type = 'text/css';
+		style.textContent = this.sanitize(stringcss)
+		style.id = styleid
+		document.getElementsByTagName('head')[0].appendChild(style);
+	}
+	sanitize = (string) => {
+		// Tableau de correspondance pour les caractères spéciaux
+		const map = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#x27;',
+			"./": '&#x2F;',
+		};
+		// Expression régulière pour rechercher les caractères spéciaux
+		const reg = /[&<>"'/]/ig;
+		// Remplace les caractères spéciaux par leur équivalent HTML
+		return string.replace(reg, (match) => (map[match]));
+	}
 	// Cette fonction crée un nouvel élément HTML avec les attributs spécifiés
 	createEle = (attrib = false) => {
 		// Crée une variable pour stocker le nouvel élément
@@ -61,7 +82,7 @@ class DomManager {
 			// // Ajoute le contenu texte (si fourni) à l'élément
 			// attrib.textContent ? newDiv.textContent = attrib.textContent : '';
 		}
-		
+
 		// Retourne le nouvel élément créé ou false si aucun attribut n'a été fourni
 		return newDiv ?? false;
 	}
@@ -96,4 +117,4 @@ class DomManager {
 		}
 	}
 }
-export {DomManager}
+export { DomManager }

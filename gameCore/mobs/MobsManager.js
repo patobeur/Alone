@@ -46,11 +46,65 @@ class MobsManager {
 
 
 	updateAllMobsPhaseA() {
-		this._AllMobs.forEach(mob => this.update_VisualHp(mob));
+		// this._AllMobs.forEach(mob => this.update_VisualHp(mob));
+	}
+	updateAllMobsPhaseB() {
+		this._AllMobs.forEach(mob => {
+			this.update_VisualHp(mob)
+			if (mob.config.states.dead !== true) {
+				if (mob._isdead()) {
+					mob.config.states.dead = true;
+					mob._removeFromSceneAndDispose();
+					return
+				}
+				else {
+					// console.log((this._detecterCollisionPredictionPlayer(mob) === true) ? 'collide' : 'no collide');
+					// if (mob.config.states.isGoingToCollide.current < 1) {
+					// }
+					if (mob.config.ia.changeAction.cur === 0) {
+						mob.ia.iaAction();
+					}
+					if (mob.config.states.isGoingToCollide.current < 1) {
+						this._isGoingToCollide(mob);
+					}
+					if (mob.config.states.isGoingToCollide.current < 1) {
+						mob._keepMoving();
+					}
 
+					mob.config.ia.changeAction.cur =
+						mob.config.ia.changeAction.cur > mob.config.ia.changeAction.max
+							? 0
+							: mob.config.ia.changeAction.cur + 1;
+
+					if (mob.config.states.isGoingToCollide.current < 1) {
+						mob.mesh.position.set(
+							mob.config.position.x,
+							mob.config.position.y,
+							mob.config.position.z + mob.config.mesh.size.z / 2
+						);
+						mob.mesh.rotation.z = mob.config.theta.cur;
+						mob._update_BBox();
+					}
+				}
+				// reset collider if mob
+				if (mob) mob.config.states.isGoingToCollide.current = 0
+				// Gravity if mob
+				if (mob) mob.applyGravity(this._GameConfig.gravity);
+
+
+				// colliding with player
+			}
+		});
+	}
+	updateAllMobsPhaseC() {
+		this._mobsIndexToDelete.forEach(index => {
+			this._AllMobs.splice(index, 1)
+		})
+		this._mobsIndexToDelete = []
+		if (this._FrontboardManager.FrontMobsCounter) this._FrontboardManager.setMobCounter(this._AllMobs.length)
 	}
 	update_VisualHp(mob) {
-		if (typeof this._playerGroupe === 'object') {
+		if (typeof this.PlayerManager.playerGroupe === 'object') {
 			// const angleRadians = this.mesh.angleTo(playerGroupe);
 			let theta = this._Formula.get_DegreeWithTwoPos(
 				mob.mesh.position.x,
@@ -71,64 +125,14 @@ class MobsManager {
 			mob.VisualHp.rotation.z = mob.mesh.rotation.z - THREE.MathUtils.degToRad(theta)
 		}
 	}
-	updateAllMobsPhaseC() {
-		this._mobsIndexToDelete.forEach(index => {
-			this._AllMobs.splice(index, 1)
-		})
-		this._mobsIndexToDelete = []
-		this._FrontboardManager.setMobCounter(this._AllMobs.length)
-	}
-	updateAllMobsPhaseB() {
-		this._AllMobs.forEach(mob => {
-			if (mob.config.states.dead !== true) {
-				if (mob._isdead()) {
-					mob.config.states.dead = true;
-					mob._removeFromSceneAndDispose();
-					return
-				}
-				else {
-					if (mob.config.states.isGoingToCollide.current < 1) {
-						// console.log(this._playerGroupe)
-						this._detecterCollisionPredictionPlayer(mob, this._playerGroupe);
-					}
-					if (mob.config.ia.changeAction.cur === 0) {
-						mob.ia.iaAction();
-					}
-					if (mob.config.states.isGoingToCollide.current < 1) {
-						this._isGoingToCollide(mob);
-					}
-					if (mob.config.states.isGoingToCollide.current < 1) {
-						mob._keepMoving();
-					}
-					mob.config.ia.changeAction.cur =
-						mob.config.ia.changeAction.cur > mob.config.ia.changeAction.max
-							? 0
-							: mob.config.ia.changeAction.cur + 1;
-					if (mob.config.states.isGoingToCollide.current < 1) {
-						mob.mesh.position.set(
-							mob.config.position.x,
-							mob.config.position.y,
-							mob.config.position.z + mob.config.mesh.size.z / 2
-						);
-						mob.mesh.rotation.z = mob.config.theta.cur;
-						mob._update_BBox();
-					}
-				}
-				// reset collider if mob
-				if (mob) mob.config.states.isGoingToCollide.current = 0
-				// Gravity if mob
-				if (mob) mob.applyGravity(this._GameConfig.gravity);
-			}
-		});
-	}
 	set_Models(allModels) {
 		this._allModels = allModels
 	}
 	set_Camera(camera) {
 		this.camera = camera
 	}
-	set_PlayerDatas(playerGroupe) {
-		this._playerGroupe = playerGroupe
+	set_PlayerDatas(PlayerManager) {
+		this.PlayerManager = PlayerManager
 	}
 	_handleCollisionWith(mob, autreMob) {
 		let nouvelleDirectionAutreMob = autreMob.config.theta.cur + (Math.PI / 2);
@@ -167,36 +171,36 @@ class MobsManager {
 			}
 		}
 	}
-	_detecterCollisionPredictionPlayer(mob, player) {
-		// let bbox1 = new THREE.Box3().setFromObject(mob.mesh);
+	_detecterCollisionPredictionPlayer(mob) {
+		let playerPos = this.PlayerManager.PlayerConfig.config.futurPositions
+		let bbox1 = new THREE.Box3().setFromObject(mob.mesh);
 		// Créer une boîte englobante pour la nouvelle position prédite
-		// let mobSize = mob.config.mesh.size;
-		// let predictedPosition = {
-		// 	x: mob.config.position.x - Math.sin(mob.config.theta.cur) * mob.config.speed,
-		// 	y: mob.config.position.y + Math.cos(mob.config.theta.cur) * mob.config.speed,
-		// 	z: mob.config.position.z
-		// }
-		// let mobSizeB = player.config.mesh.size;
-		// let predictedPositionB = {
-		// 	x: player.config.position.x - Math.sin(player.config.theta.cur) * player.config.speed,
-		// 	y: player.config.position.y + Math.cos(player.config.theta.cur) * player.config.speed,
-		// 	z: player.config.position.z
-		// }
+		let mobSize = mob.config.mesh.size;
+		let predictedPosition = {
+			x: mob.config.position.x - Math.sin(mob.config.theta.cur) * mob.config.speed,
+			y: mob.config.position.y + Math.cos(mob.config.theta.cur) * mob.config.speed,
+			z: mob.config.position.z
+		}
+		let mobSizeB = this.PlayerManager.PlayerConfig.config.size;
+		let predictedPositionB = {
+			x: playerPos.x,
+			y: playerPos.y,
+			z: playerPos.z
+		}
 
-		// let predictedBbox = new THREE.Box3().setFromCenterAndSize(
-		//     predictedPosition,
-		//     // new THREE.Vector3(mobSize.x / 2, mobSize.y / 2, mobSize.z / 2)
-		//     new THREE.Vector3(mobSize.x , mobSize.y , mobSize.z )
-		// );
-		// let predictedBboxB = new THREE.Box3().setFromCenterAndSize(
-		//     predictedPositionB,
-		//     // new THREE.Vector3(mobSize.x / 2, mobSize.y / 2, mobSize.z / 2)
-		//     new THREE.Vector3(mobSizeB.x , mobSizeB.y , mobSizeB.z )
-		// );
+		let predictedBbox = new THREE.Box3().setFromCenterAndSize(
+			predictedPosition,
+			new THREE.Vector3(mobSize.x, mobSize.y, mobSize.z)
+		);
+		let predictedBboxB = new THREE.Box3().setFromCenterAndSize(
+			predictedPositionB,
+			// new THREE.Vector3(mobSize.x / 2, mobSize.y / 2, mobSize.z / 2)
+			new THREE.Vector3(mobSizeB.x, mobSizeB.y, mobSizeB.z)
+		);
 
-		// // Vérifier si les boîtes englobantes se chevauchent
-		// let intersect = predictedBboxB.intersectsBox(predictedBbox)
-		// return intersect;
+		// Vérifier si les boîtes englobantes se chevauchent
+		let intersect = predictedBboxB.intersectsBox(predictedBbox)
+		return intersect;
 	}
 	_detecterCollisionPrediction(mob, autreMob) {
 		// let bbox1 = new THREE.Box3().setFromObject(mob.mesh);
@@ -274,7 +278,7 @@ class MobsManager {
 
 		// set the new immat
 		this._CurrentMobImmat = this._AllMobs[this._AllMobs.length - 1].immat + 1
-		this._FrontboardManager.setMobCounter(this._AllMobs.length)
+		if (this._FrontboardManager.FrontMobsCounter) this._FrontboardManager.setMobCounter(this._AllMobs.length)
 
 		this._scene.add(newmob.mesh)
 		return this._AllMobs[this._CurrentMobImmat - 1]

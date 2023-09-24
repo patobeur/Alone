@@ -51,8 +51,8 @@ class gameCore {
 
 	// _domEvents // threex event
 	// _clikableThings = false;
-	// _loadingmanager = Object;
-	// _ImagesManager = Object;
+	// _loadingmanager = null;
+	// _ImagesManager = null;
 	constructor(datas = { HowManyMobs: this.defaultMobsNumber }) {
 		this._GameConfig = new GameConfig(this._conslog)
 		this.HowManyMobs = datas && datas.HowManyMobs
@@ -118,16 +118,19 @@ class gameCore {
 		);
 	}
 	_InitB() {
-		console.log('_InitA DONE allModelsAndAnimations :', this.allModels)
+		// console.log('_InitA DONE allModelsAndAnimations :', this.allModels)
+		// un loader d'images pour les texures des futures object 3d
+		if (this._ImagesManager != null) this._ImagesManager = new ImagesManager();
 		this._InitC()
 	}
 	_InitC() {
-		// // Jouez l'animation par défaut ici
+		// Jouez l'animation par défaut ici
 		// this.charGltf = this.allModels['character']['Kimono_Female'].gltf
 		// this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
 		// this.MegaClip = THREE.AnimationClip.findByName(this.charGltf.animations, 'Idle');
 		// this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
 		// this.MegaAction.play(); // Joue l'animation par défaut
+		// this.charGltf.scene.position.set(0, 0, 3)
 
 
 		// this.charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf
@@ -138,10 +141,13 @@ class gameCore {
 		// this.MegaAction2.play(); // Joue l'animation par défaut
 		// this.charGltf2.scene.position.set(0, 0, 5)
 
+		// this._ModelsManager.LoadAnimatedModelFromMain()
+
+
 		// ----------------------------
 		// PLAYER ----------------
 		this._PlayerManager = new PlayerManager(
-			false,//{x:0, y:-64, z:15},
+			false,//{x:0, y:-64, z:15}, // force start pos
 			this._GameConfig,
 			this._FrontboardManager,
 			this._CameraManager,
@@ -150,14 +156,15 @@ class gameCore {
 
 		this._MobsManager = new MobsManager({
 			GameConfig: this._GameConfig,
-			scene: this.scene,
 			FrontboardManager: this._FrontboardManager,
-			CameraManager: this._CameraManager
+			CameraManager: this._CameraManager,
+			scene: this.scene
 		});
 
+		// console.log(this._PlayerManager)
+		this._MobsManager.set_PlayerDatas(this._PlayerManager)
 		this._MobsManager.set_Models(this.allModels)
 		this._MobsManager.set_Camera(this.camera)
-		this._MobsManager.set_PlayerDatas(this._PlayerManager.playerGroupe)
 
 		this.allMobs = this._MobsManager.addMobs(this.HowManyMobs, 'mobs')
 		// Set player data in _MobsManager Class
@@ -169,22 +176,14 @@ class gameCore {
 		// 	this.camera
 		// )		
 
-		// un loader d'images pour les texures des futures object 3d
-		if (this._ImagesManager != null) this._ImagesManager = new ImagesManager();
 
 
 		// test objects (viré par ce que ca gene)
 		// this._domEvents = new THREEx.DomEvents(this.camera, this._threejs.domElement)
 		// this._clikableThings = new Things(this._domEvents, this.scene);
 
-
-
-
-
-		this._FrontboardManager.setPlayersAndMobs(
-			[this._PlayerManager],
-			this.allMobs
-		)
+		let frontboardDatas = { PlayerIndex: 0, Players: [this._PlayerManager], Mobs: this.allMobs }
+		this._FrontboardManager.init(frontboardDatas)
 
 		this.scene.add(this._PlayerManager.playerGroupe)
 
@@ -192,7 +191,6 @@ class gameCore {
 
 		if (this._WindowActive != null) this._WindowActive.init()
 
-		// this._ModelsManager.LoadAnimatedModelFromMain()
 
 		// START
 		this.START();
@@ -212,6 +210,7 @@ class gameCore {
 			this._PlayerManager.saveOldPos()
 			this._PlayerManager.checkRotation();
 			this._PlayerManager.checkMoves();
+
 			this._PlayerManager.checkActions();
 			this._PlayerManager.checkSkills(this.allMobs);
 			this._PlayerManager.checkZooming();
@@ -224,7 +223,7 @@ class gameCore {
 
 			// MOBS
 			if (typeof this.allMobs === 'object' && this.allMobs.length > 0) {
-				this._MobsManager.updateAllMobsPhaseA()
+				// this._MobsManager.updateAllMobsPhaseA()
 				this._MobsManager.updateAllMobsPhaseB()
 				this._MobsManager.updateAllMobsPhaseC()
 				this.allMobs = this._MobsManager.getOnlyLivings()[0]
@@ -237,22 +236,16 @@ class gameCore {
 			if (this.MegaMixer2) this.MegaMixer2.update(timeElapsed)
 
 			// GRAVITY 
-
-
 			this._PlayerManager.applyGravity()
+
+			// apply definitive position after alll stuff done
 			this._PlayerManager.applyFuturPositionsToPlayerGroupePosition()
 
 			// Camera folow
 			this._CameraManager.FollowPlayer(this._PlayerManager.playerGroupe.position, 0)
 
-			// this._PlayerManager.saveOldPos()
-
-
 			// RENDER ((((()))))
 			this._threejs.render(this.scene, this.camera);
-		}
-		if (this._controls) {
-			this._controls.Update(timeElapsedS);
 		}
 
 	}

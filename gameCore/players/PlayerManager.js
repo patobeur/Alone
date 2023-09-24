@@ -135,62 +135,42 @@ class PlayerManager {
 		this.playerGroupe.add(this.playerOrbiter);
 	}
 	updatePlayerOrbiter() {
-		if (this.playerOrbiter) {
+		let playerOrbiter = this.playerOrbiter
+		if (playerOrbiter) {
 			this._Formula.get_NextOrbitPosOrbiter(
-				this.playerOrbiter
+				playerOrbiter
 			);
 		}
 	}
 	applyGravity() {
-		let AAAAAAAAA = this.PlayerConfig
+		let currentConfig = this.PlayerConfig
+
 		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
 		this.tics++;
+
 		if (this.tics >= 0) {
-			let halfHeight = AAAAAAAAA.config.size.x / 2
-			let currentAltitude = AAAAAAAAA.config.futurPositions.z - halfHeight
-			AAAAAAAAA.config.currentAltitude = AAAAAAAAA.config.futurPositions.z - halfHeight
-			// let fall = 0 - this._GameConfig.gravity - AAAAAAAAA.config.velocity.z
-			let fall = 0 + this._GameConfig.gravity - AAAAAAAAA.config.velocity.z
-			// let fall = 1
-			// console.log(currentAltitude)
+			let halfHeight = currentConfig.config.size.x / 2
+			let currentAltitude = currentConfig.config.futurPositions.z - halfHeight
+			currentConfig.config.currentAltitude = currentConfig.config.futurPositions.z - halfHeight
+
+			let fall = 0 + this._GameConfig.gravity - currentConfig.config.velocity.z
 
 			if ((currentAltitude >= fall)) {//this._GameConfig.gravity
 
-				AAAAAAAAA.config.futurPositions.z -= fall
-				// console.log(
-				// 	'j:', AAAAAAAAA.config.status.jumping,
-				// 	'cur:', AAAAAAAAA.config.actions.jumping.current,
-				// 	'alt:', currentAltitude,
-				// 	'>=',
-				// 	'v_z:', AAAAAAAAA.config.velocity.z,
-				// 	'g:', this._GameConfig.gravity,
-				// 	'f:', fall,
-				// )
+				currentConfig.config.futurPositions.z -= fall
+
 				this.playerGroupe.position.set(
-					AAAAAAAAA.config.futurPositions.x,
-					AAAAAAAAA.config.futurPositions.y,
-					AAAAAAAAA.config.futurPositions.z
+					currentConfig.config.futurPositions.x,
+					currentConfig.config.futurPositions.y,
+					currentConfig.config.futurPositions.z
 				);
 			}
-
-
-			// AAAAAAAAA.config.futurPositions.z =
-			// 	(currentAltitude >= this._GameConfig.gravity)
-			// 		? AAAAAAAAA.config.futurPositions.z - fall
-			// 		: halfHeight
-
-
 			this.tics = 0
 		}
 	}
 	checkActions() {
 		// is jumping
 		if (this._ControlsManager.space === true && this.PlayerConfig.config.status.jumping === false) this.PlayerConfig.config.status.jumping = true; this.jump();
-
-
-
-		// this.PlayerConfig.config.status.jumping = false
-
 		// others
 	}
 	jump() {
@@ -214,6 +194,8 @@ class PlayerManager {
 			}
 		}
 	}
+
+	// TODO TODO TODO............. i f..... need TODO this
 	// get_GridCoords=(position)=>{
 	// 	console.log('grid',this._GameConfig.floor)
 	// }
@@ -243,7 +225,6 @@ class PlayerManager {
 	// 	this.otherPlayerCheckIfMoveOrSkillsActions(allmobs,player);
 	// }
 	regen() {
-		// this.stats.energy.current += this.stats.energy.regen
 		if (this.regenTimer.current === this.regenTimer.max) {
 			this.regenTimer.current = 0;
 			for (var key in this.PlayerConfig.config.stats) {
@@ -252,9 +233,7 @@ class PlayerManager {
 					if (this.PlayerConfig.config.stats[key].current <= this.PlayerConfig.config.stats[key].max - this.PlayerConfig.config.stats[key].regen) {
 						this.PlayerConfig.config.stats[key].current += this.PlayerConfig.config.stats[key].regen
 						// if (this.type === "PLAYER") {
-						//console.log("PLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYERPLAYER PLAYER")
 						if (this._FrontboardManager) {
-							//if (this.conslog) console.log('regen ',key,this.stats[key].current)
 							this._FrontboardManager.refresh(key, this.PlayerConfig.config.stats[key].current)
 						}
 						else { if (this._GameConfig.info) console.log('no _FrontboardManager !') }

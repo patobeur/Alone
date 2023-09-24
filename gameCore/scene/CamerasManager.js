@@ -25,7 +25,7 @@ class CamerasManager {
 				far: 1000.0,
 				position: new THREE.Vector3(0, 0, 2),
 				// others
-				zoom: { step: 5, zmin: 5, zmax: 25 },
+				zoom: { y: { step: 5, min: -15, max: 2 }, z: { step: 5, min: 5, max: 25 } },
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
 				followDecalage: new THREE.Vector3(0, -15, 10),
@@ -41,7 +41,7 @@ class CamerasManager {
 				far: 1000.0,
 				position: new THREE.Vector3(0, 0, 15),
 				// others
-				zoom: { step: 5, zmin: 5, zmax: 25 },
+				zoom: { y: { step: 2, min: 2, max: 10 }, z: { step: 5, min: 5, max: 25 } },
 				followDecalage: new THREE.Vector3(0, 0, 0),
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
@@ -77,12 +77,18 @@ class CamerasManager {
 		return camera
 	}
 	handleZoom(zooming, CameraNum) {
-		let apresZoom = zooming === 'out'
-			? this._CamerasConfig[CameraNum].zoom.step
-			: -this._CamerasConfig[CameraNum].zoom.step;
-		let max = Math.max(this._CamerasConfig[CameraNum].zoom.zmin, this._CamerasConfig[CameraNum].followDecalage.z + apresZoom)
-		let min = Math.min(max, this._CamerasConfig[CameraNum].zoom.zmax)
-		this._CamerasConfig[CameraNum].followDecalage.z = min;
+		let apresZoomz = (zooming === 'out')
+			? this._CamerasConfig[CameraNum].zoom.z.step
+			: -this._CamerasConfig[CameraNum].zoom.z.step;
+
+		let zmax = Math.max(this._CamerasConfig[CameraNum].zoom.z.min, this._CamerasConfig[CameraNum].followDecalage.z + apresZoomz)
+		let z = Math.min(zmax, this._CamerasConfig[CameraNum].zoom.z.max)
+
+		let ymax = Math.max(this._CamerasConfig[CameraNum].zoom.y.min, this._CamerasConfig[CameraNum].followDecalage.y + apresZoomz)
+		let y = Math.min(ymax, this._CamerasConfig[CameraNum].zoom.y.max)
+
+		this._CamerasConfig[CameraNum].followDecalage.z = z;
+		this._CamerasConfig[CameraNum].followDecalage.y = y;
 	}
 	init_Cameras() {
 		this._CamerasConfig.forEach(config => {

@@ -182,8 +182,8 @@ class gameCore {
 		// this._domEvents = new THREEx.DomEvents(this.camera, this._threejs.domElement)
 		// this._clikableThings = new Things(this._domEvents, this.scene);
 
-		let frontboardDatas = { PlayerIndex: 0, Players: [this._PlayerManager], Mobs: this.allMobs }
-		this._FrontboardManager.init(frontboardDatas)
+		let FrontboardManagerDatas = { PlayerIndex: 0, Players: [this._PlayerManager], Mobs: this.allMobs }
+		this._FrontboardManager.init(FrontboardManagerDatas)
 
 		this.scene.add(this._PlayerManager.playerGroupe)
 
@@ -224,7 +224,11 @@ class gameCore {
 			// MOBS
 			if (typeof this.allMobs === 'object' && this.allMobs.length > 0) {
 				// this._MobsManager.updateAllMobsPhaseA()
-				this._MobsManager.updateAllMobsPhaseB()
+				this._MobsManager.updateAllMobsPhaseB((colliders)=>{
+					// console.log(colliders);
+					
+				this._FrontboardManager.setColliderSignal('ColliderSignal', (colliders.length>0))
+				})
 				this._MobsManager.updateAllMobsPhaseC()
 				this.allMobs = this._MobsManager.getOnlyLivings()[0]
 			}

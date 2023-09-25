@@ -47,7 +47,11 @@ class FrontboardManager {
 	}
 	setColliderSignal(frontName = 'ColliderSignal', booleanData) {
 		if (typeof this[frontName] === 'object') {
-			(booleanData === true) ? this[frontName].classList.add('active') : this[frontName].classList.remove('active')
+			if(booleanData === true) {
+				this[frontName].classList.add('active') }
+			else {
+				this[frontName].classList.remove('active')
+			}
 		}
 	}
 	setPlayer(Players, PlayerIndex) {

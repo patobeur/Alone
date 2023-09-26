@@ -45,11 +45,11 @@ class MobsManager {
 	}
 
 
-	updateAllMobsPhaseA() {
-		// this._AllMobs.forEach(mob => this.update_VisualHp(mob));
-	}
-	updateAllMobsPhaseB(callbackMobColliding) {
+	A_InitAllMobsDatas() {
 		this.colliders = []
+		// empty
+	}
+	B_CheckAllMobsDatas() {
 		this._AllMobs.forEach(mob => {
 			this.update_VisualHp(mob)
 			if (mob.config.states.dead !== true) {
@@ -93,21 +93,18 @@ class MobsManager {
 
 				// colliding with player
 				// console.log((this._detecterCollisionPredictionPlayer(mob) === true) ? ('mob',mob.mesh.position) : ('no',mob.mesh.position));
-				let colllll  = this._detecterCollisionPredictionPlayer(mob)// if (mob.config.states.isGoingToCollide.current < 1) {
-				if(colllll === true){
-					// console.log(mob.mesh.uuid);
-					// if (this._FrontboardManager.ColliderSignal) {
-					// 	this._FrontboardManager.setColliderSignal('ColliderSignal', colllll)
-					// }
-					// else 
+				if (this._detecterCollisionPredictionPlayer(mob) === true){
 					this.colliders.push(mob)
 				}
 			}
 				
-				callbackMobColliding(this.colliders)
 		});
+		let returnedDatas = {
+			colliders:this.colliders
+		}
+		return returnedDatas
 	}
-	updateAllMobsPhaseC() {
+	C_CleanAllMobsDatas() {
 		this._mobsIndexToDelete.forEach(index => {
 			this._AllMobs.splice(index, 1)
 		})
@@ -329,9 +326,6 @@ class MobsManager {
 		// 	name += lettre.toUpperCase()
 		// }
 		return name
-	}
-	get_rangersName() {
-		return ['Guillaume', 'Pyl', 'Charlotte', 'Frédéric', 'Rémi', 'Eslam', 'Charles-L', 'Audrey', 'Cédric', 'Antho', 'Renaud', 'Feun', 'Guillaume', 'Pyl', 'Charlotte', 'Frédéric', 'Rémi', 'Eslam', 'Charles-L', 'Audrey', 'Cédric', 'Antho', 'Renaud', 'Feun']
 	}
 }
 export { MobsManager }

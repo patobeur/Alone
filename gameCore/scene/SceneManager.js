@@ -76,7 +76,7 @@ class SceneManager {
 
 		this._WebGLRenderer.shadowMap.enabled = true;
 		this._WebGLRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		this._WebGLRenderer.setPixelRatio(window.devicePixelRatio);
+		this._WebGLRenderer.setPixelRatio(window.devicePixelRatio );
 		this._WebGLRenderer.setSize(window.innerWidth, window.innerHeight);
 		// this._WebGLRenderer.gammaFactor = 2.2;
 		this._WebGLRenderer.domElement.id = 'game'
@@ -92,6 +92,11 @@ class SceneManager {
 				this._WebGLRenderer.domElement
 			);
 			if (typeof this.controls === 'object') {
+				
+		this.controls.enableDamping = true;
+		this.controls.enableZoom = false;
+		this.controls.enablePan = false;	
+
 				this.controls.target.set(0, 0, 0);
 				this.controls.update();
 				if (this._GameConfig.conslog) console.info('OrbitControls ok ! ')

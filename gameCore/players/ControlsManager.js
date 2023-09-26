@@ -4,7 +4,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 class ControlsManager {
 	conslog = true
-	_preventDefaultRightClick = true; // dev mod
+	_preventDefaultRightClick = false; // dev mod
 	_TouchM
 	pMouse
 	_GameConfig;

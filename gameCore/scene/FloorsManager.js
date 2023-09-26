@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class FloorsManager {
 	_GameConfig
-	_currentImmat = 1 // current floor
+	_currentImmat = 2 // current floor
 	floor = null
 	floorConfig = null
 	order = 2
@@ -39,12 +39,14 @@ class FloorsManager {
 				mesh.receiveShadow = true;
 				mesh.castShadow = true;
 				mesh.name = 'floor_' + this._GameConfig.floors.name;
-				if (this._GameConfig.conslog) console.log(this._GameConfig.floors.size)
-				console.log(
-					0 - (this._GameConfig.floors.size.x / 2),
-					0 - (this._GameConfig.floors.size.y / 2),
-					0 - (this._GameConfig.floors.size.z / 2)
-				)
+				// mesh.position.set(
+				// 	0-(this._GameConfig.floors.size.x / 2),
+				// 	0-(this._GameConfig.floors.size.y / 2),
+				// 	0-(this._GameConfig.floors.size.z / 2)
+				// )
+				mesh.position.z =-(this._GameConfig.floors.size.z)
+				console.log(this._GameConfig.floors.size)
+				console.log(mesh.position)
 				// groundMaterial = new THREE.MeshPhongMaterial({ map: texture })
 				break;
 			case 'PlaneGeometry':
@@ -113,6 +115,20 @@ class FloorsManager {
 				spawns: [
 					{ x: 0, y: -30, z: 20 },
 					{ x: 0, y: 0, z: 5 },
+				],
+				mobs: { number: 101 }
+			},
+			2: {
+				name: 'groundTwo',
+				fullName: 'Ground-One',
+				mode: { type: 'BoxGeometry' },
+				size: { x: 64, y: 64, z: 1 },
+				color: 0x1010FF,
+				receiveShadow: true,
+				repeat: [32, 32],
+				spawns: [
+					{ x: 0, y: -30, z: 20 },
+					{ x: 0, y: 0, z: 15 },
 				],
 				mobs: { number: 101 }
 			}

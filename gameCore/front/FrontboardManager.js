@@ -8,6 +8,11 @@ class FrontboardManager {
 	_allMobs = null
 	defaultStats = null
 	currentPlayer = 0
+	last = {
+		mobnumbers:0,
+		// FlooredSignal:null,
+		// ColliderSignal:null
+	}
 	constructor(DDom) {
 		this.DDom = DDom
 	}
@@ -31,26 +36,56 @@ class FrontboardManager {
 		this.setPlayer(Players, PlayerIndex)
 		this.setAllMobs(Mobs)
 
+		// bloc for all signals alerte
 		this._setFrontPart({
-			idCss: 'ColliderSignal',
-			stringCss: ".collidersignal{" +
-				"background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;" +
-				"font-family:'Roboto',sans-serif;font-weight:bold;" +
-				"display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);" +
-				"min-width:50px;max-width:80px;height:50px;z-index:11;text-align: center;}" +
-				".collidersignal.active{background-color:rgba(255,0,0,.3);}",
-			elementAttributs: { tag: 'div', id: 'collidersignal', className: 'collidersignal active', textContent: "Collider Alert" }
+			target:false,
+			idCss: 'Alertes',
+			stringCss: "",
+			// stringCss: ".alertes{" +
+			// 	"background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;" +
+			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;"+
+			// 	"left:calc(50% - 25px);" +
+			// 	"min-width:50px;max-width:80px;height:50px;"+
+			// 	"z-index:11;text-align: center;}" +
+			// 	".alertes.active{background-color:rgba(255,0,0,.3);}",
+			elementAttributs: { tag: 'div', id: 'Alertes', className: 'alertes', textContent: "" }
 		});
-		this.setColliderSignal('ColliderSignal', false)
-		this.setColliderSignal('ColliderSignal', true)
+		this._setFrontPart({
+			target:"Alertes",
+			idCss: 'ColliderSignal',
+			stringCss: "",
+			// stringCss: ".collidersignal{" +
+			// 	"background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;" +
+			// 	"font-family:'Roboto',sans-serif;font-weight:bold;" +
+			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);" +
+			// 	"min-width:50px;max-width:80px;height:50px;z-index:11;text-align: center;}" +
+			// 	".collidersignal.active{background-color:rgba(255,0,0,.3);}",
+			elementAttributs: { tag: 'div', id: 'ColliderSignal', className: 'signal collidersignal', textContent: "Collider Alert" }
+		});
+		this._setFrontPart({
+			target:"Alertes",
+			idCss: 'FlooredSignal',
+			stringCss: "",
+			// stringCss: ".flooredsignal{" +
+			// 	"background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;" +
+			// 	"font-family:'Roboto',sans-serif;font-weight:bold;" +
+			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);" +
+			// 	"min-width:50px;max-width:80px;height:50px;z-index:11;text-align: center;}" +
+			// 	".flooredsignal.active{background-color:rgba(255,0,0,.3);}",
+			elementAttributs: { tag: 'div', id: 'FlooredSignal', className: 'signal flooredsignal', textContent: "Floored Alert" }
+		});
+		// this.setColliderSignal('ColliderSignal', false)
+		// this.setColliderSignal('ColliderSignal', true)
 
 	}
-	setColliderSignal(frontName = 'ColliderSignal', booleanData) {
+	setColliderSignal(frontName, booleanData) {
 		if (typeof this[frontName] === 'object') {
-			if(booleanData === true) {
-				this[frontName].classList.add('active') }
-			else {
-				this[frontName].classList.remove('active')
+			if(booleanData !== this.last[frontName]  ) {
+				if(booleanData === true) {
+					this[frontName].classList.add('active') }
+				else {
+					this[frontName].classList.remove('active')
+				}
 			}
 		}
 	}
@@ -62,7 +97,6 @@ class FrontboardManager {
 	}
 
 	setAllMobs(Mobs) {
-
 		this._allMobs = Mobs
 		this._setFrontMobsCounter()
 	}
@@ -84,14 +118,19 @@ class FrontboardManager {
 		return pourcentage
 	}
 	_initFrontPlayer() {
+
+		this._setFrontPlayer()
+		this._setMire()
+	}
+	_setMire() {
+		let stringCss = '.mire,.target {position: absolute;height: 20px;width: 20px;left: calc(50% - 10px);top: calc(50% - 10px);border-radius: 50%;}.mire {display: none;background-color: rgba(153, 205, 50, 0.493);}.target {background-color: rgba(248, 234, 33, 0.459);}'
+		this.DDom.addCss(stringCss, 'miretarget')
+	}
+	_setFrontPlayer() {
 		this.FrontPlayer = document.createElement('div');
 		this.FrontPlayer.className = 'board';
 		this.FrontPlayer.id = 'fullboard';
 		document.body.appendChild(this.FrontPlayer)
-
-		this._setFrontPlayer()
-	}
-	_setFrontPlayer() {
 		for (var key in this.defaultStats) {
 			// if (typeof this.defaultStats[key] !== 'function') {
 			let div = document.createElement('div');
@@ -108,24 +147,29 @@ class FrontboardManager {
 			// }
 			this.FrontPlayer.appendChild(div)
 		}
-		let stringCss = '.mire,.target {position: absolute;height: 20px;width: 20px;left: calc(50% - 10px);top: calc(50% - 10px);border-radius: 50%;}.mire {display: none;background-color: rgba(153, 205, 50, 0.493);}.target {background-color: rgba(248, 234, 33, 0.459);}'
-		stringCss += '.board{position: absolute;background-color: rgba(0, 0, 255, 0.644);top: 50px;left:0;width:75px;height:75px;display:flex;flex-direction: column;}'
+
+		
+		let stringCss = '.board{position: absolute;background-color: rgba(0, 0, 255, 0.644);top: 50px;left:0;width:75px;height:75px;display:flex;flex-direction: column;}'
 		stringCss += '.stat{width:100%;height:33%;display:flex;background-color: rgba(34, 34, 88, 0.644);border: 1px solid rgb(0, 0, 0);}'
 		stringCss += '.current{height:100%;color:white}'
-		this.DDom.addCss(stringCss, 'miretarget')
+		this.DDom.addCss(stringCss, 'fullboard')
 	}
 	_setFrontPart(datas = false) {
 
-		datas = datas === false ? {
-			stringCss: ".collidersignal{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}",
-			idCss: 'ColliderSignal',
-			elementAttributs: { tag: 'div', id: 'collidersignal', className: 'collidersignal', textContent: "Collider Alert" }
-		} : datas;
+		// datas = datas === false ? {
+		// 	stringCss: ".collidersignal{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}",
+		// 	idCss: 'ColliderSignal',
+		// 	elementAttributs: { tag: 'div', id: 'collidersignal', className: 'collidersignal', textContent: "Collider Alert" }
+		// } : datas;
 
-		this.DDom.addCss(datas.stringCss, datas.idCss)
-		this[datas.idCss] = this.DDom.createEle(datas.elementAttributs)
-
-		document.body.appendChild(this[datas.idCss])
+		this.DDom.addCss(datas.stringCss, datas.elementAttributs.id)
+		this[datas.elementAttributs.id] = this.DDom.createEle(datas.elementAttributs)
+		this.last[datas.elementAttributs.id] = null
+console.log('crea',datas.elementAttributs.id)
+console.log(this.last[datas.elementAttributs.id])
+		datas.target 
+			? this[datas.target].appendChild(this[datas.idCss])
+			: document.body.appendChild(this[datas.idCss]);
 	}
 	// _setFrontPlayerColliderSignal() {
 	// 	let partName = 'ColliderSignal'
@@ -144,7 +188,7 @@ class FrontboardManager {
 		this.DDom.addCss(stringCss, 'mobscounter')
 
 		this.FrontMobsCounter = this.DDom.createEle({
-			tag: 'div', id: 'mobscounter', className: 'mobscounter', textContent: "0"
+			tag: 'div', id: 'mobscounter', className: 'front mobscounter', textContent: "0"
 		})
 		document.body.appendChild(this.FrontMobsCounter)
 	}
@@ -169,7 +213,10 @@ class FrontboardManager {
 		this.FrontMobsCounter.textContent = number
 	}
 	setMobCounter(number) {
-		if (this.FrontMobsCounter) this.FrontMobsCounter.textContent = number
+		if (this.last.mobnumbers!=number && this.FrontMobsCounter) {
+			this.last.mobnumbers = number
+			this.FrontMobsCounter.textContent = this.last.mobnumbers
+		}
 	}
 }
 export { FrontboardManager }

@@ -21,7 +21,7 @@ import { TouchMe } from './mecanics/TouchMe.js';
 class gameCore {
 	v = "0.0.3"
 	// ------------------------------
-	defaultMobsNumber = 150
+	defaultMobsNumber = 10
 	_conslog = false
 	stats = null
 	// ------------------------------
@@ -87,6 +87,8 @@ class gameCore {
 
 
 
+		const raycaster = new THREE.Raycaster();
+		const mouse = new THREE.Vector2( 1, 1 );
 
 
 
@@ -125,12 +127,12 @@ class gameCore {
 	}
 	_InitC() {
 		// Jouez l'animation par défaut ici
-		// this.charGltf = this.allModels['character']['Kimono_Female'].gltf
-		// this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
-		// this.MegaClip = THREE.AnimationClip.findByName(this.charGltf.animations, 'Idle');
-		// this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
-		// this.MegaAction.play(); // Joue l'animation par défaut
-		// this.charGltf.scene.position.set(0, 0, 3)
+		this.charGltf = this.allModels['character']['Kimono_Female'].gltf
+		this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
+		this.MegaClip = THREE.AnimationClip.findByName(this.charGltf.animations, 'Idle');
+		this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
+		this.MegaAction.play(); // Joue l'animation par défaut
+		this.charGltf.scene.position.set(0, -5, 0)
 
 
 		// this.charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf
@@ -174,9 +176,7 @@ class gameCore {
 		// ADD OrbitControls --------
 		// this.controls = this._SceneManager.setAndGet_OrbitControls(
 		// 	this.camera
-		// )		
-
-
+		// )	
 
 		// test objects (viré par ce que ca gene)
 		// this._domEvents = new THREEx.DomEvents(this.camera, this._threejs.domElement)
@@ -200,7 +200,7 @@ class gameCore {
 	}
 
 	_Step(timeElapsed) {
-		const timeElapsedS = timeElapsed * 0.001;
+		timeElapsed = timeElapsed * 0.001;
 
 
 		if (!this._pause && ((this._WindowActive != null && this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))) {
@@ -223,13 +223,14 @@ class gameCore {
 
 			// MOBS
 			if (typeof this.allMobs === 'object' && this.allMobs.length > 0) {
-				// this._MobsManager.updateAllMobsPhaseA()
-				this._MobsManager.updateAllMobsPhaseB((colliders)=>{
-					// console.log(colliders);
-					
-				this._FrontboardManager.setColliderSignal('ColliderSignal', (colliders.length>0))
-				})
-				this._MobsManager.updateAllMobsPhaseC()
+				this._MobsManager.A_InitAllMobsDatas()
+				
+				let datasPhaseB = this._MobsManager.B_CheckAllMobsDatas() // all mob cycle
+
+				if (datasPhaseB.colliders) this._FrontboardManager.setColliderSignal('ColliderSignal', (datasPhaseB.colliders.length>0))
+
+				this._MobsManager.C_CleanAllMobsDatas()
+				
 				this.allMobs = this._MobsManager.getOnlyLivings()[0]
 			}
 
@@ -239,8 +240,18 @@ class gameCore {
 			if (this.MegaMixer) this.MegaMixer.update(timeElapsed)
 			if (this.MegaMixer2) this.MegaMixer2.update(timeElapsed)
 
+			// Check if floored 
+			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(this.floor);
+
+			this._PlayerManager.applyGravity(floorcolide)
+			this._FrontboardManager.setColliderSignal('FlooredSignal', floorcolide)
+
+			// let floorcolide = this._detecteCollisionWithFloor(this.floor)
+
+			console.log(floorcolide)
+
 			// GRAVITY 
-			this._PlayerManager.applyGravity()
+			
 
 			// apply definitive position after alll stuff done
 			this._PlayerManager.applyFuturPositionsToPlayerGroupePosition()

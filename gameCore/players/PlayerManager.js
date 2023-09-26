@@ -142,31 +142,33 @@ class PlayerManager {
 			);
 		}
 	}
-	applyGravity() {
-		let currentConfig = this.PlayerConfig
+	applyGravity(floorcolide) {
+		let currentConfig = this.PlayerConfig.config
 
 		if (this.tics === 'undefined' || !this.tics) this.tics = 0;
 		this.tics++;
 
 		if (this.tics >= 0) {
-			let halfHeight = currentConfig.config.size.x / 2
-			let currentAltitude = currentConfig.config.futurPositions.z - halfHeight
-			currentConfig.config.currentAltitude = currentConfig.config.futurPositions.z - halfHeight
+			let halfHeight = currentConfig.size.x / 2
+			// let currentAltitude = currentConfig.config.futurPositions.z - halfHeight
+			currentConfig.currentAltitude = currentConfig.futurPositions.z - halfHeight
 
-			let fall = 0 + this._GameConfig.gravity - currentConfig.config.velocity.z
+			let fall = (floorcolide === true) 
+				? -currentConfig.velocity.z
+				: 0 + this._GameConfig.gravity - currentConfig.velocity.z;
+			
+			currentConfig.futurPositions.z -= fall
 
-			if ((currentAltitude >= fall)) {//this._GameConfig.gravity
-
-				currentConfig.config.futurPositions.z -= fall
-
-				this.playerGroupe.position.set(
-					currentConfig.config.futurPositions.x,
-					currentConfig.config.futurPositions.y,
-					currentConfig.config.futurPositions.z
-				);
-			}
 			this.tics = 0
 		}
+	}
+	detecteCollisionWithFloor(floor) {
+		let group = this.playerGroupe
+		// let group = this.PlayerMesh
+		floor.bbox = new THREE.Box3().setFromObject(floor)
+		let boundingBox = new THREE.Box3().setFromObject(group);
+		let intersec = floor.bbox.intersectsBox(boundingBox);
+		return intersec
 	}
 	checkActions() {
 		// is jumping
@@ -209,9 +211,9 @@ class PlayerManager {
 		}
 	}
 	saveOldPos() {
-		// this.PlayerConfig.oldPosition.x = this.PlayerConfig.position.x
-		// this.PlayerConfig.oldPosition.y = this.PlayerConfig.position.y
-		// this.PlayerConfig.oldPosition.z = this.PlayerConfig.position.z
+		this.PlayerConfig.config.oldPosition.x = this.PlayerConfig.config.futurPositions.x
+		this.PlayerConfig.config.oldPosition.y = this.PlayerConfig.config.futurPositions.y
+		this.PlayerConfig.config.oldPosition.z = this.PlayerConfig.config.futurPositions.z
 	}
 	areGroupsColliding(mob) {
 		let group = this.PlayerMesh

@@ -17,7 +17,7 @@ class ControlsManager {
 		this._GameConfig = GameConfig;
 		this.conslog = this._GameConfig.conslog;
 
-		if (this.conslog) console.info('ControlsManager Mounted !', 'conslog:', this.conslog);
+		console.info('ControlsManager Mounted !', 'conslog:', this._GameConfig);
 
 		this._initProperties();
 		this._setupDeviceControls();
@@ -25,9 +25,10 @@ class ControlsManager {
 
 	_initProperties() {
 		this.zooming = false
-		// this.raycaster = new THREE.Raycaster();
 		this.oldintersect = null;
 		this.pMouse = new THREE.Vector2();
+
+
 		this.thetaDeg = 0;
 
 		this.shoot1 = false;
@@ -48,6 +49,10 @@ class ControlsManager {
 		this.sright = false;
 	}
 
+
+	setCamera(camera) {
+		this.camera = camera
+	}
 
 	_setupDeviceControls() {
 		this.detectDevice = this._isTouchDevice();
@@ -131,8 +136,10 @@ class ControlsManager {
 		this.thetaDeg = this._Formula.get_DegreeWithTwoPos(window.innerWidth / 2, window.innerHeight / 2, event.clientX, event.clientY);
 		this.pMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 		this.pMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-	}
 
+		
+
+	}
 	_addKeyboardListeners() {
 		if (this.conslog) console.log('addKeyboardListeners');
 
@@ -202,44 +209,44 @@ class ControlsManager {
 		if (KEY_MAP[event.key]) KEY_MAP[event.key]();
 	}
 
-	// _get_intersectionColorChange() {
+	_get_intersectionColorChange(camera) {
 
-	// 	this.raycaster.setFromCamera(this.pMouse, camera);
-	// 	let intersects = this.raycaster.intersectObject(scene, true);
-	// 	if (intersects.length > 1) {
-	// 		if (intersects[0].object.name != "sand") {
-	// 			// if old intersect
-	// 			if (this.oldintersect) {
-	// 				if (this.oldintersect.uuid != intersects[0].object.uuid) {
-	// 					this.oldintersect.material.color.setHex(this.oldintersect.currentHex);
-	// 					this.oldintersect = null;
-	// 				}
-	// 			}
-	// 			else {
-	// 				// new intersect
-	// 				this.oldintersect = intersects[0].object;
-	// 				this.oldintersect.currentHex = this.oldintersect.material.color.getHex();
-	// 				this.oldintersect.uuid = intersects[0].object.uuid;
-	// 				this.oldintersect.material.color.setHex(0xffFF00);
-	// 			}
+		this.raycaster.setFromCamera(this.pMouse, camera);
+		let intersects = this.raycaster.intersectObject(scene, true);
+		if (intersects.length > 1) {
+			if (intersects[0].object.name != "sand") {
+				// if old intersect
+				if (this.oldintersect) {
+					if (this.oldintersect.uuid != intersects[0].object.uuid) {
+						this.oldintersect.material.color.setHex(this.oldintersect.currentHex);
+						this.oldintersect = null;
+					}
+				}
+				else {
+					// new intersect
+					this.oldintersect = intersects[0].object;
+					this.oldintersect.currentHex = this.oldintersect.material.color.getHex();
+					this.oldintersect.uuid = intersects[0].object.uuid;
+					this.oldintersect.material.color.setHex(0xffFF00);
+				}
 
-	// 		}
-	// 		else {
-	// 			// sol
-	// 			if (this.oldintersect) {
-	// 				this.oldintersect.material.color.setHex(this.oldintersect.currentHex);
-	// 				this.oldintersect = null;
-	// 			}
-	// 		}
-	// 	}
-	// 	else // there are no intersections
-	// 	{
-	// 		if (intersects.length < 1) {
-	// 			// if (this.conslog) console.log('oldintersect = null', this.oldintersect)
-	// 			this.oldintersect = null;
-	// 		}
-	// 	}
+			}
+			else {
+				// sol
+				if (this.oldintersect) {
+					this.oldintersect.material.color.setHex(this.oldintersect.currentHex);
+					this.oldintersect = null;
+				}
+			}
+		}
+		else // there are no intersections
+		{
+			if (intersects.length < 1) {
+				// if (this.conslog) console.log('oldintersect = null', this.oldintersect)
+				this.oldintersect = null;
+			}
+		}
 
-	// }
+	}
 }
 export { ControlsManager }

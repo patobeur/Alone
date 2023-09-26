@@ -87,8 +87,6 @@ class gameCore {
 
 
 
-		const raycaster = new THREE.Raycaster();
-		const mouse = new THREE.Vector2( 1, 1 );
 
 
 
@@ -192,8 +190,16 @@ class gameCore {
 		if (this._WindowActive != null) this._WindowActive.init()
 
 
+		this.raycaster = new THREE.Raycaster();
+		this.ray = this.checkray()
 		// START
 		this.START();
+	}
+	checkray(){
+		let mouse = this._PlayerManager.ControlsManager.pMouse;
+		let ray = this.raycaster.setFromCamera( mouse, this.camera );
+		console.log('ray',ray)
+		return ray
 	}
 	START() {
 		this._REFRESH();
@@ -243,14 +249,9 @@ class gameCore {
 			// Check if floored 
 			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(this.floor);
 
-			this._PlayerManager.applyGravity(floorcolide)
 			this._FrontboardManager.setColliderSignal('FlooredSignal', floorcolide)
-
-			// let floorcolide = this._detecteCollisionWithFloor(this.floor)
-
-			console.log(floorcolide)
-
 			// GRAVITY 
+			this._PlayerManager.applyGravity(floorcolide)
 			
 
 			// apply definitive position after alll stuff done

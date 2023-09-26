@@ -39,6 +39,14 @@ class FrontboardManager {
 		// bloc for all signals alerte
 		this._setFrontPart({
 			target:false,
+			idCss: 'playerXp',
+			// stringCss: "",
+			stringCss: ".playerxp{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;top:160px;right:20px;min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}",
+			elementAttributs: { tag: 'div', id: 'playerXp', className: 'playerxp', textContent: "xp" ,title:'Experience', alt:'Experience'}
+		});
+		// bloc for all signals alerte
+		this._setFrontPart({
+			target:false,
 			idCss: 'Alertes',
 			stringCss: "",
 			// stringCss: ".alertes{" +
@@ -60,7 +68,7 @@ class FrontboardManager {
 			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);" +
 			// 	"min-width:50px;max-width:80px;height:50px;z-index:11;text-align: center;}" +
 			// 	".collidersignal.active{background-color:rgba(255,0,0,.3);}",
-			elementAttributs: { tag: 'div', id: 'ColliderSignal', className: 'signal collidersignal', textContent: "Collider Alert" }
+			elementAttributs: { tag: 'div', id: 'ColliderSignal', className: 'signal collidersignal', textContent: "Collider Alert",title:'Mobs Collider', alt:'Mobs Collider!'}
 		});
 		this._setFrontPart({
 			target:"Alertes",
@@ -72,16 +80,26 @@ class FrontboardManager {
 			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);" +
 			// 	"min-width:50px;max-width:80px;height:50px;z-index:11;text-align: center;}" +
 			// 	".flooredsignal.active{background-color:rgba(255,0,0,.3);}",
-			elementAttributs: { tag: 'div', id: 'FlooredSignal', className: 'signal flooredsignal', textContent: "Floored Alert" }
+			elementAttributs: { tag: 'div', id: 'FlooredSignal', className: 'signal flooredsignal', textContent: "Floored Alert" ,title:'On floor!', alt:'On floor!'}
 		});
 		// this.setColliderSignal('ColliderSignal', false)
 		// this.setColliderSignal('ColliderSignal', true)
 
 	}
-	setColliderSignal(frontName, booleanData) {
-		if (typeof this[frontName] === 'object') {
-			if(booleanData !== this.last[frontName]  ) {
-				if(booleanData === true) {
+	
+	_setFrontMobsCounter() {
+		let stringCss = ".mobscounter{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;top:80px;right:20px;min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}"
+		this.DDom.addCss(stringCss, 'mobscounter')
+
+		this.FrontMobsCounter = this.DDom.createEle({
+			tag: 'div', id: 'mobscounter', className: 'front mobscounter', textContent: "0" ,title:'Mobs counter!', alt:'Mobs counter!'
+		})
+		document.body.appendChild(this.FrontMobsCounter)
+	}
+	setColliderSignal(frontName, isOn) {
+		if (typeof this[frontName] === 'object' && typeof isOn === 'boolean') {
+			if(isOn !== this.last[frontName]  ) {
+				if(isOn === true) {
 					this[frontName].classList.add('active') }
 				else {
 					this[frontName].classList.remove('active')
@@ -93,6 +111,7 @@ class FrontboardManager {
 		this._allPlayers = Players
 		this.currentPlayer = PlayerIndex
 		this.defaultStats = this._allPlayers[this.currentPlayer].PlayerConfig.config.stats
+
 		this._initFrontPlayer()
 	}
 
@@ -156,41 +175,12 @@ class FrontboardManager {
 	}
 	_setFrontPart(datas = false) {
 
-		// datas = datas === false ? {
-		// 	stringCss: ".collidersignal{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}",
-		// 	idCss: 'ColliderSignal',
-		// 	elementAttributs: { tag: 'div', id: 'collidersignal', className: 'collidersignal', textContent: "Collider Alert" }
-		// } : datas;
-
 		this.DDom.addCss(datas.stringCss, datas.elementAttributs.id)
 		this[datas.elementAttributs.id] = this.DDom.createEle(datas.elementAttributs)
 		this.last[datas.elementAttributs.id] = null
-console.log('crea',datas.elementAttributs.id)
-console.log(this.last[datas.elementAttributs.id])
 		datas.target 
 			? this[datas.target].appendChild(this[datas.idCss])
 			: document.body.appendChild(this[datas.idCss]);
-	}
-	// _setFrontPlayerColliderSignal() {
-	// 	let partName = 'ColliderSignal'
-	// 	let datas = {
-	// 		stringCss: ".collidersignal{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}",
-	// 		idCss: 'collidersignal',
-	// 		elementAttributs: { tag: 'div', id: 'collidersignal', className: 'collidersignal', textContent: "Collider Alert" }
-	// 	}
-	// 	this.DDom.addCss(datas.stringCss, datas.idCss)
-	// 	this[partName] = this.DDom.createEle(datas.elementAttributs)
-
-	// 	document.body.appendChild(this[partName])
-	// }
-	_setFrontMobsCounter() {
-		let stringCss = ".mobscounter{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;top:80px;right:20px;min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}"
-		this.DDom.addCss(stringCss, 'mobscounter')
-
-		this.FrontMobsCounter = this.DDom.createEle({
-			tag: 'div', id: 'mobscounter', className: 'front mobscounter', textContent: "0"
-		})
-		document.body.appendChild(this.FrontMobsCounter)
 	}
 	// set_ContextMenu = () => {
 	// 	var cosmos = document.getElementById("game");
@@ -216,6 +206,12 @@ console.log(this.last[datas.elementAttributs.id])
 		if (this.last.mobnumbers!=number && this.FrontMobsCounter) {
 			this.last.mobnumbers = number
 			this.FrontMobsCounter.textContent = this.last.mobnumbers
+		}
+	}
+	setXpCounter(number) {
+		if (this.last.playerXp!=number && this.playerXp) {
+			this.last.playerXp = number
+			this.playerXp.textContent = this.last.playerXp
 		}
 	}
 }

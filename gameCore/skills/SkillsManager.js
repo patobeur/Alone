@@ -3,22 +3,23 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 class SkillsManager {
 	conslog = false
 	order = 0
-	constructor(skillname, playerGroupe, canonpart, fromfloor = 1, Scene, faction) {
-		// let skillname = datas.skillname
-		// this._playerGroupe = datas.playerGroupe
-		// this.sourceCanon = datas.canonpart
-		// let fromfloor = datas.fromfloor
-		// this.scene = datas.Scene
-		// let faction = datas.faction
+	constructor(datas) {
+//skillname, playerGroupe, canonpart, fromfloor = 1, Scene, faction
+
+		
+		let skillname = datas.skillname
+		this._playerGroupe = datas.playerGroupe
+		this.sourceCanon = datas.canonpart
+		let fromfloor = datas.fromfloor
+		this.scene = datas.scene
+		let faction = datas.faction
+		this.skillCallBack = datas.skillCallBack
 
 
 		this.formula = new Formula()
 
 
-		this.scene = Scene
-		this._playerGroupe = playerGroupe
 
-		this.sourceCanon = canonpart
 		// var playerPosition = canonpart.position
 		var rotation = this._playerGroupe.rotation
 		// this.fromfloor = fromfloor / 2;
@@ -96,8 +97,6 @@ class SkillsManager {
 	}
 	_update = () => {
 		if (!this.isColliding) {
-
-
 			if (!this.durationEnds) {
 				this._setNextPosition();
 				this._setNextTransform();
@@ -112,25 +111,30 @@ class SkillsManager {
 			// if (this.conslog && this.isColliding) console.log('isColliding ???',this.isColliding);
 			// this.isColliding = false
 
-			this._setTouchedMobs()
+			// todo  long cycle 
+			this._setTouchedMobs() // cycle thrue allmobs
 
 			// if (this.isColliding === true && typeof this.touchedMobs === 'object'){
 			if (typeof this.touchedMobs === 'object' && this.touchedMobs.length > 0) {
-
+				// console.log(this.touchedMobs);
 				// Mob dead
 				// this.touchedMobs[0].config.states.dead = true
-				let damage = new Number(this.skillDatas.getDamage(this.touchedMobs[0]));
+				if (this.touchedMobs[0].config.stats.hp.current > 0 && 
+					this.touchedMobs[0].config.states.dead === false) {
+				
+					let damage = new Number(this.skillDatas.getDamage(this.touchedMobs[0]));
 
-				if (this.conslog) console.log(this.skillDatas);
-				if (this.conslog) console.log('getDamage = ' + this.skillDatas.getDamage(this.touchedMobs[0]));
+					// if (this.conslog) console.log(this.skillDatas);
+					// if (this.conslog) console.log('getDamage = ' + this.skillDatas.getDamage(this.touchedMobs[0]));
 
-				let def = this.touchedMobs[0].config.stats.def.current;
-				let finalDamage = damage - def;
-				if (this.conslog) console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage);
+					let def = this.touchedMobs[0].config.stats.def.current;
+					let finalDamage = damage - def;
+					// if (this.conslog) console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage);
 
-				this.touchedMobs[0].config.stats.hp.current -= finalDamage
-				if (this.conslog) console.log('mob = ', this.touchedMobs[0].config.stats);
-
+					this.touchedMobs[0].config.stats.hp.current -= finalDamage
+					// if (this.conslog) console.log('mob = ', this.touchedMobs[0].config.stats);
+					if (this.touchedMobs[0].config.stats.hp.current <= 0) this.skillCallBack(this.touchedMobs[0])
+				}
 
 				// this.isColliding = true
 				// delete missile
@@ -144,6 +148,8 @@ class SkillsManager {
 					this.isColliding = false
 					this.touchedMobs = []
 				}
+				this.touchedMobs = []
+
 
 			}
 			// this.MobsManager.updateAllMobs()

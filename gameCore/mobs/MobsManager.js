@@ -55,6 +55,8 @@ class MobsManager {
 			if (mob.config.states.dead !== true) {
 				if (mob._isdead()) {
 					mob.config.states.dead = true;
+
+					
 					mob._removeFromSceneAndDispose();
 					return
 				}

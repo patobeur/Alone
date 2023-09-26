@@ -89,7 +89,6 @@ class DomManager {
 
 	// Cette fonction nettoie une chaîne de caractères des caractères spéciaux HTML
 	sanitize = (string) => {
-		console.log('sanitize---------------------------')
 		// Tableau de correspondance pour les caractères spéciaux
 		const map = {
 			'&': '&amp;',

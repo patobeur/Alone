@@ -3,6 +3,8 @@ class PlayerConfig {
 	constructor() {
 		this.config = {
 			playerMeshName: 'Alice',
+			lv:0,
+			xp:0,
 			size: { x: 1, y: 1, z: 1 },
 			// ---- Positions and movement datas --
 			futurPositions: { x: 0, y: 0, z: 0 },
@@ -32,8 +34,8 @@ class PlayerConfig {
 			},
 			canon: {
 				meshName: 'Cannon',
-				position: { x: .25, y: .5, z: .25 },
-				size: { x: .25, y: .25, z: .25 },
+				position: { x: 0, y:.5, z: 0 },
+				size: { x: .25, y: 1, z: .25 },
 				color: 'green',
 				wireframe: false
 			},

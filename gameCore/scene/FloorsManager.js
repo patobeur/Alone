@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 class FloorsManager {
 	_GameConfig
-	_currentImmat = 2 // current floor
+	_currentImmat = 3 // current floor
 	floor = null
 	floorConfig = null
 	order = 2
@@ -131,7 +131,26 @@ class FloorsManager {
 					{ x: 0, y: 0, z: 15 },
 				],
 				mobs: { number: 101 }
-			}
+			},
+			3: {
+				name: 'groundOne',
+				fullName: 'Ground-One',
+				imagesize: { x: 512, y: 512 },
+				mode: {
+					type: 'PlaneGeometry',
+					fileName: 'stone_floor_736x736.jpg',
+					size: { x: 512, y: 512 }
+				},
+				size: { x: 32, y: 64, z: .1 },
+				color: 0x1c1c1c,
+				receiveShadow: true,
+				repeat: [64, 64],
+				spawns: [
+					{ x: 0, y: -30, z: 20 },
+					{ x: 0, y: 0, z: 5 },
+				],
+				mobs: { number: 101 }
+			},
 		}
 		let config = floorsconfig[this._currentImmat]
 		// get position if not

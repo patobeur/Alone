@@ -33,7 +33,8 @@ class PlayerManager {
 
 
 
-		this._ControlsManager = new ControlsManager(this.type, this._GameConfig);
+		this.ControlsManager = new ControlsManager(this.type, this._GameConfig);
+
 
 		this._FrontboardManager = FrontboardManager;
 		this._Formula = new Formula();
@@ -63,6 +64,8 @@ class PlayerManager {
 		this.playerColor = this.PlayerConfig.config.playerColor
 
 		// this.torche = this.getTorchlightConfig();
+
+		
 
 		this.#init(startPos);
 	}
@@ -172,7 +175,7 @@ class PlayerManager {
 	}
 	checkActions() {
 		// is jumping
-		if (this._ControlsManager.space === true && this.PlayerConfig.config.status.jumping === false) this.PlayerConfig.config.status.jumping = true; this.jump();
+		if (this.ControlsManager.space === true && this.PlayerConfig.config.status.jumping === false) this.PlayerConfig.config.status.jumping = true; this.jump();
 		// others
 	}
 	jump() {
@@ -188,7 +191,7 @@ class PlayerManager {
 				this.PlayerConfig.config.actions.jumping.current = 0
 				this.PlayerConfig.config.status.jumping = false
 				this.PlayerConfig.config.velocity.z = 0
-				this._ControlsManager.space = false
+				this.ControlsManager.space = false
 			}
 			if (this.PlayerConfig.config.status.jumping === true && this.PlayerConfig.config.actions.jumping.current < this.PlayerConfig.config.actions.jumping.max) {
 				console.log('current ++')
@@ -202,11 +205,11 @@ class PlayerManager {
 	// 	console.log('grid',this._GameConfig.floor)
 	// }
 	checkZooming() {
-		if (this._ControlsManager) {
-			if (!this._ControlsManager.zooming === false) {
-				this._CameraManager.handleZoom(this._ControlsManager.zooming, this.CameraNum)
+		if (this.ControlsManager) {
+			if (!this.ControlsManager.zooming === false) {
+				this._CameraManager.handleZoom(this.ControlsManager.zooming, this.CameraNum)
 				// this._CameraManager.FollowPlayer(this.futurPositions,this.oldPosition,this.CameraNum)
-				this._ControlsManager.zooming = false
+				this.ControlsManager.zooming = false
 			}
 		}
 	}
@@ -312,17 +315,17 @@ class PlayerManager {
 
 	}
 	checkRotation() {
-		this.PlayerConfig.config.futurRotation.z = this._ControlsManager.thetaDeg
+		this.PlayerConfig.config.futurRotation.z = this.ControlsManager.thetaDeg
 		this.playerGroupe.rotation.z = THREE.MathUtils.degToRad(this.PlayerConfig.config.futurRotation.z);
 	}
 	checkMoves() {
-		if (typeof this._ControlsManager === 'object') {
+		if (typeof this.ControlsManager === 'object') {
 			let speed = this.maxSpeed;
-			if (this._ControlsManager.forward || this._ControlsManager.reverse || this._ControlsManager.left || this._ControlsManager.right) {
-				if (this._ControlsManager.forward) { this.PlayerConfig.config.futurPositions.y += speed }//; direction.angle = 0 }
-				if (this._ControlsManager.reverse) { this.PlayerConfig.config.futurPositions.y -= speed }//; direction.angle = 180 }
-				if (this._ControlsManager.left) { this.PlayerConfig.config.futurPositions.x -= speed }//; direction.angle = 90 }
-				if (this._ControlsManager.right) { this.PlayerConfig.config.futurPositions.x += speed }//; direction.angle = 270 }
+			if (this.ControlsManager.forward || this.ControlsManager.reverse || this.ControlsManager.left || this.ControlsManager.right) {
+				if (this.ControlsManager.forward) { this.PlayerConfig.config.futurPositions.y += speed }//; direction.angle = 0 }
+				if (this.ControlsManager.reverse) { this.PlayerConfig.config.futurPositions.y -= speed }//; direction.angle = 180 }
+				if (this.ControlsManager.left) { this.PlayerConfig.config.futurPositions.x -= speed }//; direction.angle = 90 }
+				if (this.ControlsManager.right) { this.PlayerConfig.config.futurPositions.x += speed }//; direction.angle = 270 }
 			}
 		}
 	}
@@ -333,33 +336,47 @@ class PlayerManager {
 			this.PlayerConfig.config.futurPositions.z
 		);
 	}
+	skillCallBack = (mob) => {
+		console.log('--------- YOU KILLLED ;( '+mob.config.nickname+'----')
+
+		let lvDif = mob.config.lv - this.PlayerConfig.config.lv
+
+		let xpp = (lvDif > 0 ? lvDif : 1) *
+		 (mob.config.stats.hp.max + mob.config.stats.def.max +mob.config.stats.energy.max)
+
+		 this.PlayerConfig.config.xp += xpp
+		 this._FrontboardManager.setXpCounter(this.PlayerConfig.config.xp)
+		 console.log('mob:',mob.config.nickname,'(lv:',mob.config.lv,'xp:',xpp,')')
+		 console.log('you (lv:', this.PlayerConfig.config.lv, ') xp:', this.PlayerConfig.config.xp,')')
+
+	}
 	checkSkills(allmobs) {
-		if (this._ControlsManager) {
-			if (this._ControlsManager.shoot1) {
-				// this._ControlsManager.shoot1 = false;
+		if (this.ControlsManager) {
+			if (this.ControlsManager.shoot1) {
+				// this.ControlsManager.shoot1 = false;
 				this.#shoot('fireball', allmobs);
 			}
-			if (this._ControlsManager.shoot2) {
-				// this._ControlsManager.shoot2 = false;
+			if (this.ControlsManager.shoot2) {
+				// this.ControlsManager.shoot2 = false;
 				this.#shoot('WeedWallLv1', allmobs);
 			}
-			if (this._ControlsManager.shoot3) {
-				// this._ControlsManager.shoot3 = false;
+			if (this.ControlsManager.shoot3) {
+				// this.ControlsManager.shoot3 = false;
 				this.#shoot('cube', allmobs);
 			}
-			if (this._ControlsManager.shoot4) {
-				// this._ControlsManager.shoot4 = false;
+			if (this.ControlsManager.shoot4) {
+				// this.ControlsManager.shoot4 = false;
 				this.#shoot('doomdoom', allmobs);
 			}
-			if (this._ControlsManager.shoot5) {
-				// this._ControlsManager.shoot5 = false;
+			if (this.ControlsManager.shoot5) {
+				// this.ControlsManager.shoot5 = false;
 				this.#shoot('doomdoom2', allmobs);
 			}
-			this._ControlsManager.shoot1 = false;
-			this._ControlsManager.shoot2 = false;
-			this._ControlsManager.shoot3 = false;
-			this._ControlsManager.shoot4 = false;
-			this._ControlsManager.shoot5 = false;
+			this.ControlsManager.shoot1 = false;
+			this.ControlsManager.shoot2 = false;
+			this.ControlsManager.shoot3 = false;
+			this.ControlsManager.shoot4 = false;
+			this.ControlsManager.shoot5 = false;
 		}
 	}
 
@@ -388,22 +405,28 @@ class PlayerManager {
 	// Shoot manager
 	// ----------------------------------------------------------------------------------
 	#shoot(skillname, allmobs) {
-		if (this._ControlsManager) {
+		if (this.ControlsManager) {
 			if (this.missiles.length < 5) {
 				// constructor(skillname, position, rotation, fromfloor = 1, Scene, faction, experienceF)
-				let skill = new SkillsManager(
-					skillname,
-					this.playerGroupe,
-					this.canonPart,
-					this.PlayerConfig.config.size.z,
-					this.scene,
-					'good',
-					(koi) => {
-						console.log('----------------------------------------------koi')
-						console.log('test koi :', koi)
-						console.log('----------------------------------------------koi')
-					}
-				);
+				
+				let datas = {
+					skillname: skillname,
+					playerGroupe: this.playerGroupe,
+					canonpart : this.canonPart,
+					fromfloor : this.PlayerConfig.config.size.z,
+					scene : this.scene,
+					good:'good',
+					skillCallBack: this.skillCallBack
+				}
+				
+				// skillname,
+				// this.playerGroupe,
+				// this.canonPart,
+				// this.PlayerConfig.config.size.z,
+				// this.scene,
+				// 'good',
+				// this.skillCallBack
+				let skill = new SkillsManager(datas);
 				if (skill.skillDatas.energyCost < this.PlayerConfig.config.stats.energy.current) {
 					// remove cost point
 					this.PlayerConfig.config.stats.energy.current -= skill.skillDatas.energyCost;

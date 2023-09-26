@@ -9,7 +9,8 @@ class MobConfig {
 		const config = {
 			mobs: {
 				faction: 'rangers',
-				lv: 0,
+				baseXp:10,
+				lv: 1,
 				speed: 1,
 				futurPositions: { x: 0, y: 0, z: 0 },
 				oldPosition: { x: 0, y: 0, z: 0 },

@@ -32,7 +32,7 @@ class LightsManager {
 		this.lights.push(this.SolMesh)
 		this.lights.push(this.SUNGroupe)
 		this.lights.push(this._ambientLight)
-		// this.lights.push(this.SunLight)
+		this.lights.push(this.SunLight)
 
 
 		// this.lights.push(this._directionalLight)

@@ -77,6 +77,7 @@ class FloorsManager {
 		}
 		// create mesh
 		if (!mesh === false) {
+			mesh.receiveShadow = true;
 			// si une position est indiqué
 			// if(!typeof this._GameConfig.floors.position === 'undefined') mesh.position.set(this._GameConfig.floors.position);
 			return mesh;

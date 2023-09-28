@@ -39,7 +39,7 @@ class SceneManager {
 		if(this.floor.castShadow) this.floor.castShadow = true;
 		if(this.floor.receiveShadow) this.floor.receiveShadow = true;
 		this._Scene.add(this.floor);
-		this._Scene.add(this.plan);
+		// this._Scene.add(this.plan);
 
 				
 		// // Ajout d'une source de lumière

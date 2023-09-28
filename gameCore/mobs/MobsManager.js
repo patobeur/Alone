@@ -29,6 +29,7 @@ class MobsManager {
 		this.conslog = this._GameConfig.conslog
 		this._maxMobLimiteLv = 7
 		this._AllMobs = []
+		this.onlyMobs = []
 		this._mobsIndexToDelete = []
 		this._CurrentMobImmat = 0
 		this._Formula = new Formula()
@@ -295,6 +296,7 @@ doLabelMob(){
 		)
 		// push a fresh mob with fresh conf to allMob arrray
 		this._AllMobs.push(newmob)
+		this.onlyMobs.push(newmob.mesh.children[0])
 
 		// set the new immat
 		this._CurrentMobImmat = this._AllMobs[this._AllMobs.length - 1].immat + 1

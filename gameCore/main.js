@@ -58,6 +58,7 @@ class gameCore {
 		this.HowManyMobs = datas && datas.HowManyMobs
 			? datas.HowManyMobs
 			: this.defaultMobsNumber;
+		this.lastRayTarget = 0
 		this._InitA()
 	}
 	_InitA() {
@@ -192,14 +193,35 @@ class gameCore {
 
 
 		this.raycaster = new THREE.Raycaster();
-		this.ray = this.checkray()
+		this.checkray()
 		// START
 		this.START();
 	}
 	checkray(){
-		let ray = this.raycaster.setFromCamera( this._PlayerManager.ControlsManager.pMouse, this.camera );
-		console.log('ray',ray)
-		return ray
+		
+		
+		// update the picking ray with the camera and pointer position
+		this.raycaster.setFromCamera( this._PlayerManager.ControlsManager.pMouse, this.camera );
+
+				// calculate objects intersecting the picking ray
+				const intersects = this.raycaster.intersectObjects( this._MobsManager.onlyMobs );
+				if(intersects.length>0) {
+					for ( let i = 0; i < intersects.length; i ++ ) {
+						if(this.lastRayTarget !== intersects[ i ].object.uuid) { 
+							let config = intersects[ i ].object.parent.config
+							console.log('nickname:',config.nickname,'lv:'+config.lv)
+							this.lastRayTarget = intersects[ i ].object.uuid
+						}
+						// this.lastRayTarget = null
+						// if (intersects[ i ].object.material) intersects[ i ].object.material.color.set( 0xff0000 );
+						// if (intersects[ i ].object.material)  
+						
+					}
+				}
+				else {
+					this.lastRayTarget = 0
+				}
+				
 	}
 	START() {
 		this._REFRESH();
@@ -213,6 +235,7 @@ class gameCore {
 
 			this._LightsManager.upadteSun()
 
+			this.checkray()
 			this._PlayerManager.saveOldPos()
 			this._PlayerManager.checkRotation();
 			this._PlayerManager.checkMoves();

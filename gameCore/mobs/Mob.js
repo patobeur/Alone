@@ -95,6 +95,7 @@ class Mob {
 		// if (this.conslog) console.log(this.conf)
 		// GROUP MESH
 		this.mesh = new THREE.Group();
+		this.mesh.config = this.config
 
 		// this.mesh.feun = {mob:true}
 		this.mesh.position.set(

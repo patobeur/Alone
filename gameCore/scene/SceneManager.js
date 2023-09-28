@@ -1,5 +1,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
+import { Formula } from '../mecanics/Formula.js';
 class SceneManager {
 	backgroundsRootPath = './gameCore/3dAssets/backgrounds/'
 	conslog = true;
@@ -8,10 +9,12 @@ class SceneManager {
 	// ext
 	_WebGLRenderer;
 	_Scene;
+	_Formula=null;
 	constructor(GameConfig) {
 		this.CubeTextureLoader = new THREE.CubeTextureLoader();
 		this._GameConfig = GameConfig;
 		if (this._GameConfig.conslog) console.info('SceneManager start !')
+		this._Formula = new Formula()
 	}
 	init() {
 		if (this._GameConfig.conslog) console.info('SceneManager initiated !')
@@ -23,10 +26,16 @@ class SceneManager {
 		this.plan = plan;
 		// Scene
 		this._Scene = new THREE.Scene();
+
+
 		this.set_SceneBackground(
 			this.backgroundsRootPath,
 			['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg',]
 		)
+		this._Scene.background.rotation = 2
+		this._Scene.flipY = true
+		// console.log(this._Scene.background)
+		
 		this.lights.forEach(light => {
 			if(typeof light != 'undefined') {
 				if(typeof light.castShadow != 'undefined') {

@@ -50,8 +50,8 @@ class FrontboardManager {
 			idCss: 'Alertes',
 			stringCss: "",
 
-			stringCss: '.alertes {position: absolute;bottom: 80px;display: flex;flex-direction: row;align-self: center;align-items: center;justify-content: center;background-color: rgba(0, 0, 0, 0.3);padding: 7px;border-radius: 1rem;-webkit-user-select: none;-moz-user-select: none;user-select: none;}' +
-			'.alertes div {background-color: rgba(0, 0, 0, 0.3);border-radius: 1rem;color: white;font-family: "Roboto", sans-serif;font-weight: bold;display: flex;align-items: center;justify-content: center;min-width: 50px;max-width: 80px;height: 50px;text-align: center;}' +
+			stringCss: '.alertes {position: absolute;bottom: 7px;display: flex;flex-direction: row;align-self: center;align-items: center;justify-content: center;background-color: rgba(0, 0, 0, 0.3);padding-right:7px;border-radius: 1rem;-webkit-user-select: none;-moz-user-select: none;user-select: none;}' +
+			'.alertes div {background-color: rgba(0, 0, 0, 0.3);border-radius: 1rem;color: white;font-family: "Roboto", sans-serif;font-weight: bold;display: flex;align-items: center;justify-content: center;min-width: 50px;max-width: 80px;height: 40px;margin:7px 0 7px 7px;text-align: center;}' +
 			'.alertes div.active {background-color: rgba(255, 0, 0, 0.3);}',
 			elementAttributs: { tag: 'div', id: 'Alertes', className: 'alertes', textContent: "" }
 		});

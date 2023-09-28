@@ -183,18 +183,15 @@ class PlayerManager {
 		// IF JUMPING STARTED
 		if (this.PlayerConfig.config.status.jumping === true) {
 			if (this.PlayerConfig.config.actions.jumping.current === 0) {
-				console.log('start jumping', this.PlayerConfig.config.actions.jumping.current)
 				this.PlayerConfig.config.velocity.z = 1
 			}
 			if (this.PlayerConfig.config.actions.jumping.current >= this.PlayerConfig.config.actions.jumping.max) {
-				console.log('end jumping', this.PlayerConfig.config.actions.jumping.current)
 				this.PlayerConfig.config.actions.jumping.current = 0
 				this.PlayerConfig.config.status.jumping = false
 				this.PlayerConfig.config.velocity.z = 0
 				this.ControlsManager.space = false
 			}
 			if (this.PlayerConfig.config.status.jumping === true && this.PlayerConfig.config.actions.jumping.current < this.PlayerConfig.config.actions.jumping.max) {
-				console.log('current ++')
 				this.PlayerConfig.config.actions.jumping.current++
 			}
 		}

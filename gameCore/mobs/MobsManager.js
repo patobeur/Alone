@@ -2,6 +2,7 @@ import { Formula } from '../mecanics/Formula.js';
 import { MobConfig } from './MobConfig.js';
 import { Mob } from './Mob.js';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+// import { CSS2DRenderer, CSS2DObject } from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/renderers/CSS2DRenderer';
 
 // import * as SkeletonUtils from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/utils/SkeletonUtils.js';
 
@@ -44,7 +45,9 @@ class MobsManager {
 		return this.get_allMobs()
 	}
 
-
+doLabelMob(){
+	// let labelRenderer = new;
+}
 	A_InitAllMobsDatas() {
 		this.colliders = []
 		// empty

@@ -94,13 +94,14 @@ class gameCore {
 		// ----------------------------------------------------
 		this.camera = this._CameraManager.cameras[0]
 		this.floor = this._FloorsManager.floor
-		this.plan = this._FloorsManager.get_plan()
+		this.lights = this._LightsManager.lights
+		// this.plan = this._FloorsManager.get_plan()
 
 		// ----------------------------
 		this._DomManager.init(this._threejs, this.camera)
 		this.scene = this._SceneManager.set_AndGetScene(
 			this.camera,
-			this._LightsManager.lights,
+			this.lights,
 			this.floor,
 			this.plan,
 			this._conslog
@@ -196,8 +197,7 @@ class gameCore {
 		this.START();
 	}
 	checkray(){
-		let mouse = this._PlayerManager.ControlsManager.pMouse;
-		let ray = this.raycaster.setFromCamera( mouse, this.camera );
+		let ray = this.raycaster.setFromCamera( this._PlayerManager.ControlsManager.pMouse, this.camera );
 		console.log('ray',ray)
 		return ray
 	}

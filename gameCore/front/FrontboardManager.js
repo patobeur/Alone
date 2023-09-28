@@ -49,37 +49,22 @@ class FrontboardManager {
 			target:false,
 			idCss: 'Alertes',
 			stringCss: "",
-			// stringCss: ".alertes{" +
-			// 	"background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;" +
-			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;"+
-			// 	"left:calc(50% - 25px);" +
-			// 	"min-width:50px;max-width:80px;height:50px;"+
-			// 	"z-index:11;text-align: center;}" +
-			// 	".alertes.active{background-color:rgba(255,0,0,.3);}",
+
+			stringCss: '.alertes {position: absolute;bottom: 80px;display: flex;flex-direction: row;align-self: center;align-items: center;justify-content: center;background-color: rgba(0, 0, 0, 0.3);padding: 7px;border-radius: 1rem;-webkit-user-select: none;-moz-user-select: none;user-select: none;}' +
+			'.alertes div {background-color: rgba(0, 0, 0, 0.3);border-radius: 1rem;color: white;font-family: "Roboto", sans-serif;font-weight: bold;display: flex;align-items: center;justify-content: center;min-width: 50px;max-width: 80px;height: 50px;text-align: center;}' +
+			'.alertes div.active {background-color: rgba(255, 0, 0, 0.3);}',
 			elementAttributs: { tag: 'div', id: 'Alertes', className: 'alertes', textContent: "" }
 		});
 		this._setFrontPart({
 			target:"Alertes",
 			idCss: 'ColliderSignal',
 			stringCss: "",
-			// stringCss: ".collidersignal{" +
-			// 	"background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;" +
-			// 	"font-family:'Roboto',sans-serif;font-weight:bold;" +
-			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);" +
-			// 	"min-width:50px;max-width:80px;height:50px;z-index:11;text-align: center;}" +
-			// 	".collidersignal.active{background-color:rgba(255,0,0,.3);}",
 			elementAttributs: { tag: 'div', id: 'ColliderSignal', className: 'signal collidersignal', textContent: "Collider Alert",title:'Mobs Collider', alt:'Mobs Collider!'}
 		});
 		this._setFrontPart({
 			target:"Alertes",
 			idCss: 'FlooredSignal',
 			stringCss: "",
-			// stringCss: ".flooredsignal{" +
-			// 	"background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;" +
-			// 	"font-family:'Roboto',sans-serif;font-weight:bold;" +
-			// 	"display:flex;align-items: center;justify-content:center;bottom:80px;left:calc(50% - 25px);" +
-			// 	"min-width:50px;max-width:80px;height:50px;z-index:11;text-align: center;}" +
-			// 	".flooredsignal.active{background-color:rgba(255,0,0,.3);}",
 			elementAttributs: { tag: 'div', id: 'FlooredSignal', className: 'signal flooredsignal', textContent: "Floored Alert" ,title:'On floor!', alt:'On floor!'}
 		});
 		// this.setColliderSignal('ColliderSignal', false)

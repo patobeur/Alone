@@ -21,7 +21,7 @@ import { TouchMe } from './mecanics/TouchMe.js';
 class gameCore {
 	v = "0.0.3"
 	// ------------------------------
-	defaultMobsNumber = 10
+	defaultMobsNumber = 20
 	_conslog = false
 	stats = null
 	// ------------------------------
@@ -32,6 +32,7 @@ class gameCore {
 	floor = null;
 	_LightsManager = null;
 	lights = []
+	sun = null
 	_CamerasManager = null;
 	camera = null;
 	_FrontboardManager = null
@@ -39,9 +40,9 @@ class gameCore {
 	_PlayerManager = null
 	_PlayerConfig = null
 
-	_WindowActive = null
 	_MobsManager = null
 	_ModelsManager = null
+	_WindowActive = null
 	// _TouchMe = null
 	// --------------------------------------
 	_previousREFRESH = null
@@ -96,6 +97,7 @@ class gameCore {
 		this.camera = this._CameraManager.cameras[0]
 		this.floor = this._FloorsManager.floor
 		this.lights = this._LightsManager.lights
+		this.sun = this._LightsManager.Sun
 		// this.plan = this._FloorsManager.get_plan()
 
 		// ----------------------------
@@ -105,7 +107,7 @@ class gameCore {
 			this.lights,
 			this.floor,
 			this.plan,
-			this._conslog
+			this.sun
 		)
 
 		// MODEL MANAGER
@@ -196,26 +198,17 @@ class gameCore {
 		// START
 		this.START();
 	}
-	checkray(){
-		// update the picking ray with the camera and pointer position
+	checkMouseRayCaster(){
 		this.raycaster.setFromCamera( this._PlayerManager.ControlsManager.pMouse, this.camera );
-
-				// calculate objects intersecting the picking ray
 				const intersects = this.raycaster.intersectObjects( this._MobsManager.onlyMobs );
 				if(intersects.length>0) {
 					let rayMobConfig = false
 					for ( let i = 0; i < intersects.length; i ++ ) {
 						// if(this.lastRayTarget !== intersects[ i ].object.uuid) { 
 							rayMobConfig = intersects[ i ].object.parent.config
-
-							if(rayMobConfig.status.mouseover.active === false ) {
-								rayMobConfig.status.mouseover.active = true
-								//console.log('nickname:',rayMobConfig.nickname,'lv:'+rayMobConfig.lv,rayMobConfig.status.mouseover.current,rayMobConfig.status.mouseover.active)
-								
-							}
+							if(rayMobConfig.status.mouseover.active === false ) rayMobConfig.status.mouseover.active = true;
 							this.lastRayTarget = intersects[ i ].object.uuid
-						// }
-						
+						// }						
 					}
 					this._FrontboardManager.TriggerFrontBloc('Targets', true)
 					this._FrontboardManager.setFrontDatas('Targets', intersects[ 0 ].object.parent.config)
@@ -236,9 +229,9 @@ class gameCore {
 
 		if (!this._pause && ((this._WindowActive != null && this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))) {
 
-			this._LightsManager.upadteSun()
-
-			this.checkray()
+			// this._LightsManager.upadteSun()
+			this._SceneManager.rotateSun()
+			this.checkMouseRayCaster()
 
 			this._PlayerManager.saveOldPos()
 			this._PlayerManager.checkRotation();

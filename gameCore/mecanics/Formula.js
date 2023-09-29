@@ -64,7 +64,41 @@ class Formula {
 	rand = (min, max) => { return Math.floor(Math.random() * (max - min + 1) + min) }
 	degToRad = (deg) => { return deg * (Math.PI / 180); }
 	radToDeg = (rad) => { return rad * (180 / Math.PI); }
-
+	
+	faireTournerAutourDuCentre = (soleil, sensDeRotation) => {
+		// Obtenez le centre de la scène en supposant que votre scène est nommée "scene".
+		const centreScene = new THREE.Vector3(0, 0, 0);
+	
+		// Définissez la position de départ du soleil par rapport au centre.
+		const positionInitiale = soleil.position.clone();
+	
+		// Calculez la circonférence du cercle que le Soleil décrit en une minute.
+		const circonference = 2 * Math.PI * positionInitiale.distanceTo(centreScene);
+	
+		// Calculez la vitesse de rotation nécessaire pour effectuer un tour par minute.
+		const vitesseRotation = (2 * Math.PI) / 60; // 2 * Pi radian par minute
+	
+		// Fonction de mise à jour pour faire tourner le soleil.
+		function upDate() {
+			// Calculez la nouvelle position du soleil en utilisant la formule de rotation.
+			const angleRotation = vitesseRotation * (1 / 60); // 1/60 car une minute a 60 secondes
+			const rotationMatrix = new THREE.Matrix4().makeRotationAxis(sensDeRotation, angleRotation);
+			const nouvellePosition = positionInitiale.clone().applyMatrix4(rotationMatrix);
+	
+			// Mettez à jour la position du soleil.
+			soleil.position.copy(nouvellePosition);
+	
+			// Vous devrez peut-être ajouter d'autres transformations selon les besoins.
+	
+			// Appelez cette fonction de mise à jour à chaque trame d'animation.
+			// requestAnimationFrame(miseAJour);
+		}
+	
+		// Lancez la mise à jour.
+		// upDate();
+	}
+	
+	
 	get_aleaPosOnScreen(size) {
 
 		let maxX = window.innerWidth;
@@ -88,10 +122,48 @@ class Formula {
 		// console.log(0 - ("y", floorSize.y / 2), 'to', floorSize.y - (floorSize.y / 2), ':', pos.y)
 		return pos
 	}
-	get_NextOrbitPosXYZ = (obj, centerObj = false) => {
-		if (centerObj === false) { centerObj = { position: { x: 0, y: 0, z: 0 } } }
+	get_NextOrbitPosXYZZ = (obj, centerObj = false) => {
+		console.log(obj.position);
+		let distance = 0;
+
+		if (centerObj === false) { 
+			centerObj = { position: { x: 0, y: 0, z: 0 } }
+			distance = obj.position.distanceTo({ x: 0, y: 0, z: 0 })
+		}
+		else {
+			distance = centerObj.position.distanceTo(obj.position)
+		}
+		console.log(centerObj.position);
+		console.log(distance);
+
+
+				// 	// new pos
+		let xx2 = 0;
+		let yy2 = 0;
+		let zz2 = 0;
+		// 	if (obj.objtype === 'player') {
+		// 	}
+		if (distance > 0) {
+			// console.log('player check orbital force')
+			xx2 = obj.position.x+ ((distance) * (Math.cos(obj.theta.x[0])));
+			yy2 = obj.position.y+ ((distance) * (Math.sin(obj.theta.y[0])));
+			zz2 = obj.position.z+ ((distance) * (Math.sin(obj.theta.z[0])));
+		}
+		// else {
+		// 	xx2 = centerX + (centerW * (Math.cos(obj.theta.x[0])));
+		// 	yy2 = centerY + (centerH * (Math.sin(obj.theta.y[0])));
+		// 	zz2 = centerZ + (centerD * (Math.sin(obj.theta.z[0])));
+		// }
+		console.log(xx2);
+
+
+
+		return 0
 		// this.getDistanceXYZ(obj, centerObj)
-		let distance = this.getDistanceXYZ(obj, centerObj);
+		console.log(obj.position)
+		console.log(distance)
+		// let distance = this.getDistanceXYZ(obj, centerObj);
+
 		if (obj.theta[0] > obj.theta[1]) {
 			obj.theta[0] = obj.theta[0] - obj.theta[1]
 		}
@@ -120,27 +192,30 @@ class Formula {
 			y2 = centerY + (centerH * (Math.sin(obj.theta.y[0])));
 			z2 = centerZ + (centerD * (Math.sin(obj.theta.z[0])));
 		}
+		obj.position.set((x2,y2,z2))
 		// console.log(obj)
 		// 	// saving new pos in obj
 		// 	if (obj.orbitdir && obj.orbitdir > 0) {
-		if (obj.theta.x[2] > 0) {
-			obj.position.x = x2// - (obj.geometry.parameters.width / 2)
-			obj.theta.x[0] = obj.theta.x[0] + obj.theta.x[2];
-			obj.rotation.x = THREE.MathUtils.degToRad(obj.theta.x[0])
-		}
-		if (obj.theta.y[2] > 0) {
-			obj.position.y = y2// - (obj.geometry.parameters.height / 2)
-			obj.theta.y[0] = obj.theta.y[0] + obj.theta.y[2];
-			obj.rotation.y = THREE.MathUtils.degToRad(obj.theta.y[0])
-		}
-		if (obj.theta.z[2] > 0) {
-			obj.position.z = z2// - (obj.geometry.parameters.depth/ 2)
-			obj.theta.z[0] = obj.theta.z[0] + obj.theta.z[2];
-			obj.rotation.z = THREE.MathUtils.degToRad(obj.theta.z[0])
-		}
-		if (obj.target) {
-			obj.target.position.set(0, 0, 0);
-		}
+		// if (obj.theta.x[2] > 0) {
+		// 	obj.position.x = x2// - (obj.geometry.parameters.width / 2)
+		// 	obj.theta.x[0] = obj.theta.x[0] + obj.theta.x[2];
+		// 	obj.rotation.x = THREE.MathUtils.degToRad(obj.theta.x[0])
+		// }
+		// if (obj.theta.y[2] > 0) {
+		// 	obj.position.y = y2// - (obj.geometry.parameters.height / 2)
+		// 	obj.theta.y[0] = obj.theta.y[0] + obj.theta.y[2];
+		// 	obj.rotation.y = THREE.MathUtils.degToRad(obj.theta.y[0])
+		// }
+		// if (obj.theta.z[2] > 0) {
+		// 	obj.position.z = z2// - (obj.geometry.parameters.depth/ 2)
+		// 	obj.theta.z[0] = obj.theta.z[0] + obj.theta.z[2];
+		// 	obj.rotation.z = THREE.MathUtils.degToRad(obj.theta.z[0])
+		// }
+		// if (obj.target) {
+		// 	obj.target.position.set(0, 0, 0);
+		// }
+
+
 		// 	}
 		// 	else {
 		// 		obj.theta[0] = obj.theta[0] - obj.theta[2]

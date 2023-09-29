@@ -87,10 +87,8 @@ class FrontboardManager {
 		document.body.appendChild(this.FrontMobsCounter)
 	}
 	setFrontDatas(frontName,datas){
-		console.log(frontName,this.last[frontName])
+		// todo améliorer cette fonction 
 		this[frontName].textContent = datas.nickname
-		
-		// this[frontName].textContent = ''
 	}
 	TriggerFrontBloc(frontName,isOn) {
 		if (typeof this[frontName] === 'object' && typeof isOn === 'boolean') {

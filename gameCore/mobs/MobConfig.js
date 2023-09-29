@@ -164,45 +164,7 @@ class MobConfig {
 			}
 
 		}
-		if (this.typeNum === 4) { // REGULAR MANTA
-			config.mobs.mesh.category = 'character',
-				config.mobs.mesh.modelName = 'Kimono_Female',
-				config.mobs.mesh.color = 0x00ff20
-			config.mobs.speed = 1
-			config.mobs.mesh.size = { x: 4, y: 4, z: .3 }
-			config.mobs.ia.changeAction.max = 25
-			config.mobs.mesh.altitude = 10
-			config.mobs.mesh.opacity = .8
-			config.mobs.mesh.childs = {
-				front: {
-					color: 'white',
-					wireframe: false,
-					size: { x: .25, y: 1, z: .5 },
-					position: { x: 0, y: 1, z: 0 }, // from parent center
-				}
-			}
-
-		}
-		if (this.typeNum === 5) {// BIG MANTA
-			config.mobs.mesh.category = 'character',
-				config.mobs.mesh.modelName = 'Kimono_Male',
-				config.mobs.mesh.color = 0x0000FF
-			config.mobs.speed = 1
-			config.mobs.mesh.size = { x: 8, y: 8, z: .2 }
-			config.mobs.mesh.altitude = 10
-			config.mobs.ia.changeAction.max = 25
-			config.mobs.ia.dirAmplitude = 100
-			config.mobs.mesh.opacity = .5
-			config.mobs.mesh.childs = {
-				front: {
-					color: 'white',
-					wireframe: false,
-					size: { x: .25, y: .5, z: .25 },
-					position: { x: 0, y: .5, z: 0 }, // from parent center
-				}
-			}
-		}
-		if (this.typeNum === 6) {// BIG poto
+		if (this.typeNum === 4) { // BIG poto
 			config.mobs.mesh.category = 'character',
 				config.mobs.mesh.modelName = 'Knight_Golden_Female',
 				config.mobs.mesh.color = 0xFFFFFF
@@ -221,7 +183,7 @@ class MobConfig {
 				}
 			}
 		}
-		if (this.typeNum === 7 || this.typeNum > 6) {// tanky
+		if (this.typeNum === 5) {// tanky
 			config.mobs.mesh.category = 'character',
 				config.mobs.mesh.modelName = 'Knight_Golden_Male',
 				config.mobs.mesh.color = 0xcccccc
@@ -237,6 +199,44 @@ class MobConfig {
 					wireframe: false,
 					size: { x: .5, y: 1, z: .5 },
 					position: { x: 0, y: 1.2, z: .5 }, // from parent center
+				}
+			}
+		}
+		if (this.typeNum === 6) {// REGULAR MANTA
+			config.mobs.mesh.category = 'character',
+				config.mobs.mesh.modelName = 'Kimono_Female',
+				config.mobs.mesh.color = 0x00ff20
+			config.mobs.speed = 1
+			config.mobs.mesh.size = { x: 4, y: 4, z: .3 }
+			config.mobs.ia.changeAction.max = 25
+			config.mobs.mesh.altitude = 10
+			config.mobs.mesh.opacity = .8
+			config.mobs.mesh.childs = {
+				front: {
+					color: 'white',
+					wireframe: false,
+					size: { x: .25, y: 1, z: .5 },
+					position: { x: 0, y: 1, z: 0 }, // from parent center
+				}
+			}
+
+		}
+		if (this.typeNum === 7 || this.typeNum > 6) {// BIG MANTA
+			config.mobs.mesh.category = 'character',
+				config.mobs.mesh.modelName = 'Kimono_Male',
+				config.mobs.mesh.color = 0x0000FF
+			config.mobs.speed = 1
+			config.mobs.mesh.size = { x: 8, y: 8, z: .2 }
+			config.mobs.mesh.altitude = 10
+			config.mobs.ia.changeAction.max = 25
+			config.mobs.ia.dirAmplitude = 100
+			config.mobs.mesh.opacity = .5
+			config.mobs.mesh.childs = {
+				front: {
+					color: 'white',
+					wireframe: false,
+					size: { x: .25, y: .5, z: .25 },
+					position: { x: 0, y: .5, z: 0 }, // from parent center
 				}
 			}
 		}

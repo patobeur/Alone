@@ -112,6 +112,9 @@ class Mob {
 						this.mobMesh.material.color = new THREE.Color( 0x000000 )
 					}
 
+
+					
+
 				}
 				break;
 			default:

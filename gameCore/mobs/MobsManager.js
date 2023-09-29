@@ -27,7 +27,7 @@ class MobsManager {
 		this._CameraManager = datas.CameraManager
 
 		this.conslog = this._GameConfig.conslog
-		this._maxMobLimiteLv = 7
+		this._maxMobLimiteLv = 5
 		this._AllMobs = []
 		this.onlyMobs = []
 		this._mobsIndexToDelete = []
@@ -46,9 +46,6 @@ class MobsManager {
 		return this.get_allMobs()
 	}
 
-doLabelMob(){
-	// let labelRenderer = new;
-}
 	A_InitAllMobsDatas() {
 		this.colliders = []
 		// empty
@@ -58,7 +55,6 @@ doLabelMob(){
 			this.update_VisualHp(mob)
 			mob.checkstatus('mouseover',(data)=>{
 				console.log('retour',data)
-				
 				// this._FrontboardManager.setMouseOverMob('Targets', data.active)
 			});
 

@@ -7,7 +7,6 @@ class LightsManager {
 	_ambientLight;
 	_directionalLight;
 	_hemiLight
-	solLeshThetaY = 0
 	constructor(GameConfig) {
 		this.clock = new THREE.Clock();
 		this._Formula = new Formula();
@@ -19,93 +18,54 @@ class LightsManager {
 	}
 	_init() {
 		if (this._GameConfig.conslog) console.info('Lights Mounted !')
+
 		// this._init_BulbsLights()
 
-		this._init_SunLight()
+		this._init_Sun()
 		// this._init_Sol()
+
 		// this._init_HemiLigth()
-		this._init_AmbientLight()
-		// this._init_DirectionalLight()
-
-		// this.lights.push(this.light)
 		// this.lights.push(this._hemiLight)
-		this.lights.push(this.SolMesh)
-		this.lights.push(this.SUNGroupe)
+		
+		this._init_AmbientLight()
 		this.lights.push(this._ambientLight)
-		this.lights.push(this.SunLight)
 
-
+		// this._init_DirectionalLight()
 		// this.lights.push(this._directionalLight)
 
 		if (this._GameConfig.conslog) console.log('lights', this.lights)
 	}
-	upadteSun() {
-		var delta = this.clock.getDelta();
-		var elapsed = this.clock.elapsedTime;
-		var speed = 0.4
-		if (typeof this.SunLight != 'undefined') {
-			// speed = this.SunLight.position.z > 0 ? 0.01 : 0.4; 
-			//satellite
-			// if (this.SunLight.position.z >= 0) {speed = 0.4}else{speed = 0.8}
-			// this.SunLight.position.x = (Math.sin(elapsed*speed) * 1);
-			// this.SunLight.position.z = (Math.cos(elapsed*speed) * 1);
+	
+	// _init_Sol() {
+	// 	let sunConfig = {
+	// 		name: 'bulb_Sol',
+	// 		color: 0xffffff,
+	// 		power: 1,
+	// 		position: new THREE.Vector3(0, 0, 2),
+	// 		size: (16, 16, 1),
+	// 		mat: {
+	// 			color: 0xFFFFFF00,
+	// 			emissive: 'yellow',
+	// 			emissiveIntensity: 2,
+	// 		}
+	// 	}
+	// 	let solGeometry = new THREE.SphereGeometry(sunConfig.size);
+	// 	let solMat = new THREE.MeshStandardMaterial(
+	// 		sunConfig.mat.emissive,
+	// 		sunConfig.mat.emissiveIntensity,
+	// 		sunConfig.mat.color
+	// 	);
 
-			// this._Formula.get_NextOrbitPosXYZ2(
-			// 	this.SunLight,
-			// 	false
-			// );
-			// this.SolMesh.position.x +=  (Math.sin(elapsed*speed) * 1);
-			// this.SolMesh.position.z +=  (Math.cos(elapsed*speed) * 1);
-			// this.SolMesh.position.x = nec.x
-			// this.SolMesh.position.z = nec.y
-			// this.SunLight.rotation.x += 0.1 * delta;
-			// this.SunLight.rotation.y += 0.1 * delta;
-		}
-
-		// console.log(this.SunSpeed,this.SUNGroupe.rotation.y)
-		// if(this.SUNGroupe.rotation.y > 4) {
-		// 	console.log('DAY')
-		// }
-		// else {
-		// 	console.log('NIGHT')
-		// }
-		// this.SUNGroupe.rotation.y += (this.SunLight.position.z > 0) 
-		// 	? this.SunSpeed*50
-		// 	: this.SunSpeed*100;
-	}
-	_init_Sol() {
-		let sol_config = {
-			name: 'bulb_Sol',
-			color: 0xffffff,
-			power: 1,
-			position: new THREE.Vector3(0, 0, 20),
-			size: (16, 16, 1),
-			mat: {
-				color: 0xFFFFFF00,
-				emissive: 'yellow',
-				emissiveIntensity: 2,
-			}
-		}
-		let solGeometry = new THREE.SphereGeometry(sol_config.size);
-		let solMat = new THREE.MeshStandardMaterial(
-			sol_config.mat.emissive,
-			sol_config.mat.emissiveIntensity,
-			sol_config.mat.color
-		);
-
-		this.SolMesh = new THREE.Mesh(solGeometry, solMat);
-		this.SolMesh.theta = { x: [0, 0], y: [0, 0], z: [0, 0] }
-		this.SolMesh.castShadow = true;
-		this.SolMesh.position.set(sol_config.position.x, sol_config.position.y, sol_config.position.z);
-		this.SolMesh.power = sol_config.power;
-		this.SolMesh.name = sol_config.name;
-	}
-	_init_SunLight() {
-		// this.SUNGroupe = new THREE.Group();
-
-
-		let sol_config = {
-			name: 'bulb_Sol',
+	// 	this.SolMesh = new THREE.Mesh(solGeometry, solMat);
+	// 	this.SolMesh.theta = { x: [0, 0], y: [0, 0], z: [0, 0] }
+	// 	this.SolMesh.castShadow = true;
+	// 	this.SolMesh.position.set(sunConfig.position.x, sunConfig.position.y, sunConfig.position.z);
+	// 	this.SolMesh.power = sunConfig.power;
+	// 	this.SolMesh.name = sunConfig.name;
+	// }
+	_init_Sun() {
+		let sunConfig = {
+			name: 'soleil',
 			color: 0xffffff,
 			power: 1,
 			position: new THREE.Vector3(30, 30, 30),
@@ -116,28 +76,25 @@ class LightsManager {
 				emissiveIntensity: 2,
 			}
 		}
-
-		// light
-		this.SunLight = new THREE.DirectionalLight(
-			sol_config.color,
-			sol_config.power
+		this.Sun = new THREE.DirectionalLight(
+			sunConfig.color,
+			sunConfig.power
 		);
-		this.SunLight.position.set(sol_config.position.x, sol_config.position.y, sol_config.position.z);
-		this.SunLight.castShadow = true;
-		this.SunLight.shadow.bias = -0.001;
+		this.Sun.position.set(sunConfig.position.x, sunConfig.position.y, sunConfig.position.z);
 
-		this.SunLight.shadow.mapSize.width = 2048;
-		this.SunLight.shadow.mapSize.height = 2048;
-		this.SunLight.shadow.camera.near = 0.5;
-		this.SunLight.shadow.camera.far = 500.0;
+		this.Sun.castShadow = true;
+		this.Sun.shadow.bias = -0.001;
 
-
-		this.SunLight.shadow.camera.left = 100;
-		this.SunLight.shadow.camera.right = -100;
-		this.SunLight.shadow.camera.top = 100;
-		this.SunLight.shadow.camera.bottom = -100;
-		this.SunLight.theta = { x: 0, y: 0, z: 0 }
-		// this.SUNGroupe.add(this.SunLight)
+		this.Sun.shadow.mapSize.width = 2048;
+		this.Sun.shadow.mapSize.height = 2048;
+		this.Sun.shadow.camera.near = 0.5;
+		this.Sun.shadow.camera.far = 500.0;
+		this.Sun.shadow.camera.left = 100;
+		this.Sun.shadow.camera.right = -100;
+		this.Sun.shadow.camera.top = 100;
+		this.Sun.shadow.camera.bottom = -100;
+		this.Sun.direction = { x: 0, y: 0, z: 0 }
+		// this.SUNGroupe.add(this.Sun)
 		// this.SUNGroupe.add(this.Sol)
 		// this.SUNGroupe.add(bulbLight)
 	}

@@ -19,11 +19,12 @@ class SceneManager {
 	init() {
 		if (this._GameConfig.conslog) console.info('SceneManager initiated !')
 	}
-	set_AndGetScene(camera,lights,floor,plan) {
+	set_AndGetScene(camera,lights,floor,plan,sun) {
 		this.camera = camera;
 		this.lights = lights;
 		this.floor = floor;
 		this.plan = plan;
+		this.sun = sun;
 		// Scene
 		this._Scene = new THREE.Scene();
 
@@ -32,8 +33,8 @@ class SceneManager {
 			this.backgroundsRootPath,
 			['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg',]
 		)
-		this._Scene.background.rotation = 2
-		this._Scene.flipY = true
+		// this._Scene.background.rotation = 2
+		// this._Scene.flipY = true
 		// console.log(this._Scene.background)
 		
 		this.lights.forEach(light => {
@@ -42,36 +43,45 @@ class SceneManager {
 					light.castShadow = true;
 				} 
 				this._Scene.add(light);
-			} 
+			}
 		});
+
+		this._Scene.add(this.sun);
+		// this.faireTournerAutourCentreAxeY(this.sun,1);
 		
-		if(this.floor.castShadow) this.floor.castShadow = true;
-		if(this.floor.receiveShadow) this.floor.receiveShadow = true;
 		this._Scene.add(this.floor);
+		// if(this.floor.castShadow) this.floor.castShadow = true;
+		// if(this.floor.receiveShadow) this.floor.receiveShadow = true;
+
 		// this._Scene.add(this.plan);
 
-				
-		// // Ajout d'une source de lumière
-		// const light = new THREE.PointLight(0xFFFFFF, 1);
-		// light.position.set(10, 10, 10);
-
-		// // Configuration des ombres pour la source de lumière
-		// light.castShadow = true;
-
-		// this._Scene.add(light);
-
-		// // Création du cube
-		// const geometry = new THREE.BoxGeometry(10, 10, 1);
-		// const texture = new THREE.TextureLoader().load('./gameCore/3dAssets/textures/grid64_512_blanc.png');
-		// const material = new THREE.MeshPhongMaterial({ map: texture }); // Utilisation de MeshPhongMaterial pour la réflexion de la lumière
-		// const cube = new THREE.Mesh(geometry, material);
-		// // Permettre au cube de recevoir les ombres
-		// cube.castShadow = true;
-		// cube.receiveShadow = true;
-		// this._Scene.add(cube);
-
-
 		return this._Scene
+	}
+	rotateSun=(objet = this.sun)=>{
+		const vitesseRotation = 1//Math.PI/180
+		const angleRotation = vitesseRotation * ((1 / (60*60*.25)));
+		objet.position.sub(this._Scene.position)
+		objet.position.applyAxisAngle(objet.direction, angleRotation)
+		objet.position.add(this._Scene.position)
+	}
+	faireTournerAutourCentreAxeY = (objet, vitesseRotation)=> {
+		// Obtenez le centre de la scène en supposant que votre scène est nommée "scene".
+		const centreScene = new THREE.Vector3(0, 0, 0);
+	
+		// Fonction de mise à jour pour faire tourner l'objet autour de l'axe Y.
+		function miseAJour() {
+			// Calculez la nouvelle position de l'objet en utilisant la formule de rotation.
+			const angleRotation = vitesseRotation * (1 / 60); // 1/60 car une minute a 60 secondes
+			objet.position.sub(centreScene); // Translatez l'objet au centre de la scène.
+			objet.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), angleRotation); // Appliquez la rotation autour de l'axe Y.
+			objet.position.add(centreScene); // Ramenez l'objet à sa position d'origine par rapport au centre.
+	
+			// Appelez cette fonction de mise à jour à chaque trame d'animation.
+			requestAnimationFrame(miseAJour);
+		}
+	
+		// Lancez la mise à jour.
+		miseAJour();
 	}
 	set_SceneBackground(path,images){
 		this.CubeTextureLoader.setPath(path);

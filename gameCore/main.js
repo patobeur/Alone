@@ -164,12 +164,12 @@ class gameCore {
 		});
 
 		// console.log(this._PlayerManager)
+		// Set player data in _MobsManager Class
+		this._MobsManager.set_Camera(this.camera)
 		this._MobsManager.set_PlayerDatas(this._PlayerManager)
 		this._MobsManager.set_Models(this.allModels)
-		this._MobsManager.set_Camera(this.camera)
 
 		this.allMobs = this._MobsManager.addMobs(this.HowManyMobs, 'mobs')
-		// Set player data in _MobsManager Class
 
 
 
@@ -193,33 +193,36 @@ class gameCore {
 
 
 		this.raycaster = new THREE.Raycaster();
-		this.checkray()
 		// START
 		this.START();
 	}
 	checkray(){
-		
-		
 		// update the picking ray with the camera and pointer position
 		this.raycaster.setFromCamera( this._PlayerManager.ControlsManager.pMouse, this.camera );
 
 				// calculate objects intersecting the picking ray
 				const intersects = this.raycaster.intersectObjects( this._MobsManager.onlyMobs );
 				if(intersects.length>0) {
+					let rayMobConfig = false
 					for ( let i = 0; i < intersects.length; i ++ ) {
-						if(this.lastRayTarget !== intersects[ i ].object.uuid) { 
-							let config = intersects[ i ].object.parent.config
-							console.log('nickname:',config.nickname,'lv:'+config.lv)
+						// if(this.lastRayTarget !== intersects[ i ].object.uuid) { 
+							rayMobConfig = intersects[ i ].object.parent.config
+
+							if(rayMobConfig.status.mouseover.active === false ) {
+								rayMobConfig.status.mouseover.active = true
+								//console.log('nickname:',rayMobConfig.nickname,'lv:'+rayMobConfig.lv,rayMobConfig.status.mouseover.current,rayMobConfig.status.mouseover.active)
+								
+							}
 							this.lastRayTarget = intersects[ i ].object.uuid
-						}
-						// this.lastRayTarget = null
-						// if (intersects[ i ].object.material) intersects[ i ].object.material.color.set( 0xff0000 );
-						// if (intersects[ i ].object.material)  
+						// }
 						
 					}
+					this._FrontboardManager.TriggerFrontBloc('Targets', true)
+					this._FrontboardManager.setFrontDatas('Targets', intersects[ 0 ].object.parent.config)
 				}
 				else {
 					this.lastRayTarget = 0
+					this._FrontboardManager.TriggerFrontBloc('Targets', false)
 				}
 				
 	}
@@ -236,6 +239,7 @@ class gameCore {
 			this._LightsManager.upadteSun()
 
 			this.checkray()
+
 			this._PlayerManager.saveOldPos()
 			this._PlayerManager.checkRotation();
 			this._PlayerManager.checkMoves();
@@ -256,7 +260,7 @@ class gameCore {
 				
 				let datasPhaseB = this._MobsManager.B_CheckAllMobsDatas() // all mob cycle
 
-				if (datasPhaseB.colliders) this._FrontboardManager.setColliderSignal('ColliderSignal', (datasPhaseB.colliders.length>0))
+				if (datasPhaseB.colliders) this._FrontboardManager.TriggerFrontBloc('ColliderSignal', (datasPhaseB.colliders.length>0))
 
 				this._MobsManager.C_CleanAllMobsDatas()
 				
@@ -272,7 +276,7 @@ class gameCore {
 			// Check if floored 
 			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(this.floor);
 
-			this._FrontboardManager.setColliderSignal('FlooredSignal', floorcolide)
+			this._FrontboardManager.TriggerFrontBloc('FlooredSignal', floorcolide)
 			// GRAVITY 
 			this._PlayerManager.applyGravity(floorcolide)
 			

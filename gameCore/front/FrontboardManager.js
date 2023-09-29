@@ -67,9 +67,14 @@ class FrontboardManager {
 			stringCss: "",
 			elementAttributs: { tag: 'div', id: 'FlooredSignal', className: 'signal flooredsignal', textContent: "Floored Alert" ,title:'On floor!', alt:'On floor!'}
 		});
-		// this.setColliderSignal('ColliderSignal', false)
-		// this.setColliderSignal('ColliderSignal', true)
 
+		this._setFrontPart({
+			target:false,
+			idCss: 'Targets',
+			stringCss: ".targets {position: absolute;width: 100px;min-height: 30px;bottom: 100px;display: none;flex-direction: row;align-self: center;align-items: center;justify-content: center;background-color: rgba(0, 0, 0, 0.3);padding-right:7px;border-radius: 1rem;-webkit-user-select: none;-moz-user-select: none;user-select: none;}"+
+				".targets.active {display: flex;background-color: rgba(255, 0, 0, 0.3);}",
+			elementAttributs: { tag: 'div', id: 'Targets', className: 'targets', textContent: "" ,title:'all targets', alt:'all targets!'}
+		});
 	}
 	
 	_setFrontMobsCounter() {
@@ -81,13 +86,21 @@ class FrontboardManager {
 		})
 		document.body.appendChild(this.FrontMobsCounter)
 	}
-	setColliderSignal(frontName, isOn) {
+	setFrontDatas(frontName,datas){
+		console.log(frontName,this.last[frontName])
+		this[frontName].textContent = datas.nickname
+		
+		// this[frontName].textContent = ''
+	}
+	TriggerFrontBloc(frontName,isOn) {
 		if (typeof this[frontName] === 'object' && typeof isOn === 'boolean') {
 			if(isOn !== this.last[frontName]  ) {
-				if(isOn === true) {
-					this[frontName].classList.add('active') }
+				if (isOn === true) {
+					this[frontName].classList.add('active')
+					// this[frontName].textContent = datas.nickname
+				}
 				else {
-					this[frontName].classList.remove('active')
+					this[frontName].classList.remove('active');
 				}
 			}
 		}
@@ -164,8 +177,8 @@ class FrontboardManager {
 		this[datas.elementAttributs.id] = this.DDom.createEle(datas.elementAttributs)
 		this.last[datas.elementAttributs.id] = null
 		datas.target 
-			? this[datas.target].appendChild(this[datas.idCss])
-			: document.body.appendChild(this[datas.idCss]);
+			? this[datas.target].appendChild(this[datas.elementAttributs.id])
+			: document.body.appendChild(this[datas.elementAttributs.id]);
 	}
 	// set_ContextMenu = () => {
 	// 	var cosmos = document.getElementById("game");

@@ -56,6 +56,13 @@ doLabelMob(){
 	B_CheckAllMobsDatas() {
 		this._AllMobs.forEach(mob => {
 			this.update_VisualHp(mob)
+			mob.checkstatus('mouseover',(data)=>{
+				console.log('retour',data)
+				
+				// this._FrontboardManager.setMouseOverMob('Targets', data.active)
+			});
+
+
 			if (mob.config.states.dead !== true) {
 				if (mob._isdead()) {
 					mob.config.states.dead = true;

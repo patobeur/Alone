@@ -82,9 +82,43 @@ class Mob {
 		if (this.config.position.y > (this.config.floor.size.y / 2)) this.config.position.y = -(this.config.floor.size.y / 2)
 
 	}
+	// checkstatus(statusName){
+	// 	this.on(statusName)
+	// }
+	checkstatus(statusName,statuCallback){
+		let statu = this.config.status[statusName];
+		switch(statusName){
+			case 'mouseover':
+				if(statu.active === true ){
+
+					if(statu.current > 0 < statu.max) 
+						{statu.current++}
+						
+					if(statu.current > statu.max) {
+						statu.current = 0; 
+						statu.active = false;
+						// this._trigger_Front();
+						statuCallback('END')
+						
+						this.config.states.collide.color.current = this.config.states.collide.color.saved
+						this.mobMesh.material.color = this.config.states.collide.color.saved
+					}
+					if(statu.current === 1) { 
+						// this._trigger_Front();
+						// console.log('nickname:',this.config.nickname,'lv:'+this.config.lv,'hp:',this.config.stats.hp.current)
+						statuCallback('START')
+						this.config.states.collide.color.saved = this.mobMesh.material.color
+						this.config.states.collide.color.current = new THREE.Color( 0x000000 )
+						this.mobMesh.material.color = new THREE.Color( 0x000000 )
+					}
+
+				}
+				break;
+			default:
+				break;
+		}
+	}
 	_set_Mesh() {
-
-
 		// console.log('defaultAnimationName:',this.config.mesh.defaultAnimationName)
 		// console.log('modelName:',this.config.mesh.modelName)
 		// console.log('category:',this.config.mesh.category)

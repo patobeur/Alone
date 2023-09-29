@@ -38,9 +38,8 @@ class MobConfig {
 					}
 				},
 				status: {
-					immortal: {
-						name: 'immortal', current: 0, max: 1000, step: .1
-					}
+					mouseover: { current: 0, max: 100, step: 2, active: false, name: 'mouseover' },
+					immortal: { current: 0, max: 1000, step: .1, active: false, name: 'immortal' }
 				},
 				theta: {
 					cur: 0,

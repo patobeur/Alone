@@ -17,17 +17,13 @@ class ControlsManager {
 		this._GameConfig = GameConfig;
 		this.conslog = this._GameConfig.conslog;
 
-		console.info('ControlsManager Mounted !', 'conslog:', this._GameConfig);
-
 		this._initProperties();
 		this._setupDeviceControls();
 	}
-
 	_initProperties() {
 		this.zooming = false
 		this.oldintersect = null;
 		this.pMouse = new THREE.Vector2();
-
 
 		this.thetaDeg = 0;
 
@@ -48,12 +44,9 @@ class ControlsManager {
 		this.sleft = false;
 		this.sright = false;
 	}
-
-
 	setCamera(camera) {
 		this.camera = camera
 	}
-
 	_setupDeviceControls() {
 		this.detectDevice = this._isTouchDevice();
 		if (!this.detectDevice.isMousePointer && (this.detectDevice.touchEvent || this.detectDevice.ontouchstart || this.detectDevice.maxTouchPoints)) {
@@ -91,7 +84,6 @@ class ControlsManager {
 
 		return detectedDevice;
 	}
-
 	_addMouseListeners() {
 		const mire = document.createElement('div');
 		mire.className = 'mire';
@@ -120,14 +112,12 @@ class ControlsManager {
 			this._handleMouseMove(event, target);
 		};
 	}
-
 	_handleMouseWheel(event) {
 		if (event.ctrlKey === false && event.altKey === false) {
 			if (this.conslog) console.info(event)
 			this.zooming = event.deltaY > 0 ? 'out' : 'in'
 		}
 	}
-
 	_handleMouseMove(event, target) {
 		// refresh div pos
 		target.style.left = `${event.clientX - 5}px`;
@@ -136,9 +126,6 @@ class ControlsManager {
 		this.thetaDeg = this._Formula.get_DegreeWithTwoPos(window.innerWidth / 2, window.innerHeight / 2, event.clientX, event.clientY);
 		this.pMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 		this.pMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-		
-
 	}
 	_addKeyboardListeners() {
 		if (this.conslog) console.log('addKeyboardListeners');
@@ -146,7 +133,6 @@ class ControlsManager {
 		document.onkeydown = event => this._handleKeyDown(event);
 		document.onkeyup = event => this._handleKeyUp(event);
 	}
-
 	_handleKeyDown(event) {
 		const KEY_MAP = {
 			"&": () => this.shoot1 = true,
@@ -172,14 +158,12 @@ class ControlsManager {
 			" ": () => this.space = true,
 			// "Space": () => this.space = true,
 		};
-
 		if (KEY_MAP[event.key]) {
 			if (this.conslog) console.log('EVENT', event);
 			if (this._preventDefaultRightClick) event.preventDefault();
 			KEY_MAP[event.key]();
 		}
 	}
-
 	_handleKeyUp(event) {
 		const KEY_MAP = {
 			"&": () => this.shoot1 = false,
@@ -202,15 +186,12 @@ class ControlsManager {
 			"z": () => this.forward = false,
 			"ArrowDown": () => this.reverse = false,
 			"s": () => this.reverse = false,
-			// " ": () => this.space = false,
+			" ": () => this.space = false,
 			// "Space": () => this.space = false,
 		};
-
 		if (KEY_MAP[event.key]) KEY_MAP[event.key]();
 	}
-
 	_get_intersectionColorChange(camera) {
-
 		this.raycaster.setFromCamera(this.pMouse, camera);
 		let intersects = this.raycaster.intersectObject(scene, true);
 		if (intersects.length > 1) {
@@ -229,7 +210,6 @@ class ControlsManager {
 					this.oldintersect.uuid = intersects[0].object.uuid;
 					this.oldintersect.material.color.setHex(0xffFF00);
 				}
-
 			}
 			else {
 				// sol
@@ -239,14 +219,13 @@ class ControlsManager {
 				}
 			}
 		}
-		else // there are no intersections
-		{
+		else {
+			// there are no intersections
 			if (intersects.length < 1) {
 				// if (this.conslog) console.log('oldintersect = null', this.oldintersect)
 				this.oldintersect = null;
 			}
 		}
-
 	}
 }
 export { ControlsManager }

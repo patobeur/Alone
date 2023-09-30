@@ -112,9 +112,9 @@ class SceneManager {
 			);
 			if (typeof this.controls === 'object') {
 				
-		this.controls.enableDamping = true;
-		this.controls.enableZoom = false;
-		this.controls.enablePan = false;	
+				this.controls.enableDamping = true;
+				this.controls.enableZoom = false;
+				this.controls.enablePan = false;	
 
 				this.controls.target.set(0, 0, 0);
 				this.controls.update();

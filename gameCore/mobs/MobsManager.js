@@ -33,6 +33,7 @@ class MobsManager {
 		this._mobsIndexToDelete = []
 		this._CurrentMobImmat = 0
 		this._Formula = new Formula()
+		this.MobmouseOverCallback = 0
 	}
 	addMobs(howmanyMobs, mobType = false) {
 		for (let i = 0; i < howmanyMobs; i++) {
@@ -47,23 +48,22 @@ class MobsManager {
 	}
 
 	A_InitAllMobsDatas() {
-		this.colliders = []
 		// empty
+		this.colliders = []
 	}
 	B_CheckAllMobsDatas() {
+		// boucle sur LES MOBS
 		this._AllMobs.forEach(mob => {
 			this.update_VisualHp(mob)
 			mob.checkstatus('mouseover',(data)=>{
-				console.log('retour',data)
+				this.MobmouseOverCallback++;
+				// console.log('retour '+this.MobmouseOverCallback,data)
 				// this._FrontboardManager.setMouseOverMob('Targets', data.active)
 			});
 
-
 			if (mob.config.states.dead !== true) {
 				if (mob._isdead()) {
-					mob.config.states.dead = true;
-
-					
+					mob.config.states.dead = true;				
 					mob._removeFromSceneAndDispose();
 					return
 				}
@@ -99,14 +99,12 @@ class MobsManager {
 				// Gravity if mob
 				if (mob) mob.applyGravity(this._GameConfig.gravity);
 
-
 				// colliding with player
 				// console.log((this._detecterCollisionPredictionPlayer(mob) === true) ? ('mob',mob.mesh.position) : ('no',mob.mesh.position));
 				if (this._detecterCollisionPredictionPlayer(mob) === true){
 					this.colliders.push(mob)
 				}
-			}
-				
+			}				
 		});
 		let returnedDatas = {
 			colliders:this.colliders
@@ -121,26 +119,17 @@ class MobsManager {
 		if (this._FrontboardManager.FrontMobsCounter) this._FrontboardManager.setMobCounter(this._AllMobs.length)
 	}
 	update_VisualHp(mob) {
-		if (typeof this.PlayerManager.playerGroupe === 'object') {
-			// const angleRadians = this.mesh.angleTo(playerGroupe);
-			let theta = this._Formula.get_DegreeWithTwoPos(
-				mob.mesh.position.x,
-				mob.mesh.position.y,
-				this.camera.position.x,
-				this.camera.position.y
-			)
-			const angleRadians = mob.mesh.position.angleTo(this.camera.position)
-			// const angleRadians = mob.mesh.position.angleTo(this.camera.position)
-
-			// let theta = THREE.MathUtils.radToDeg(this._Formula.get_DegreeWithTwoPos(this.mesh.position.x,this.mesh.position.y,playerGroupe.position.x,playerGroupe.position.y))
-			// console.log('rad', angleRadians)
-			// console.log(mob.mesh.rotation.z, THREE.MathUtils.degToRad(theta))
-			// console.log(this.camera.position)
-			// this.VisualHp.rotation.z =  theta
-			// mob.VisualHp.rotation.z = THREE.MathUtils.radToDeg(theta)
-			// mob.VisualHp.rotation.z = 
-			mob.VisualHp.rotation.z = mob.mesh.rotation.z - THREE.MathUtils.degToRad(theta)
-		}
+		// if (typeof this.PlayerManager.playerGroupe === 'object') {
+		// 	// const angleRadians = this.mesh.angleTo(playerGroupe);
+		// 	let theta = this._Formula.get_DegreeWithTwoPos(
+		// 		mob.mesh.position.x,
+		// 		mob.mesh.position.y,
+		// 		this.camera.position.x,
+		// 		this.camera.position.y
+		// 	)
+		// 	const angleRadians = mob.mesh.position.angleTo(this.camera.position)
+		// 	mob.VisualHp.rotation.z = mob.mesh.rotation.z - THREE.MathUtils.degToRad(theta)
+		// }
 	}
 	set_Models(allModels) {
 		this._allModels = allModels
@@ -158,7 +147,6 @@ class MobsManager {
 		// console.log(mob.conf)
 		autreMob.config.theta.cur = nouvelleDirectionAutreMob
 		mob.config.states.isGoingToCollide.current = 1
-
 		// this.config.states.dead = true;
 		// this.config.stats.hp.current = 0
 		// this.config.stats.hp.current -= 2

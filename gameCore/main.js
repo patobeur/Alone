@@ -2,9 +2,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 // import * as THREE from './node_modules/three/build/three.module.js';
 
 import { ModelsManager } from './scene/ModelsManager.js';
+import { RayCaster } from './front/RayCaster.js';
 
 import { WindowActive } from './front/WindowActive.js';
-import { FullScreenManager } from './features/FullScreenManager.js';
+import { FullScreenManager } from './front/FullScreenManager.js';
 import { Formula } from './mecanics/Formula.js';
 import { GameConfig } from './scene/GameConfig.js';
 import { SceneManager } from './scene/SceneManager.js';
@@ -19,7 +20,7 @@ import { TouchMe } from './mecanics/TouchMe.js';
 
 // import { Stats } from './node_modules/stats.js/src/Stats.js';
 class gameCore {
-	v = "0.0.3"
+	v = "0.0.5"
 	// ------------------------------
 	defaultMobsNumber = 20
 	_conslog = false
@@ -49,7 +50,6 @@ class gameCore {
 	// _pause = false;
 	// _pauseModalText;
 
-
 	// _domEvents // threex event
 	// _clikableThings = false;
 	// _loadingmanager = null;
@@ -59,7 +59,7 @@ class gameCore {
 		this.HowManyMobs = datas && datas.HowManyMobs
 			? datas.HowManyMobs
 			: this.defaultMobsNumber;
-		this.lastRayTarget = 0
+
 		this._InitA()
 	}
 	_InitA() {
@@ -79,18 +79,15 @@ class gameCore {
 
 		this._FrontboardManager = new FrontboardManager(this._DomManager)
 		// ----------------------------------------------------
+
 		this._threejs = this._SceneManager.setAndGet_WebGLRenderer()
+
 		this._GameConfig.set_value('MaxAnisotropy', this._threejs.capabilities.getMaxAnisotropy())
 
 		this._FloorsManager = new FloorsManager(this._GameConfig)
 
 		this._FullScreenManager = new FullScreenManager()
 		// this._WindowActive = new WindowActive(this._GameConfig);
-
-
-
-
-
 
 		// this._TouchMe = new TouchMe()
 		// ----------------------------------------------------
@@ -102,6 +99,8 @@ class gameCore {
 
 		// ----------------------------
 		this._DomManager.init(this._threejs, this.camera)
+		
+		// SCENE
 		this.scene = this._SceneManager.set_AndGetScene(
 			this.camera,
 			this.lights,
@@ -115,27 +114,23 @@ class gameCore {
 			this._GameConfig,
 			this.scene,
 			(allModelsAndAnimations) => {
-				// Cette fonction de rappel sera appelée lorsque tous les modèles et animations seront chargés.
 				this.allModels = allModelsAndAnimations
 				this._InitB();
 			}
 		);
 	}
 	_InitB() {
-		// console.log('_InitA DONE allModelsAndAnimations :', this.allModels)
 		// un loader d'images pour les texures des futures object 3d
 		if (this._ImagesManager != null) this._ImagesManager = new ImagesManager();
 		this._InitC()
 	}
 	_InitC() {
-		// Jouez l'animation par défaut ici
 		this.charGltf = this.allModels['character']['Kimono_Female'].gltf
 		this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
 		this.MegaClip = THREE.AnimationClip.findByName(this.charGltf.animations, 'Idle');
 		this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
 		this.MegaAction.play(); // Joue l'animation par défaut
 		this.charGltf.scene.position.set(0, -5, 0)
-
 
 		// this.charGltf2 = this.allModels['character']['Knight_Golden_Male'].gltf
 		// this.MegaMixer2 = new THREE.AnimationMixer(this.charGltf2.scene);
@@ -144,9 +139,7 @@ class gameCore {
 		// this.MegaAction2 = this.MegaMixer2.clipAction(this.MegaClip2);
 		// this.MegaAction2.play(); // Joue l'animation par défaut
 		// this.charGltf2.scene.position.set(0, 0, 5)
-
 		// this._ModelsManager.LoadAnimatedModelFromMain()
-
 
 		// ----------------------------
 		// PLAYER ----------------
@@ -165,16 +158,13 @@ class gameCore {
 			scene: this.scene
 		});
 
-		// console.log(this._PlayerManager)
 		// Set player data in _MobsManager Class
 		this._MobsManager.set_Camera(this.camera)
 		this._MobsManager.set_PlayerDatas(this._PlayerManager)
 		this._MobsManager.set_Models(this.allModels)
 
 		this.allMobs = this._MobsManager.addMobs(this.HowManyMobs, 'mobs')
-
-
-
+		
 		// ADD OrbitControls --------
 		// this.controls = this._SceneManager.setAndGet_OrbitControls(
 		// 	this.camera
@@ -184,7 +174,11 @@ class gameCore {
 		// this._domEvents = new THREEx.DomEvents(this.camera, this._threejs.domElement)
 		// this._clikableThings = new Things(this._domEvents, this.scene);
 
-		let FrontboardManagerDatas = { PlayerIndex: 0, Players: [this._PlayerManager], Mobs: this.allMobs }
+		let FrontboardManagerDatas = { 
+			PlayerIndex: 0,
+			Players: [this._PlayerManager], // array pour tous les joueurs/joueuses conectées ???
+			Mobs: this.allMobs
+		}
 		this._FrontboardManager.init(FrontboardManagerDatas)
 
 		this.scene.add(this._PlayerManager.playerGroupe)
@@ -193,31 +187,16 @@ class gameCore {
 
 		if (this._WindowActive != null) this._WindowActive.init()
 
+		// onmouseover mobs
+		this.RayCaster = new RayCaster( {
+			camera: this.camera,
+			MobsManager:this._MobsManager,
+			FrontboardManager:this._FrontboardManager,
+			PlayerManager:this._PlayerManager,
+		})
 
-		this.raycaster = new THREE.Raycaster();
 		// START
 		this.START();
-	}
-	checkMouseRayCaster(){
-		this.raycaster.setFromCamera( this._PlayerManager.ControlsManager.pMouse, this.camera );
-				const intersects = this.raycaster.intersectObjects( this._MobsManager.onlyMobs );
-				if(intersects.length>0) {
-					let rayMobConfig = false
-					for ( let i = 0; i < intersects.length; i ++ ) {
-						// if(this.lastRayTarget !== intersects[ i ].object.uuid) { 
-							rayMobConfig = intersects[ i ].object.parent.config
-							if(rayMobConfig.status.mouseover.active === false ) rayMobConfig.status.mouseover.active = true;
-							this.lastRayTarget = intersects[ i ].object.uuid
-						// }						
-					}
-					this._FrontboardManager.TriggerFrontBloc('Targets', true)
-					this._FrontboardManager.setFrontDatas('Targets', intersects[ 0 ].object.parent.config)
-				}
-				else {
-					this.lastRayTarget = 0
-					this._FrontboardManager.TriggerFrontBloc('Targets', false)
-				}
-				
 	}
 	START() {
 		this._REFRESH();
@@ -225,13 +204,12 @@ class gameCore {
 
 	_Step(timeElapsed) {
 		timeElapsed = timeElapsed * 0.001;
-
-
 		if (!this._pause && ((this._WindowActive != null && this._WindowActive.get_isWindowActive()) || (this._WindowActive === null))) {
 
 			// this._LightsManager.upadteSun()
 			this._SceneManager.rotateSun()
-			this.checkMouseRayCaster()
+
+			this.RayCaster.checkMouseRayCaster()
 
 			this._PlayerManager.saveOldPos()
 			this._PlayerManager.checkRotation();
@@ -242,7 +220,6 @@ class gameCore {
 			this._PlayerManager.checkZooming();
 
 			this._PlayerManager.updatePlayerOrbiter();
-
 
 			// REGENS AND BUFF
 			this._PlayerManager.regen();
@@ -283,7 +260,6 @@ class gameCore {
 			// RENDER ((((()))))
 			this._threejs.render(this.scene, this.camera);
 		}
-
 	}
 	_REFRESH() {
 		requestAnimationFrame((t) => {
@@ -299,7 +275,6 @@ class gameCore {
 		return this._pause
 	}
 }
-
 
 let _JEU = null;
 window.addEventListener('DOMContentLoaded', () => {

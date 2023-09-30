@@ -98,18 +98,25 @@ class Mob {
 						statu.current = 0; 
 						statu.active = false;
 						// this._trigger_Front();
-						statuCallback('END')
+
+						// statuCallback('target free:'+this.config.nickname)
 						
 						this.config.states.collide.color.current = this.config.states.collide.color.saved
 						this.mobMesh.material.color = this.config.states.collide.color.saved
+						this.mobMesh.material.opacity = 1
+						this.mobMesh.material.transparent = false
 					}
 					if(statu.current === 1) { 
 						// this._trigger_Front();
 						// console.log('nickname:',this.config.nickname,'lv:'+this.config.lv,'hp:',this.config.stats.hp.current)
-						statuCallback('START')
+						
+						statuCallback('target:'+this.config.nickname)
+
 						this.config.states.collide.color.saved = this.mobMesh.material.color
 						this.config.states.collide.color.current = new THREE.Color( 0x000000 )
 						this.mobMesh.material.color = new THREE.Color( 0x000000 )
+						this.mobMesh.material.transparent = true
+						this.mobMesh.material.opacity = 0.5
 					}
 
 

@@ -70,9 +70,6 @@ class FloorsManager {
 				}
 				break;
 			default:
-				console.error('???')
-				groundGeometry = false
-				groundMaterial = false
 				break;
 		}
 		// create mesh
@@ -153,10 +150,7 @@ class FloorsManager {
 				mobs: { number: 101 }
 			},
 		}
-		let config = floorsconfig[this._currentImmat]
-		// get position if not
-		// if(typeof config.position === 'undefined') config.position = { x: -(config.size.x/2), y: -(config.size.y/2), z: -(config.size.z/2) };
-		return config
+		return floorsconfig[this._currentImmat]
 	}
 	get_plan() {
 		const mapLoader = new THREE.TextureLoader();

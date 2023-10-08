@@ -123,7 +123,7 @@ class PlayerManager {
 			this.PlayerConfig.config.futurPositions.z
 		);
 
-		this.#addPlayerOrbiter();
+		// this.#addPlayerOrbiter();
 		// SkillsManager
 		this.missiles = [];
 		this.skillsInUse = [];
@@ -131,48 +131,48 @@ class PlayerManager {
 		if (this.conslog) console.log("PlayerManager Mounted !");
 		// console.log()
 	}
-	#addPlayerOrbiter() {
-		let size = this.PlayerConfig.config.orbiter.size;
-		let color = this.PlayerConfig.config.orbiter.color;
-		let wireframe = this.PlayerConfig.config.orbiter.wireframe;
+	// #addPlayerOrbiter() {
+	// 	let size = this.PlayerConfig.config.orbiter.size;
+	// 	let color = this.PlayerConfig.config.orbiter.color;
+	// 	let wireframe = this.PlayerConfig.config.orbiter.wireframe;
 
-		let material = new THREE.MeshPhongMaterial({
-			color: color,
-			wireframe: wireframe,
-		});
-		this.playerOrbiter = new THREE.Mesh(
-			new THREE.BoxGeometry(size.x, size.y, size.z),
-			material
-		);
-		this.playerOrbiter.name = "playerOrbiter";
-		this.playerOrbiter.castShadow = true;
-		this.playerOrbiter.receiveShadow = true;
-		this.playerOrbiter.matrixAutoUpdate = true;
-		this.playerOrbiter.material.transparent = false;
-		// this.playerOrbiter.material.opacity = .8
+	// 	let material = new THREE.MeshPhongMaterial({
+	// 		color: color,
+	// 		wireframe: wireframe,
+	// 	});
+	// 	this.playerOrbiter = new THREE.Mesh(
+	// 		new THREE.BoxGeometry(size.x, size.y, size.z),
+	// 		material
+	// 	);
+	// 	this.playerOrbiter.name = "playerOrbiter";
+	// 	this.playerOrbiter.castShadow = true;
+	// 	this.playerOrbiter.receiveShadow = true;
+	// 	this.playerOrbiter.matrixAutoUpdate = true;
+	// 	this.playerOrbiter.material.transparent = false;
+	// 	// this.playerOrbiter.material.opacity = .8
 
-		this.playerOrbiter.position.set(
-			this.PlayerConfig.config.orbiter.position.x, // - (size.x / 2),
-			this.PlayerConfig.config.orbiter.position.y, // - (size.y / 2),
-			this.PlayerConfig.config.orbiter.position.z // - (size.z / 2)
-		);
-		// this.updateMyPos()
-		// this.playerOrbiter.centerDistance = this._Formula.getDistanceXY(this.playerGroupe, this.playerOrbiter);
-		this.step = 1 / 10;
-		this.playerOrbiter.theta = {
-			x: [0, 360, this.step],
-			y: [0, 360, this.step],
-			z: [0, 360, 0],
-			delay: { current: 0, max: 1000 },
-		};
-		this.playerGroupe.add(this.playerOrbiter);
-	}
-	updatePlayerOrbiter() {
-		let playerOrbiter = this.playerOrbiter;
-		if (playerOrbiter) {
-			this._Formula.get_NextOrbitPosOrbiter(playerOrbiter);
-		}
-	}
+	// 	this.playerOrbiter.position.set(
+	// 		this.PlayerConfig.config.orbiter.position.x, // - (size.x / 2),
+	// 		this.PlayerConfig.config.orbiter.position.y, // - (size.y / 2),
+	// 		this.PlayerConfig.config.orbiter.position.z // - (size.z / 2)
+	// 	);
+	// 	// this.updateMyPos()
+	// 	// this.playerOrbiter.centerDistance = this._Formula.getDistanceXY(this.playerGroupe, this.playerOrbiter);
+	// 	this.step = 1 / 10;
+	// 	this.playerOrbiter.theta = {
+	// 		x: [0, 360, this.step],
+	// 		y: [0, 360, this.step],
+	// 		z: [0, 360, 0],
+	// 		delay: { current: 0, max: 1000 },
+	// 	};
+	// 	this.playerGroupe.add(this.playerOrbiter);
+	// }
+	// updatePlayerOrbiter() {
+	// 	let playerOrbiter = this.playerOrbiter;
+	// 	if (playerOrbiter) {
+	// 		this._Formula.get_NextOrbitPosOrbiter(playerOrbiter);
+	// 	}
+	// }
 	applyGravity(floorcolide) {
 		let currentConfig = this.PlayerConfig.config;
 
@@ -314,22 +314,27 @@ class PlayerManager {
 	}
 	#addMeshToModel() {
 		// cube player object
-		let playerMesh = new THREE.Mesh(
-			new THREE.BoxGeometry(
-				this.PlayerConfig.config.size.x,
-				this.PlayerConfig.config.size.y,
-				this.PlayerConfig.config.size.z
-			),
-			new THREE.MeshPhongMaterial({
-				color: this.PlayerConfig.config.playerColor,
-				wireframe: this.PlayerConfig.config.wireframe,
-			})
-		);
+		console.log(this._GameConfig.playerChar)
+		// this.playerGroupe.add(this._GameConfig.playerChar.charGltf.scene.children[0]);
+
+
+		// let playerMesh = new THREE.Mesh(
+		// 	new THREE.BoxGeometry(
+		// 		this.PlayerConfig.config.size.x,
+		// 		this.PlayerConfig.config.size.y,
+		// 		this.PlayerConfig.config.size.z
+		// 	),
+		// 	new THREE.MeshPhongMaterial({
+		// 		color: this.PlayerConfig.config.playerColor,
+		// 		wireframe: this.PlayerConfig.config.wireframe,
+		// 	})
+		// );
+		let playerMesh = this._GameConfig.playerChar.charGltf.scene
 		playerMesh.name = this.PlayerConfig.config.playerMeshName;
 		playerMesh.castShadow = this.PlayerConfig.config.castShadow;
 		playerMesh.receiveShadow = this.PlayerConfig.config.receiveShadow;
 		playerMesh.matrixAutoUpdate = this.PlayerConfig.config.matrixAutoUpdate;
-		playerMesh.material.transparent = this.PlayerConfig.config.transparent;
+		// playerMesh.material.transparent = this.PlayerConfig.config.transparent;
 
 		// playerMesh.traverse(n => {
 		// 	if (n.isMesh) {
@@ -343,31 +348,28 @@ class PlayerManager {
 	#addModelToGroupe() {
 		// if (this.torche) this.playerGroupe.add(this.torche);
 		this.playerGroupe.add(this.PlayerMesh);
-		console.log(this._GameConfig.playerChar)
-		this.playerGroupe.add(this._GameConfig.playerChar.charGltf.scene);
-
-		this.canonPart = new THREE.Mesh(
-			new THREE.BoxGeometry(
-				this.PlayerConfig.config.canon.size.x,
-				this.PlayerConfig.config.canon.size.y,
-				this.PlayerConfig.config.canon.size.z
-			),
-			new THREE.MeshPhongMaterial({
-				color: "green", //this.playerColor,
-				wireframe: false,
-			})
-		);
-		this.canonPart.name = this.PlayerConfig.config.canon.meshName;
-		this.canonPart.material.transparent = false;
-		// this.canonPart.material.opacity = 0
-		this.canonPart.position.set(
-			this.PlayerConfig.config.canon.position.x,
-			this.PlayerConfig.config.canon.position.y,
-			this.PlayerConfig.config.canon.position.z
-		);
-		this.canonPart.receiveShadow = true; //this.receiveShadow;
-		this.canonPart.castShadow = true; //this.castShadow;
-		this.playerGroupe.add(this.canonPart);
+		// this.canonPart = new THREE.Mesh(
+		// 	new THREE.BoxGeometry(
+		// 		this.PlayerConfig.config.canon.size.x,
+		// 		this.PlayerConfig.config.canon.size.y,
+		// 		this.PlayerConfig.config.canon.size.z
+		// 	),
+		// 	new THREE.MeshPhongMaterial({
+		// 		color: "green", //this.playerColor,
+		// 		wireframe: false,
+		// 	})
+		// );
+		// this.canonPart.name = this.PlayerConfig.config.canon.meshName;
+		// this.canonPart.material.transparent = false;
+		// // this.canonPart.material.opacity = 0
+		// this.canonPart.position.set(
+		// 	this.PlayerConfig.config.canon.position.x,
+		// 	this.PlayerConfig.config.canon.position.y,
+		// 	this.PlayerConfig.config.canon.position.z
+		// );
+		// this.canonPart.receiveShadow = true; //this.receiveShadow;
+		// this.canonPart.castShadow = true; //this.castShadow;
+		// this.playerGroupe.add(this.canonPart);
 	}
 	checkRotation() {
 		this.PlayerConfig.config.futurRotation.z = this.ControlsManager.thetaDeg;

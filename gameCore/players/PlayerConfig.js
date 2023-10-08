@@ -34,7 +34,7 @@ class PlayerConfig {
 			},
 			canon: {
 				meshName: 'Cannon',
-				position: { x: 0, y:.5, z: 0 },
+				position: { x: 0, y:0, z: 1.5 },
 				size: { x: .25, y: 1, z: .25 },
 				color: 'green',
 				wireframe: false

@@ -226,7 +226,7 @@ class gameCore {
 			this._PlayerManager.checkSkills(this.allMobs);
 			this._PlayerManager.checkZooming();
 
-			this._PlayerManager.updatePlayerOrbiter();
+			// this._PlayerManager.updatePlayerOrbiter();
 
 			// REGENS AND BUFF
 			this._PlayerManager.regen();

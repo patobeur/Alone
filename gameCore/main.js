@@ -114,12 +114,12 @@ class gameCore {
 			0: {
 				type: "character",
 				name: "Kimono_Female",
-				animName: "Run"
+				animName: "Idle"
 			},
 			1: {
 				type: "character",
 				name: "Kimono_Male",
-				animName: "Run"
+				animName: "Idle"
 			}
 		}
 		let choice = 1
@@ -128,6 +128,7 @@ class gameCore {
 			characterChoice[choice].name,
 			characterChoice[choice].animName
 		)
+		// add playerChar to gameconfig
 		this._GameConfig.playerChar = {
 			meshModel : this.allModels[characterChoice[choice].type][characterChoice[choice].name]
 		};
@@ -228,6 +229,8 @@ class gameCore {
 			this._PlayerManager.saveOldPos();
 			this._PlayerManager.checkRotation();
 			this._PlayerManager.checkMoves();
+			this._PlayerManager.refreshanimation(timeElapsed);
+
 
 			this._PlayerManager.checkActions();
 			this._PlayerManager.checkSkills(this.allMobs);
@@ -257,8 +260,6 @@ class gameCore {
 
 			// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 
-			// Update player animations			
-				this._GameConfig.playerChar.meshModel.MegaMixer.update(timeElapsed);
 
 			// Check if floored
 			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(

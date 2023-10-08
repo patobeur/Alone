@@ -24,57 +24,93 @@ class ModelsManager {
 		this.allModelsAndAnimations = this.AddModelsToSceneWithDefaultAnimation();
 		this._fonctionretour(this.allModelsAndAnimations); // Call your callback function with loaded data
 	}
-	setMeshModel(type = "character", name = "Kimono_Female",animName = 'Idle') {
-		console.log(this.allModelsAndAnimations[type][name]);
+
+	setMeshModel(type = "character", name = "Kimono_Female", animName = "Idle") {
+		this.currentAnimation = animName;
 
 		this.charGltf = this.allModelsAndAnimations[type][name].gltf;
-		this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
+		this.MegaMixer = new THREE.AnimationMixer(
+			this.allModelsAndAnimations[type][name].gltf.scene
+		);
 		this.MegaClip = THREE.AnimationClip.findByName(
-			this.charGltf.animations,
+			this.allModelsAndAnimations[type][name].gltf.animations,
 			animName
 		);
 		this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
 		this.MegaAction.play(); // Joue l'animation par défaut
 
-		this.allModelsAndAnimations[type][name].gltf = this.charGltf
-		this.allModelsAndAnimations[type][name].MegaMixer = this.MegaMixer 
-		this.allModelsAndAnimations[type][name].MegaClip = this.MegaClip 
-		this.allModelsAndAnimations[type][name].MegaAction = this.MegaAction 
+		this.allModelsAndAnimations[type][name].gltf = this.charGltf;
+		this.allModelsAndAnimations[type][name].MegaMixer = this.MegaMixer;
+		this.allModelsAndAnimations[type][name].MegaClip = this.MegaClip;
+		this.allModelsAndAnimations[type][name].MegaAction = this.MegaAction;
 
-		// this._GameConfig.playerChar = {
-		// 	charGltf: this.charGltf,
-		// 	MegaMixer: this.MegaMixer,
-		// 	MegaClip: this.MegaClip,
-		// 	MegaAction: this.MegaAction,
-		// };
+		this.allModelsAndAnimations[type][name].changeAnimation = (
+			animName
+		) => {
+			if (this.currentAnimation != animName) {
+				this.currentAnimation = animName;
+				console.log("------------------------------goind to ", animName);
+				this.MegaClip = THREE.AnimationClip.findByName(
+					this.allModelsAndAnimations[type][name].gltf.animations,
+					animName
+				);
+				this.MegaAction.stop();
+				if (this.MegaClip) {
+					this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
+					this.MegaAction.play(); // Joue l'animation par défaut
+				}
+			}
+		};
+		// (
+		// 		// this._GameConfig.playerChar = {
+		// 		// 	charGltf: this.charGltf,
+		// 		// 	MegaMixer: this.MegaMixer,
+		// 		// 	MegaClip: this.MegaClip,
+		// 		// 	MegaAction: this.MegaAction,
+		// 		// };
 
+		// 		// console.log('playerChar uuid',this.allModelsAndAnimations[type][name].gltf.scene.uuid)
+		// 		// this.allModelsAndAnimations[type][name].MegaMixer =
+		// 		// 	new THREE.AnimationMixer(
+		// 		// 		this.allModelsAndAnimations[type][name].gltf.scene
+		// 		// 	);
 
-		// console.log('playerChar uuid',this.allModelsAndAnimations[type][name].gltf.scene.uuid)
-		// this.allModelsAndAnimations[type][name].MegaMixer =
-		// 	new THREE.AnimationMixer(
-		// 		this.allModelsAndAnimations[type][name].gltf.scene
-		// 	);
+		// 		// this.allModelsAndAnimations[type][name].MegaClip =
+		// 		// 	THREE.AnimationClip.findByName(
+		// 		// 		this.allModelsAndAnimations[type][name].gltf.animations,
+		// 		// 		animName
+		// 		// 	);
+		// 		// this.allModelsAndAnimations[type][name].MegaAction =
+		// 		// 	this.allModelsAndAnimations[type][name].MegaMixer.clipAction(
+		// 		// 		this.allModelsAndAnimations[type][name].MegaClip
+		// 		// 	);
+		// 		// this.allModelsAndAnimations[type][name].MegaAction.play()
 
-		// this.allModelsAndAnimations[type][name].MegaClip =
-		// 	THREE.AnimationClip.findByName(
-		// 		this.allModelsAndAnimations[type][name].gltf.animations,
-		// 		animName
-		// 	);
-		// this.allModelsAndAnimations[type][name].MegaAction =
-		// 	this.allModelsAndAnimations[type][name].MegaMixer.clipAction(
-		// 		this.allModelsAndAnimations[type][name].MegaClip
-		// 	);
-		console.log(this.allModelsAndAnimations[type][name]);
-		// this.allModelsAndAnimations[type][name].MegaAction.play()
-
-		// this.playerChar = {
-		// 	charGltf: this.charGltf,
-		// 	MegaMixer: this.MegaMixer,
-		// 	MegaClip: this.MegaClip,
-		// 	MegaAction: this.MegaAction,
-		// };
-		// return this.playerChar
+		// 		// this.playerChar = {
+		// 		// 	charGltf: this.charGltf,
+		// 		// 	MegaMixer: this.MegaMixer,
+		// 		// 	MegaClip: this.MegaClip,
+		// 		// 	MegaAction: this.MegaAction,
+		// 		// };
+		// 		// return this.playerChar
+		// )
 	}
+	// setMeshAnimationTo(animName = "Idle") {
+	// 	console.log("------------------------------setMeshAnimationTo ");
+	// 	if (this.currentAnimation != animName) {
+	// 		console.log("------------------------------goind to ", animName);
+	// 		this.MegaClip = THREE.AnimationClip.findByName(
+	// 			this.charGltf.animations,
+	// 			animName
+	// 		);
+	// 		console.log("this.MegaClip ", this.MegaClip);
+	// 		if (this.MegaClip) {
+	// 			this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
+	// 			this.MegaAction.play(); // Joue l'animation par défaut
+	// 			this.currentAnimation = animName;
+	// 		}
+	// 	}
+	// }
 	async LoadModelsFrom_list() {
 		const indexedMeshs = [];
 		for (const key in this._MeshDatasList) {

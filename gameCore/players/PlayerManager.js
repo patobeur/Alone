@@ -100,13 +100,13 @@ class PlayerManager {
 			};
 		} else if (this._GameConfig.floors.spawns) {
 			let defaultSpawnNum = 0;
-				console.log(
-					"Spawning Num:" +
-						defaultSpawnNum +
-						' on floor "' +
-						this._GameConfig.floors.name +
-						'"'
-				);
+			console.log(
+				"Spawning Num:" +
+					defaultSpawnNum +
+					' on floor "' +
+					this._GameConfig.floors.name +
+					'"'
+			);
 			let newpos = {
 				x: this._GameConfig.floors.spawns[defaultSpawnNum].x,
 				y: this._GameConfig.floors.spawns[defaultSpawnNum].y,
@@ -208,8 +208,9 @@ class PlayerManager {
 		if (
 			this.ControlsManager.space === true &&
 			this.PlayerConfig.config.status.jumping === false
-		)
+		) {
 			this.PlayerConfig.config.status.jumping = true;
+		}
 		this.jump();
 		// others
 	}
@@ -317,7 +318,6 @@ class PlayerManager {
 		// console.log(this._GameConfig.playerChar)
 		// this.playerGroupe.add(this._GameConfig.playerChar.charGltf.scene.children[0]);
 
-
 		// let playerMesh = new THREE.Mesh(
 		// 	new THREE.BoxGeometry(
 		// 		this.PlayerConfig.config.size.x,
@@ -329,21 +329,24 @@ class PlayerManager {
 		// 		wireframe: this.PlayerConfig.config.wireframe,
 		// 	})
 		// );
-		console.log('playerChar',this._GameConfig.playerChar.meshModel.gltf.scene.uuid)
-		let playerMesh = this._GameConfig.playerChar.meshModel.mesh
+		console.log(
+			"playerChar",
+			this._GameConfig.playerChar.meshModel.gltf.scene.uuid
+		);
+		let playerMesh = this._GameConfig.playerChar.meshModel.mesh;
 		playerMesh.name = this.PlayerConfig.config.playerMeshName;
 		playerMesh.castShadow = this.PlayerConfig.config.castShadow;
 		playerMesh.receiveShadow = this.PlayerConfig.config.receiveShadow;
 		playerMesh.matrixAutoUpdate = this.PlayerConfig.config.matrixAutoUpdate;
 		// playerMesh.material.transparent = this.PlayerConfig.config.transparent;
 
-		// playerMesh.traverse(n => {
-		// 	if (n.isMesh) {
-		// 		n.castShadow = true;
-		// 		n.receiveShadow = true;
-		// 		if (n.material.map) n.material.map.anisotropy = 16;
-		// 	}
-		// });
+		playerMesh.traverse((n) => {
+			if (n.isMesh) {
+				n.castShadow = true;
+				n.receiveShadow = true;
+				if (n.material.map) n.material.map.anisotropy = 16;
+			}
+		});
 		this.PlayerMesh = playerMesh;
 	}
 	#addModelToGroupe() {
@@ -378,27 +381,46 @@ class PlayerManager {
 			this.PlayerConfig.config.futurRotation.z
 		);
 	}
+	refreshanimation(timeElapsed) {
+		// Update player animations
+		this._GameConfig.playerChar.meshModel.MegaMixer.update(timeElapsed);
+	}
 	checkMoves() {
 		if (typeof this.ControlsManager === "object") {
 			let speed = this.maxSpeed;
+			// if (
+			// 	this.ControlsManager.forward ||
+			// 	this.ControlsManager.reverse ||
+			// 	this.ControlsManager.left ||
+			// 	this.ControlsManager.right
+			// ) {
+			if (this.ControlsManager.forward) {
+				this.PlayerConfig.config.futurPositions.y += speed;
+				this._GameConfig.playerChar.meshModel.changeAnimation("Run");
+			} //; direction.angle = 0 }
+			if (this.ControlsManager.reverse) {
+				this.PlayerConfig.config.futurPositions.y -= speed;
+				this._GameConfig.playerChar.meshModel.changeAnimation("Run");
+			} //; direction.angle = 180 }
+			if (this.ControlsManager.left) {
+				this.PlayerConfig.config.futurPositions.x -= speed;
+				this._GameConfig.playerChar.meshModel.changeAnimation("Run");
+			} //; direction.angle = 90 }
+			if (this.ControlsManager.right) {
+				this.PlayerConfig.config.futurPositions.x += speed;
+				this._GameConfig.playerChar.meshModel.changeAnimation("Run");
+			} //; direction.angle = 270 }
+			// }
+			// else {
+			// 	this._GameConfig.playerChar.meshModel.changeAnimation('Idle')
+			// }
 			if (
-				this.ControlsManager.forward ||
-				this.ControlsManager.reverse ||
-				this.ControlsManager.left ||
-				this.ControlsManager.right
+				!this.ControlsManager.forward &&
+				!this.ControlsManager.reverse &&
+				!this.ControlsManager.left &&
+				!this.ControlsManager.right
 			) {
-				if (this.ControlsManager.forward) {
-					this.PlayerConfig.config.futurPositions.y += speed;
-				} //; direction.angle = 0 }
-				if (this.ControlsManager.reverse) {
-					this.PlayerConfig.config.futurPositions.y -= speed;
-				} //; direction.angle = 180 }
-				if (this.ControlsManager.left) {
-					this.PlayerConfig.config.futurPositions.x -= speed;
-				} //; direction.angle = 90 }
-				if (this.ControlsManager.right) {
-					this.PlayerConfig.config.futurPositions.x += speed;
-				} //; direction.angle = 270 }
+				this._GameConfig.playerChar.meshModel.changeAnimation("Idle");
 			}
 		}
 	}

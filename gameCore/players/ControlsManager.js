@@ -156,7 +156,7 @@ class ControlsManager {
 			"ArrowDown": () => this.reverse = true,
 			"s": () => this.reverse = true,
 			" ": () => this.space = true,
-			// "Space": () => this.space = true,
+			"Space": () => this.space = true,
 		};
 		if (KEY_MAP[event.key]) {
 			if (this.conslog) console.log('EVENT', event);
@@ -187,7 +187,7 @@ class ControlsManager {
 			"ArrowDown": () => this.reverse = false,
 			"s": () => this.reverse = false,
 			" ": () => this.space = false,
-			// "Space": () => this.space = false,
+			"Space": () => this.space = false,
 		};
 		if (KEY_MAP[event.key]) KEY_MAP[event.key]();
 	}

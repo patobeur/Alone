@@ -1,30 +1,31 @@
-import { Formula } from '../mecanics/Formula.js';
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import { Formula } from "../mecanics/Formula.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
 class SkillsManager {
-	conslog = false
-	order = 0
+	conslog = false;
+	order = 0;
 	constructor(datas) {
-//skillname, playerGroupe, canonpart, fromfloor = 1, Scene, faction
+		//skillname, playerGroupe, canonpart, fromfloor = 1, Scene, faction
 
-		
-		let skillname = datas.skillname
-		this._playerGroupe = datas.playerGroupe
-		this.sourceCanon = datas.canonpart
-		let fromfloor = datas.fromfloor
-		this.scene = datas.scene
-		let faction = datas.faction
-		this.skillCallBack = datas.skillCallBack
+		let skillname = datas.skillname;
+		this._playerGroupe = datas.playerGroupe;
+		this.sourceCanon = datas.canonpart;
+		let fromfloor = datas.fromfloor;
+		this.scene = datas.scene;
+		let faction = datas.faction;
+		this.skillCallBack = datas.skillCallBack;
 
-
-		this.formula = new Formula()
-
-
+		this.formula = new Formula();
 
 		// var playerPosition = canonpart.position
-		var rotation = this._playerGroupe.rotation
+		var rotation = this._playerGroupe.rotation;
 		// this.fromfloor = fromfloor / 2;
 
-		this.skillDatas = this._getSkill(skillname, this._playerGroupe.position, rotation, faction);
+		this.skillDatas = this._getSkill(
+			skillname,
+			this._playerGroupe.position,
+			rotation,
+			faction
+		);
 
 		this.receiveShadow = true;
 		this.castShadow = true;
@@ -36,9 +37,9 @@ class SkillsManager {
 		this.durationEnds = false;
 		this.isColliding = false;
 		this.mesh;
-		this.ALLMOBSTEST;
-		this.touchedMobs = []
-		if (this.conslog) console.info('SkillsManager Mounted !', 'conslog:', this.conslog)
+		this.allmobs;
+		this.touchedMobs = [];
+		if (this.conslog) console.info("SkillsManager Mounted !", "conslog:", this.conslog);
 	}
 	_getSkill(skillname, sourceCanon, rotation, faction) {
 		skillname = JSON.parse(JSON.stringify(skillname));
@@ -52,48 +53,65 @@ class SkillsManager {
 		skill.z = sourceCanon.z + (skill.fromfloor ? skill.fromfloor : 0);
 		skill.rotation = rotation;
 
-		return skill
+		return skill;
 	}
 	init(allmobs) {
-		this.ALLMOBSTEST = allmobs;
+		this.allmobs = allmobs;
 		this.birthDay = new Date();
 		this.creatMesh();
 		// mob devient autonome
-		this.render = setInterval(this._update, 20, ['attribs empty']);
+		this.render = setInterval(this._update, 20, ["attribs empty"]);
 	}
 	creatMesh() {
 		switch (this.skillDatas.meshType) {
 			case "sphere":
 				this.mesh = new THREE.Mesh(
-					new THREE.SphereGeometry(this.skillDatas.w, this.skillDatas.l, this.skillDatas.h),
-					new THREE.MeshPhongMaterial({ color: this.skillDatas.color, wireframe: this.wireFrame })
+					new THREE.SphereGeometry(
+						this.skillDatas.w,
+						this.skillDatas.l,
+						this.skillDatas.h
+					),
+					new THREE.MeshPhongMaterial({
+						color: this.skillDatas.color,
+						wireframe: this.wireFrame,
+					})
 				);
 				break;
-			case 'cube':
+			case "cube":
 				this.mesh = new THREE.Mesh(
-					new THREE.BoxGeometry(this.skillDatas.w, this.skillDatas.l, this.skillDatas.h),
-					new THREE.MeshPhongMaterial({ color: this.skillDatas.color, wireframe: this.wireFrame })
+					new THREE.BoxGeometry(
+						this.skillDatas.w,
+						this.skillDatas.l,
+						this.skillDatas.h
+					),
+					new THREE.MeshPhongMaterial({
+						color: this.skillDatas.color,
+						wireframe: this.wireFrame,
+					})
 				);
 				break;
 		}
-		this.mesh.name = this.skillDatas.name
-		this.mesh.receiveShadow = this.receiveShadow
-		this.mesh.castShadow = this.castShadow
+		this.mesh.name = this.skillDatas.name;
+		this.mesh.receiveShadow = this.receiveShadow;
+		this.mesh.castShadow = this.castShadow;
 
 		if (this.skillDatas.mesh && this.skillDatas.material) {
-			if (this.skillDatas.mesh.opacity && this.skillDatas.material.transparent) {
-				this.mesh.material.transparent = this.skillDatas.material.transparent
-				this.mesh.material.opacity = this.skillDatas.mesh.opacity
+			if (
+				this.skillDatas.mesh.opacity &&
+				this.skillDatas.material.transparent
+			) {
+				this.mesh.material.transparent = this.skillDatas.material.transparent;
+				this.mesh.material.opacity = this.skillDatas.mesh.opacity;
 			}
 		}
 		// this.mesh.material.transparent = true
 		// this.mesh.material.opacity = .6
 
-		this.mesh.scale.set(1, 1, 1)
+		this.mesh.scale.set(1, 1, 1);
 		// ????????????????
-		this._applyDatasOnMesh()
-		this._applyRotationOnMesh()
-		this.scene.add(this.mesh)
+		this._applyDatasOnMesh();
+		this._applyRotationOnMesh();
+		this.scene.add(this.mesh);
 	}
 	_update = () => {
 		if (!this.isColliding) {
@@ -102,27 +120,32 @@ class SkillsManager {
 				this._setNextTransform();
 				this._applyDatasOnMesh();
 				this._applyOpacity();
-				this._checkDestinationReached()
-			}
-			else if (this.durationEnds) {
-				if (this.skillDatas.duration) { this._checkDuration() }
-				else { this._endThis(); }
+				this._checkDestinationReached();
+			} else if (this.durationEnds) {
+				if (this.skillDatas.duration) {
+					this._checkDuration();
+				} else {
+					this._endThis();
+				}
 			}
 			// if (this.conslog && this.isColliding) console.log('isColliding ???',this.isColliding);
 			// this.isColliding = false
 
-			// todo  long cycle 
-			this._setTouchedMobs() // cycle thrue allmobs
+			// todo  long cycle
+			this._setTouchedMobs(); // cycle thrue allmobs
 
 			// if (this.isColliding === true && typeof this.touchedMobs === 'object'){
-			if (typeof this.touchedMobs === 'object' && this.touchedMobs.length > 0) {
+			if (typeof this.touchedMobs === "object" && this.touchedMobs.length > 0) {
 				// console.log(this.touchedMobs);
 				// Mob dead
 				// this.touchedMobs[0].config.states.dead = true
-				if (this.touchedMobs[0].config.stats.hp.current > 0 && 
-					this.touchedMobs[0].config.states.dead === false) {
-				
-					let damage = new Number(this.skillDatas.getDamage(this.touchedMobs[0]));
+				if (
+					this.touchedMobs[0].config.stats.hp.current > 0 &&
+					this.touchedMobs[0].config.states.dead === false
+				) {
+					let damage = new Number(
+						this.skillDatas.getDamage(this.touchedMobs[0])
+					);
 
 					// if (this.conslog) console.log(this.skillDatas);
 					// if (this.conslog) console.log('getDamage = ' + this.skillDatas.getDamage(this.touchedMobs[0]));
@@ -131,9 +154,10 @@ class SkillsManager {
 					let finalDamage = damage - def;
 					// if (this.conslog) console.log('finalDamage = ' + damage + ' - ' + def + '(def) = ' + finalDamage);
 
-					this.touchedMobs[0].config.stats.hp.current -= finalDamage
+					this.touchedMobs[0].config.stats.hp.current -= finalDamage;
 					// if (this.conslog) console.log('mob = ', this.touchedMobs[0].config.stats);
-					if (this.touchedMobs[0].config.stats.hp.current <= 0) this.skillCallBack(this.touchedMobs[0])
+					if (this.touchedMobs[0].config.stats.hp.current <= 0)
+						this.skillCallBack(this.touchedMobs[0]);
 				}
 
 				// this.isColliding = true
@@ -142,24 +166,25 @@ class SkillsManager {
 				if (this.skillDatas.perforante != true) {
 					// this.durationEnds = true;
 					this._endThis();
+				} else {
+					if (this.conslog)
+						console.log(
+							"Balles perforantes Mouhahahahaha !!!!",
+							this.touchedMobs[0].config.stats.hp.current,
+							this.touchedMobs[0].mesh.uuid
+						);
+					this.isColliding = false;
+					this.touchedMobs = [];
 				}
-				else {
-					if (this.conslog) console.log('Balles perforantes Mouhahahahaha !!!!', this.touchedMobs[0].config.stats.hp.current, this.touchedMobs[0].mesh.uuid)
-					this.isColliding = false
-					this.touchedMobs = []
-				}
-				this.touchedMobs = []
-
-
+				this.touchedMobs = [];
 			}
 			// this.MobsManager.updateAllMobs()
 		}
-
-	}
+	};
 	// _getFirstCollidingMob() {
-	// 	if (this.ALLMOBSTEST) {
+	// 	if (this.allmobs) {
 	// 		let i = 0
-	// 		this.ALLMOBSTEST.forEach(mob => {
+	// 		this.allmobs.forEach(mob => {
 	// 			let dist = mob.bbox.distanceToPoint(this.mesh.position)
 	// 			if (dist < .5) {
 	// 				this.isColliding = true; // BOOOOOOM
@@ -179,54 +204,58 @@ class SkillsManager {
 	// 	return false;
 	// }
 	_setTouchedMobs() {
-		if (this.ALLMOBSTEST) {
-			let i = 0
-			this.ALLMOBSTEST.forEach(mob => {
+		if (this.allmobs) {
+			let i = 0;
+			this.allmobs.forEach((mob) => {
 				// Vérifier si les boîtes englobantes se chevauchent
-				let intersect = this.bbox.intersectsBox(mob.bbox)
+				let intersect = this.bbox.intersectsBox(mob.bbox);
 				if (intersect) this.touchedMobs.push(mob);
-				i++
+				i++;
 			});
 		}
 		// if(this.touchedMobs.length>0) console.log(this.touchedMobs)
 		return this.touchedMobs;
 	}
 	_applyDatasOnMesh() {
-		// set mesh position 
-		this.mesh.position.set(this.skillDatas.x, this.skillDatas.y, this.skillDatas.z);
+		// set mesh position
+		this.mesh.position.set(
+			this.skillDatas.x,
+			this.skillDatas.y,
+			this.skillDatas.z
+		);
 		// if SCALE found
-		if (this.skillDatas.scale) this.mesh.scale.set(
-			this.skillDatas.scale.current,
-			this.skillDatas.scale.current,
-			this.skillDatas.scale.current
-		)
+		if (this.skillDatas.scale)
+			this.mesh.scale.set(
+				this.skillDatas.scale.current,
+				this.skillDatas.scale.current,
+				this.skillDatas.scale.current
+			);
 	}
-	_applyOpacity() {
-	}
+	_applyOpacity() {}
 	_checkDuration() {
 		let duration = new Date().getTime() - this.birthDay.getTime();
 		if (duration >= this.skillDatas.duration) {
-			this.skillDatas.durationOff = true
+			this.skillDatas.durationOff = true;
 			this._endThis();
 		}
 	}
 	_endThis() {
 		if (
-			this.skillDatas.durationOff === true
-			&& !(
-				(this.skillDatas.durationOff === 'undefined' || !this.skillDatas.durationOff)
-				&& (
-					(!this.skillDatas.perforante === 'undefined' || !this.skillDatas.perforante)
-				)
+			this.skillDatas.durationOff === true &&
+			!(
+				(this.skillDatas.durationOff === "undefined" ||
+					!this.skillDatas.durationOff) &&
+				(!this.skillDatas.perforante === "undefined" ||
+					!this.skillDatas.perforante)
 			)
-		) this.end = true;
+		)
+			this.end = true;
 
 		clearInterval(this.render);
 		if (this.skillDatas.explosion) {
 			this._explode();
-		}
-		else {
-			this._removeFromSceneAndDispose()
+		} else {
+			this._removeFromSceneAndDispose();
 		}
 	}
 	_checkDestinationReached() {
@@ -237,57 +266,65 @@ class SkillsManager {
 	}
 	_setNextTransform() {
 		if (this.skillDatas.scale) {
-			let start = this.skillDatas.scale.start < 0 ? 0 : this.skillDatas.scale.start;
+			let start =
+				this.skillDatas.scale.start < 0 ? 0 : this.skillDatas.scale.start;
 			let end = this.skillDatas.scale.end > 20 ? 20 : this.skillDatas.scale.end;
 			let distancedone = this.skillDatas.distanceMax - this.distance;
-			this.skillDatas.scale.current = start + (((end - start) / (distancedone) - 1))
+			this.skillDatas.scale.current =
+				start + ((end - start) / distancedone - 1);
 		}
 	}
 	_setNextPosition() {
-		let nextPos = this.formula.get_NextThreePos(this.skillDatas.x, this.skillDatas.y, this.skillDatas.rotation, this.skillDatas.speed)
-		this.skillDatas.x = nextPos.x
-		this.skillDatas.y = nextPos.y
+		let nextPos = this.formula.get_NextThreePos(
+			this.skillDatas.x,
+			this.skillDatas.y,
+			this.skillDatas.rotation,
+			this.skillDatas.speed
+		);
+		this.skillDatas.x = nextPos.x;
+		this.skillDatas.y = nextPos.y;
 		this.bbox = new THREE.Box3().setFromObject(this.mesh);
 	}
 	_applyRotationOnMesh() {
 		// if (this.skillDatas.rotation) this.mesh.rotation.z = this.skillDatas.rotation;
-		if (this.skillDatas.rotation) this.mesh.rotation.z = this.skillDatas.rotation;
+		if (this.skillDatas.rotation)
+			this.mesh.rotation.z = this.skillDatas.rotation;
 	}
 	_setSkills(skillname) {
 		let skill = {
 			fireball: {
-				name: 'basic Laser',
-				meshType: 'cube',
-				w: .2,
-				h: .2,
-				l: .3,
+				name: "basic Laser",
+				meshType: "cube",
+				w: 0.2,
+				h: 0.2,
+				l: 0.3,
 				distanceMax: 30,
-				color: 'white',
-				speed: .5,
+				color: "white",
+				speed: 0.5,
 				rotation: 0,
-				addTheta: (Math.PI / 4),
+				addTheta: Math.PI / 4,
 				fromfloor: 0, // (w /2)
 				energyCost: 5,
 				recastTimer: 1000,
 				explosion: {
 					radius: 1, // radius of explosion
 					duration: 300, // duration of explosion
-					color: 'red' // color of explosion
+					color: "red", // color of explosion
 				},
 				lv: 1,
-				faction: 'neutral',
+				faction: "neutral",
 				baseDamage: new Number(10),
 			},
 			cube: {
-				name: 'cube',
-				meshType: 'sphere',
-				w: .5, //radius
+				name: "cube",
+				meshType: "sphere",
+				w: 0.5, //radius
 				h: 10,
 				l: 10,
 				distanceMax: 15,
-				color: 'red',
-				speed: .6,
-				scale: { start: 0, end: 5, current: 1 },//min zero,
+				color: "red",
+				speed: 0.6,
+				scale: { start: 0, end: 5, current: 1 }, //min zero,
 				rotation: 0,
 				addTheta: 0,
 				fromfloor: 0, // (w /2)
@@ -295,20 +332,20 @@ class SkillsManager {
 				energyCost: 10,
 				recastTimer: 1000,
 				lv: 1,
-				faction: 'neutral',
+				faction: "neutral",
 				baseDamage: new Number(15),
 			},
 			WeedWallLv1: {
-				name: 'Weed Wall',
-				meshType: 'cube',
+				name: "Weed Wall",
+				meshType: "cube",
 				w: 5,
 				h: 2.5,
-				l: .3,
+				l: 0.3,
 				fromfloor: 1, // (w /2)
 				distanceMax: 8,
 				duration: 10000,
-				color: 'blue',
-				speed: .5,
+				color: "blue",
+				speed: 0.5,
 				x: 0,
 				y: 0,
 				rotation: 0,
@@ -316,44 +353,45 @@ class SkillsManager {
 				energyCost: 10,
 				recastTimer: 5000,
 				lv: 1,
-				faction: 'neutral',
+				faction: "neutral",
 				baseDamage: new Number(0),
 				mesh: { opacity: 0.7 },
 				material: { transparent: true },
-				immortaluntilduration: true
+				immortaluntilduration: true,
+				obstacle:true,
 			},
 			doomdoom: {
-				name: 'Balle DoomDoom',
-				meshType: 'sphere',
-				w: .5, //radius
+				name: "Balle DoomDoom",
+				meshType: "sphere",
+				w: 0.5, //radius
 				h: 10,
 				l: 10,
 				distanceMax: 50,
-				color: 'white',
-				speed: .1,
+				color: "white",
+				speed: 0.1,
 				rotation: 0,
-				addTheta: (Math.PI / 4),
+				addTheta: Math.PI / 4,
 				fromfloor: 0,
 				energyCost: 1,
 				recastTimer: 3000,
 				lv: 1,
-				faction: 'neutral',
+				faction: "neutral",
 				perforante: true,
 				baseDamage: new Number(10000),
-				scale: { start: 5, end: 1, current: 3 },//min zero,
+				scale: { start: 5, end: 1, current: 3 }, //min zero,
 				mesh: { opacity: 0.5 },
 				material: { transparent: true },
 			},
-			doomdoom2: {
-				name: 'CleanWall',
-				meshType: 'cube',
+			CleanWall: {
+				name: "CleanWall",
+				meshType: "cube",
 				w: 2,
 				h: 2,
 				l: 2,
 				fromfloor: 1, // (w /2)
 				distanceMax: 3,
 				duration: 100000,
-				color: 'white',
+				color: "white",
 				speed: 5,
 				x: 0,
 				y: 0,
@@ -362,35 +400,35 @@ class SkillsManager {
 				energyCost: 10,
 				recastTimer: 5000,
 				lv: 1,
-				faction: 'neutral',
+				faction: "neutral",
 				baseDamage: new Number(0),
 				// mesh: {opacity: 1},
 				// material: {transparent: true},
-				immortaluntilduration: true
+				immortaluntilduration: true,
+				obstacle:true,
 			},
-		}
+		};
 		skill[skillname].getDamage = (mob) => {
 			// if (mob.stats.def.current)
 			// this.lv * this.baseDamage
-			let damage = new Number(0)
-			if (typeof mob.config.stats.def.current === 'number') {
-				damage = new Number(this.skillDatas.lv * this.skillDatas.baseDamage)
+			let damage = new Number(0);
+			if (typeof mob.config.stats.def.current === "number") {
+				damage = new Number(this.skillDatas.lv * this.skillDatas.baseDamage);
 			}
-			return damage > 0 ? damage : false
-		}
-		return skill[skillname]
+			return damage > 0 ? damage : false;
+		};
+		return skill[skillname];
 	}
 	_removeFromSceneAndDispose() {
-		const object = this.scene.getObjectByProperty('uuid', this.mesh.uuid);
-		if (typeof object != 'undefined') {
+		const object = this.scene.getObjectByProperty("uuid", this.mesh.uuid);
+		if (typeof object != "undefined") {
 			object.geometry.dispose();
 			object.material.dispose();
 			this.scene.remove(object);
-		}
-		else {
-			console.log('. . . . . . . . . . . . . . . . .')
-			console.info('Erreur this.scene.remove object')
-			console.log('. . . . . . . . . . . . . . . . .')
+		} else {
+			console.log(". . . . . . . . . . . . . . . . .");
+			console.info("Erreur this.scene.remove object");
+			console.log(". . . . . . . . . . . . . . . . .");
 		}
 	}
 	_createExplosion() {
@@ -407,7 +445,10 @@ class SkillsManager {
 
 		for (let i = 0; i < particleCount * 3; i += 3) {
 			// créer une direction aléatoire en coordonnées polaires
-			const direction = new THREE.Vector2(Math.random() * Math.PI * 2, Math.acos(2 * Math.random() - 1));
+			const direction = new THREE.Vector2(
+				Math.random() * Math.PI * 2,
+				Math.acos(2 * Math.random() - 1)
+			);
 
 			// convertir les coordonnées polaires en coordonnées cartésiennes
 			const velocity = new THREE.Vector3();
@@ -429,13 +470,22 @@ class SkillsManager {
 			colors[i + 2] = Math.random();
 		}
 
-		particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-		particleGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
-		particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3)); // définition de l'attribut color
+		particleGeometry.setAttribute(
+			"position",
+			new THREE.BufferAttribute(positions, 3)
+		);
+		particleGeometry.setAttribute(
+			"velocity",
+			new THREE.BufferAttribute(velocities, 3)
+		);
+		particleGeometry.setAttribute(
+			"color",
+			new THREE.BufferAttribute(colors, 3)
+		); // définition de l'attribut color
 
 		const particleMaterial = new THREE.PointsMaterial({
 			size: particleSize,
-			vertexColors: true // indiquer que nous utilisons des couleurs de sommets
+			vertexColors: true, // indiquer que nous utilisons des couleurs de sommets
 		});
 
 		const particles = new THREE.Points(particleGeometry, particleMaterial);
@@ -459,7 +509,11 @@ class SkillsManager {
 	}
 	_explode() {
 		const explosion = this._createExplosion();
-		explosion.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
+		explosion.position.set(
+			this.mesh.position.x,
+			this.mesh.position.y,
+			this.mesh.position.z
+		);
 		this.scene.add(explosion);
 
 		const animate = () => {
@@ -472,13 +526,10 @@ class SkillsManager {
 		const clock = new THREE.Clock();
 		animate();
 
-		setTimeout(
-			() => {
-				this.scene.remove(explosion);
-				this._removeFromSceneAndDispose();
-			},
-			this.skillDatas.explosion.duration
-		);
+		setTimeout(() => {
+			this.scene.remove(explosion);
+			this._removeFromSceneAndDispose();
+		}, this.skillDatas.explosion.duration);
 	}
 	// getSinValue(val) {
 	// 	let x = 0;//h
@@ -498,4 +549,4 @@ class SkillsManager {
 
 	// }
 }
-export { SkillsManager }
+export { SkillsManager };

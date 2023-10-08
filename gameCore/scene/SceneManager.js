@@ -120,7 +120,9 @@ class SceneManager {
 				this.controls.update();
 				if (this._GameConfig.conslog) console.info('OrbitControls ok ! ')
 			}
-			else {console.info('OrbitControls refused ! ')}
+			else {
+				console.info('OrbitControls refused ! ')
+			}
 		}
 		return this.controls
 	}

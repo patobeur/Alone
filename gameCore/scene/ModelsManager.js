@@ -49,7 +49,6 @@ class ModelsManager {
 		) => {
 			if (this.currentAnimation != animName) {
 				this.currentAnimation = animName;
-				console.log("------------------------------goind to ", animName);
 				this.MegaClip = THREE.AnimationClip.findByName(
 					this.allModelsAndAnimations[type][name].gltf.animations,
 					animName

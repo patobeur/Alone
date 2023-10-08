@@ -209,6 +209,7 @@ class PlayerManager {
 			this.ControlsManager.space === true &&
 			this.PlayerConfig.config.status.jumping === false
 		) {
+
 			this.PlayerConfig.config.status.jumping = true;
 		}
 		this.jump();
@@ -218,6 +219,7 @@ class PlayerManager {
 		// if (this.PlayerConfig.config.status.jumping === true && this.PlayerConfig.config.actions.jumping.current > 0)
 		// IF JUMPING STARTED
 		if (this.PlayerConfig.config.status.jumping === true) {
+				this._GameConfig.playerChar.meshModel.changeAnimation("Jump");
 			if (this.PlayerConfig.config.actions.jumping.current === 0) {
 				this.PlayerConfig.config.velocity.z = 1;
 			}

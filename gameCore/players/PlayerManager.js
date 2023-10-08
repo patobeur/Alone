@@ -314,7 +314,7 @@ class PlayerManager {
 	}
 	#addMeshToModel() {
 		// cube player object
-		console.log(this._GameConfig.playerChar)
+		// console.log(this._GameConfig.playerChar)
 		// this.playerGroupe.add(this._GameConfig.playerChar.charGltf.scene.children[0]);
 
 
@@ -329,7 +329,8 @@ class PlayerManager {
 		// 		wireframe: this.PlayerConfig.config.wireframe,
 		// 	})
 		// );
-		let playerMesh = this._GameConfig.playerChar.charGltf.scene
+		console.log('playerChar',this._GameConfig.playerChar.meshModel.gltf.scene.uuid)
+		let playerMesh = this._GameConfig.playerChar.meshModel.mesh
 		playerMesh.name = this.PlayerConfig.config.playerMeshName;
 		playerMesh.castShadow = this.PlayerConfig.config.castShadow;
 		playerMesh.receiveShadow = this.PlayerConfig.config.receiveShadow;

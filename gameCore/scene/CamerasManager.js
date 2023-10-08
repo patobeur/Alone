@@ -25,7 +25,7 @@ class CamerasManager {
 				far: 1000.0,
 				position: new THREE.Vector3(0, 0, 2),
 				// others
-				zoom: { y: { step: 5, min: -15, max: 2 }, z: { step: 5, min: 5, max: 25 } },
+				zoom: { y: { step: 1, min: -5, max: 2}, z: { step: 5, min: 3, max: 25 } },
 				lookat: new THREE.Vector3(0, 0, 0),
 				rotation: new THREE.Vector3(0, 0, 0),
 				followDecalage: new THREE.Vector3(0, -15, 10),

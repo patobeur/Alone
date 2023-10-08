@@ -110,19 +110,13 @@ class gameCore {
 		this._InitC();
 	}
 	_InitC() {
-		this.charGltf = this.allModels["character"]["Kimono_Female"].gltf;
-		this.MegaMixer = new THREE.AnimationMixer(this.charGltf.scene);
-		this.MegaClip = THREE.AnimationClip.findByName(
-			this.charGltf.animations,
-			"Idle"
-		);
-		this.MegaAction = this.MegaMixer.clipAction(this.MegaClip);
-		this.MegaAction.play(); // Joue l'animation par défaut
+		let type = "character"
+		let name = "Kimono_Female"
+		let animName = "Run"
+		this._ModelsManager.setMeshModel(type,name,animName)
+		console.log(this._ModelsManager.allModelsAndAnimations[type][name].MegaMixer)
 		this._GameConfig.playerChar = {
-			charGltf: this.charGltf,
-			MegaMixer: this.MegaMixer,
-			MegaClip: this.MegaClip,
-			MegaAction: this.MegaAction,
+			meshModel : this.allModels[type][name]
 		};
 
 		// this._TouchMe = new TouchMe()
@@ -250,9 +244,8 @@ class gameCore {
 
 			// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 
-			// Update MOBS animations
-			if (this.MegaMixer) this.MegaMixer.update(timeElapsed);
-			if (this.MegaMixer2) this.MegaMixer2.update(timeElapsed);
+			// Update player animations			
+				this._GameConfig.playerChar.meshModel.MegaMixer.update(timeElapsed);
 
 			// Check if floored
 			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(

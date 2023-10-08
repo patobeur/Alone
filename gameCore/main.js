@@ -110,13 +110,26 @@ class gameCore {
 		this._InitC();
 	}
 	_InitC() {
-		let type = "character"
-		let name = "Kimono_Female"
-		let animName = "Run"
-		this._ModelsManager.setMeshModel(type,name,animName)
-		console.log(this._ModelsManager.allModelsAndAnimations[type][name].MegaMixer)
+		let characterChoice = {
+			0: {
+				type: "character",
+				name: "Kimono_Female",
+				animName: "Run"
+			},
+			1: {
+				type: "character",
+				name: "Kimono_Male",
+				animName: "Run"
+			}
+		}
+		let choice = 1
+		this._ModelsManager.setMeshModel(
+			characterChoice[choice].type,
+			characterChoice[choice].name,
+			characterChoice[choice].animName
+		)
 		this._GameConfig.playerChar = {
-			meshModel : this.allModels[type][name]
+			meshModel : this.allModels[characterChoice[choice].type][characterChoice[choice].name]
 		};
 
 		// this._TouchMe = new TouchMe()

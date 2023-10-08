@@ -46,7 +46,7 @@ class ModelsConfig {
 				category:'character',
 				path:'./gameCore/3dObjects/characters/base/Kimono_Male.gltf',
 				positions:{x:0,y:0,z:0},
-				rotations:{x:false,y:Math.PI/2,z:false},
+				rotations:{x:Math.PI/2,y:Math.PI/1,z:false},
 				scales:false,
 				anime:'idle'
 			},

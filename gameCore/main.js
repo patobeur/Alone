@@ -30,7 +30,6 @@ class gameCore {
 	_GameConfig = null;
 	_SceneManager = null;
 	_FloorsManager = null;
-	floor = null;
 	_LightsManager = null;
 	lights = [];
 	sun = null;
@@ -47,13 +46,6 @@ class gameCore {
 	// _TouchMe = null
 	// --------------------------------------
 	_previousREFRESH = null;
-	// _pause = false;
-	// _pauseModalText;
-
-	// _domEvents // threex event
-	// _clikableThings = false;
-	// _loadingmanager = null;
-	// _ImagesManager = null;
 	constructor(datas = { HowManyMobs: this.defaultMobsNumber }) {
 		this._GameConfig = new GameConfig(this._conslog);
 		this.HowManyMobs =
@@ -89,11 +81,10 @@ class gameCore {
 
 		this._FloorsManager = new FloorsManager(this._GameConfig);
 
-		// this._WindowActive = new WindowActive(this._GameConfig);
+		this._WindowActive = new WindowActive(this._GameConfig);
 
 		// MODEL MANAGER
 		this._ModelsManager = new ModelsManager({
-			// scene: this.scene,
 			fonctionretour: (allModelsAndAnimations) => {
 				this.allModels = allModelsAndAnimations;
 				this._InitAtoB();
@@ -114,29 +105,35 @@ class gameCore {
 			0: {
 				type: "character",
 				name: "Kimono_Female",
-				animName: "Idle"
+				animName: "Idle",
 			},
 			1: {
 				type: "character",
 				name: "Kimono_Male",
-				animName: "Idle"
-			}
-		}
-		let choice = 1
+				animName: "Idle",
+			},
+		};
+		let choice = 1;
 		this._ModelsManager.setMeshModel(
 			characterChoice[choice].type,
 			characterChoice[choice].name,
 			characterChoice[choice].animName
-		)
+		);
 		// add playerChar to gameconfig
 		this._GameConfig.playerChar = {
-			meshModel : this.allModels[characterChoice[choice].type][characterChoice[choice].name]
+			meshModel:
+				this.allModels[characterChoice[choice].type][
+					characterChoice[choice].name
+				],
 		};
 
 		// this._TouchMe = new TouchMe()
-		// ----------------------------------------------------
 		this.camera = this._CameraManager.cameras[0];
-		this.floor = this._FloorsManager.floor;
+
+		this.allFloors = this._FloorsManager.allFloors;
+		this.activatedNumFloors = this._FloorsManager.allFloors;
+		this.currentMapNum = this._FloorsManager.currentMapNum;
+
 		this.lights = this._LightsManager.lights;
 		this.sun = this._LightsManager.Sun;
 		// this.plan = this._FloorsManager.get_plan()
@@ -145,13 +142,20 @@ class gameCore {
 		this._DomManager.init(this._threejs, this.camera);
 
 		// SCENE
-		this.scene = this._SceneManager.set_AndGetScene(
-			this.camera,
-			this.lights,
-			this.floor,
-			this.plan,
-			this.sun
-		);
+		// this.scene = this._SceneManager.set_AndGetScene(
+		// 	this.camera,
+		// 	this.lights,
+		// 	this.allFloors,
+		// 	this.plan,
+		// 	this.sun
+		// );
+		this.scene = this._SceneManager.set_AndGetScene({
+			camera:this.camera,
+			lights:this.lights,
+			allFloors:this.allFloors,
+			plan:this.plan,
+			sun:this.sun
+		})
 		// ----------------------------
 		// PLAYER ----------------
 		this._PlayerManager = new PlayerManager(
@@ -205,6 +209,11 @@ class gameCore {
 			FrontboardManager: this._FrontboardManager,
 			PlayerManager: this._PlayerManager,
 		});
+		setTimeout((iii) => {
+		// 	this.scene.remove(this.floor);
+			this._FloorsManager.addNewFloor(this.scene,0)
+				console.log('---New Floor added-----------')
+		}, 5000, 'vouvou');
 
 		// START
 		this.START();
@@ -222,7 +231,7 @@ class gameCore {
 				this._WindowActive === null)
 		) {
 			// this._LightsManager.upadteSun()
-			this._SceneManager.rotateSun();
+			this._SceneManager.rotateSun(this.sun);
 
 			this.RayCaster.checkMouseRayCaster();
 
@@ -230,7 +239,6 @@ class gameCore {
 			this._PlayerManager.checkRotation();
 			this._PlayerManager.checkMoves();
 			this._PlayerManager.refreshanimation(timeElapsed);
-
 
 			this._PlayerManager.checkActions();
 			this._PlayerManager.checkSkills(this.allMobs);
@@ -260,11 +268,8 @@ class gameCore {
 
 			// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 
-
 			// Check if floored
-			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(
-				this.floor
-			);
+			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(this.allFloors);
 
 			this._FrontboardManager.TriggerFrontBloc("FlooredSignal", floorcolide);
 			// GRAVITY

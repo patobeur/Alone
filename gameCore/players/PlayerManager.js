@@ -85,12 +85,14 @@ class PlayerManager {
 
 		this.playerColor = this.PlayerConfig.config.playerColor;
 
-		// this.torche = this.getTorchlightConfig();
+		this.torche = this.getTorchlightConfig();
 
 		this.#init(startPos);
 	}
 	#init(startPos) {
 		// START POSITION
+		let currentFloorConfig = this._GameConfig.Floors.config[this._GameConfig.defaultMapNum]
+
 		if (startPos) {
 			this.PlayerConfig.config.futurPositions = {
 				x: startPos.x ? startPos.x : 0,
@@ -98,21 +100,14 @@ class PlayerManager {
 				z: startPos.z ? startPos.z : 0 + this.PlayerConfig.config.size.z / 2,
 				// thetaDeg: startPos.thetaDeg ? startPos.thetaDeg : 0,
 			};
-		} else if (this._GameConfig.floors.spawns) {
+		} else if (currentFloorConfig.spawns) {
 			let defaultSpawnNum = 0;
-			console.log(
-				"Spawning Num:" +
-					defaultSpawnNum +
-					' on floor "' +
-					this._GameConfig.floors.name +
-					'"'
-			);
-			let newpos = {
-				x: this._GameConfig.floors.spawns[defaultSpawnNum].x,
-				y: this._GameConfig.floors.spawns[defaultSpawnNum].y,
-				z: this._GameConfig.floors.spawns[defaultSpawnNum].z, // + (this.PlayerConfig.config.size.z / 2),
-			};
-			this.PlayerConfig.config.futurPositions = newpos;
+
+			this.PlayerConfig.config.futurPositions = {
+				x: currentFloorConfig.spawns[defaultSpawnNum].x,
+				y: currentFloorConfig.spawns[defaultSpawnNum].y,
+				z: currentFloorConfig.spawns[defaultSpawnNum].z, // + (this.PlayerConfig.config.size.z / 2),
+			}
 		}
 		this.#addMeshToModel();
 		this.#addModelToGroupe();
@@ -131,48 +126,6 @@ class PlayerManager {
 		if (this.conslog) console.log("PlayerManager Mounted !");
 		// console.log()
 	}
-	// #addPlayerOrbiter() {
-	// 	let size = this.PlayerConfig.config.orbiter.size;
-	// 	let color = this.PlayerConfig.config.orbiter.color;
-	// 	let wireframe = this.PlayerConfig.config.orbiter.wireframe;
-
-	// 	let material = new THREE.MeshPhongMaterial({
-	// 		color: color,
-	// 		wireframe: wireframe,
-	// 	});
-	// 	this.playerOrbiter = new THREE.Mesh(
-	// 		new THREE.BoxGeometry(size.x, size.y, size.z),
-	// 		material
-	// 	);
-	// 	this.playerOrbiter.name = "playerOrbiter";
-	// 	this.playerOrbiter.castShadow = true;
-	// 	this.playerOrbiter.receiveShadow = true;
-	// 	this.playerOrbiter.matrixAutoUpdate = true;
-	// 	this.playerOrbiter.material.transparent = false;
-	// 	// this.playerOrbiter.material.opacity = .8
-
-	// 	this.playerOrbiter.position.set(
-	// 		this.PlayerConfig.config.orbiter.position.x, // - (size.x / 2),
-	// 		this.PlayerConfig.config.orbiter.position.y, // - (size.y / 2),
-	// 		this.PlayerConfig.config.orbiter.position.z // - (size.z / 2)
-	// 	);
-	// 	// this.updateMyPos()
-	// 	// this.playerOrbiter.centerDistance = this._Formula.getDistanceXY(this.playerGroupe, this.playerOrbiter);
-	// 	this.step = 1 / 10;
-	// 	this.playerOrbiter.theta = {
-	// 		x: [0, 360, this.step],
-	// 		y: [0, 360, this.step],
-	// 		z: [0, 360, 0],
-	// 		delay: { current: 0, max: 1000 },
-	// 	};
-	// 	this.playerGroupe.add(this.playerOrbiter);
-	// }
-	// updatePlayerOrbiter() {
-	// 	let playerOrbiter = this.playerOrbiter;
-	// 	if (playerOrbiter) {
-	// 		this._Formula.get_NextOrbitPosOrbiter(playerOrbiter);
-	// 	}
-	// }
 	applyGravity(floorcolide) {
 		let currentConfig = this.PlayerConfig.config;
 
@@ -195,12 +148,13 @@ class PlayerManager {
 			this.tics = 0;
 		}
 	}
-	detecteCollisionWithFloor(floor) {
-		let group = this.playerGroupe;
-		// let group = this.PlayerMesh
-		floor.bbox = new THREE.Box3().setFromObject(floor);
-		let boundingBox = new THREE.Box3().setFromObject(group);
-		let intersec = floor.bbox.intersectsBox(boundingBox);
+	detecteCollisionWithFloor(allFloors) {
+		let boundingBox = new THREE.Box3().setFromObject(this.playerGroupe);
+		let intersec = false;
+		allFloors.forEach((floor) => {
+			floor.bbox = new THREE.Box3().setFromObject(floor);
+			if(intersec === false) intersec = floor.bbox.intersectsBox(boundingBox); 
+		});
 		return intersec;
 	}
 	checkActions() {
@@ -209,7 +163,6 @@ class PlayerManager {
 			this.ControlsManager.space === true &&
 			this.PlayerConfig.config.status.jumping === false
 		) {
-
 			this.PlayerConfig.config.status.jumping = true;
 		}
 		this.jump();
@@ -219,7 +172,7 @@ class PlayerManager {
 		// if (this.PlayerConfig.config.status.jumping === true && this.PlayerConfig.config.actions.jumping.current > 0)
 		// IF JUMPING STARTED
 		if (this.PlayerConfig.config.status.jumping === true) {
-				this._GameConfig.playerChar.meshModel.changeAnimation("Jump");
+			this._GameConfig.playerChar.meshModel.changeAnimation("Jump");
 			if (this.PlayerConfig.config.actions.jumping.current === 0) {
 				this.PlayerConfig.config.velocity.z = 1;
 			}
@@ -316,31 +269,11 @@ class PlayerManager {
 		return torchlight;
 	}
 	#addMeshToModel() {
-		// cube player object
-		// console.log(this._GameConfig.playerChar)
-		// this.playerGroupe.add(this._GameConfig.playerChar.charGltf.scene.children[0]);
-
-		// let playerMesh = new THREE.Mesh(
-		// 	new THREE.BoxGeometry(
-		// 		this.PlayerConfig.config.size.x,
-		// 		this.PlayerConfig.config.size.y,
-		// 		this.PlayerConfig.config.size.z
-		// 	),
-		// 	new THREE.MeshPhongMaterial({
-		// 		color: this.PlayerConfig.config.playerColor,
-		// 		wireframe: this.PlayerConfig.config.wireframe,
-		// 	})
-		// );
-		console.log(
-			"playerChar",
-			this._GameConfig.playerChar.meshModel.gltf.scene.uuid
-		);
 		let playerMesh = this._GameConfig.playerChar.meshModel.mesh;
 		playerMesh.name = this.PlayerConfig.config.playerMeshName;
 		playerMesh.castShadow = this.PlayerConfig.config.castShadow;
 		playerMesh.receiveShadow = this.PlayerConfig.config.receiveShadow;
 		playerMesh.matrixAutoUpdate = this.PlayerConfig.config.matrixAutoUpdate;
-		// playerMesh.material.transparent = this.PlayerConfig.config.transparent;
 
 		playerMesh.traverse((n) => {
 			if (n.isMesh) {
@@ -354,28 +287,6 @@ class PlayerManager {
 	#addModelToGroupe() {
 		// if (this.torche) this.playerGroupe.add(this.torche);
 		this.playerGroupe.add(this.PlayerMesh);
-		// this.canonPart = new THREE.Mesh(
-		// 	new THREE.BoxGeometry(
-		// 		this.PlayerConfig.config.canon.size.x,
-		// 		this.PlayerConfig.config.canon.size.y,
-		// 		this.PlayerConfig.config.canon.size.z
-		// 	),
-		// 	new THREE.MeshPhongMaterial({
-		// 		color: "green", //this.playerColor,
-		// 		wireframe: false,
-		// 	})
-		// );
-		// this.canonPart.name = this.PlayerConfig.config.canon.meshName;
-		// this.canonPart.material.transparent = false;
-		// // this.canonPart.material.opacity = 0
-		// this.canonPart.position.set(
-		// 	this.PlayerConfig.config.canon.position.x,
-		// 	this.PlayerConfig.config.canon.position.y,
-		// 	this.PlayerConfig.config.canon.position.z
-		// );
-		// this.canonPart.receiveShadow = true; //this.receiveShadow;
-		// this.canonPart.castShadow = true; //this.castShadow;
-		// this.playerGroupe.add(this.canonPart);
 	}
 	checkRotation() {
 		this.PlayerConfig.config.futurRotation.z = this.ControlsManager.thetaDeg;
@@ -445,7 +356,10 @@ class PlayerManager {
 				mob.config.stats.energy.max);
 
 		this.PlayerConfig.config.xp += xpp;
-		this._FrontboardManager.setXpCounter(this.PlayerConfig.config.xp);
+		this._FrontboardManager.updateCounter(
+			"playerXp",
+			this.PlayerConfig.config.xp
+		);
 		console.log(
 			"mob:",
 			mob.config.nickname,
@@ -536,16 +450,7 @@ class PlayerManager {
 					good: "good",
 					skillCallBack: this.skillCallBack,
 				};
-
-				// skillname,
-				// this.playerGroupe,
-				// this.canonPart,
-				// this.PlayerConfig.config.size.z,
-				// this.scene,
-				// 'good',
-				// this.skillCallBack
 				let skill = new SkillsManager(datas);
-
 				if (
 					skill.skillDatas.energyCost <
 					this.PlayerConfig.config.stats.energy.current

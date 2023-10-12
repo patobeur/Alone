@@ -41,7 +41,14 @@ class MobsIa {
 	// }
 	_chooseDir() {
 		let dir = this.Formula.rand(0, 1) > .5 ? 1 : -1;
-		this.mobConfig.theta.cur += Math.floor(dir * this.mobConfig.ia.dirAmplitude)
+		let theta = Math.floor(dir * this.mobConfig.ia.dirAmplitude)
+		if(theta > 400) theta = this.mobConfig.theta.max - 400
+		if(theta < this.mobConfig.theta.min) 400 - theta
+		
+		this.mobConfig.oldRotation = this.mesh.rotation
+
+		this.mobConfig.theta.cur += theta;
+		this.mobConfig.futurRotation.z += theta
 	}
 }
 export { MobsIa }

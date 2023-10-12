@@ -15,6 +15,7 @@ class MobConfig {
 				futurPositions: { x: 0, y: 0, z: 0 },
 				oldPosition: { x: 0, y: 0, z: 0 },
 				futurRotation: { x: 0, y: 0, z: 0 },
+				oldRotation: { x: 0, y: 0, z: 0 },
 				velocity: { x: 0, y: 0, z: 0 },
 				// ------------------------------------
 				stats: {

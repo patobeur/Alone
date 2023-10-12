@@ -69,6 +69,7 @@ class LightsManager {
 			color: 0xffffff,
 			power: 1,
 			position: new THREE.Vector3(30, 30, 30),
+			rotation: new THREE.Vector3(0.2, 0.2, 0.2),
 			size: (5, 16, 5),
 			mat: {
 				color: 0xFFFFFF00,

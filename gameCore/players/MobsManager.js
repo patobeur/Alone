@@ -51,7 +51,7 @@ class MobsManager {
 	B_CheckAllMobsDatas() {
 		// boucle sur LES MOBS
 		this._AllMobs.forEach((mob) => {
-			mob.update_VisualHp(this.camera);
+			this.update_VisualHp(mob);
 			mob.checkstatus("mouseover", (data) => {
 				this.MobmouseOverCallback++;
 				// console.log('retour '+this.MobmouseOverCallback,data)
@@ -87,7 +87,6 @@ class MobsManager {
 							mob.config.position.z + mob.config.mesh.size.z / 2
 						);
 						// console.log('donc',mob.mesh.position.z)
-						mob.config.oldRotation = mob.mesh.rotation.z;
 						mob.mesh.rotation.z = mob.config.theta.cur;
 						mob._update_BBox();
 					}
@@ -114,16 +113,11 @@ class MobsManager {
 			this._AllMobs.splice(index, 1);
 		});
 		this._mobsIndexToDelete = [];
-		if (this._FrontboardManager.FrontMobsCounter) {
-			this._FrontboardManager.updateCounter(
-				"FrontMobsCounter",
-				this._AllMobs.length
-			);
-		}
+		if (this._FrontboardManager.FrontMobsCounter)
+			this._FrontboardManager.updateUpdateXpCounter'FrontMobsCounter',this._AllMobs.length);
+		
 	}
 	update_VisualHp(mob) {
-		console.log(mob.config.status.mouseover.active);
-		console.log(mob.mesh.uuid);
 		// if (typeof this.PlayerManager.playerGroupe === 'object') {
 		// 	// const angleRadians = this.mesh.angleTo(playerGroupe);
 		// 	let theta = this._Formula.get_DegreeWithTwoPos(
@@ -277,18 +271,15 @@ class MobsManager {
 		mobConf.speed = mobConf.speed / 50;
 		//mobConf.divs.prima.size
 
-		let currentFloorConfig =
-			this._GameConfig.Floors.config[this._GameConfig.defaultMapNum];
 		// add floor conf to mob
 		mobConf.position = this._Formula.get_aleaPosOnFloor(
-			currentFloorConfig.size
+			this._GameConfig.floors.size
 		);
-		mobConf.floor = currentFloorConfig;
+		mobConf.floor = this._GameConfig.floors;
 		// mobConf.position.z = mobConf.mesh.altitude
 
 		mobConf.nickname =
 			!nickname === false ? nickname : new String("UnNamed_") + mobConf.immat;
-		// toto change this theta
 		mobConf.theta.cur = this._Formula.rand(0, 360);
 
 		// add model
@@ -309,7 +300,7 @@ class MobsManager {
 		// set the new immat
 		this._CurrentMobImmat = this._AllMobs[this._AllMobs.length - 1].immat + 1;
 		if (this._FrontboardManager.FrontMobsCounter)
-			this._FrontboardManager.setMobCounter(this._AllMobs.length);
+			{this._FrontboardManager.updateCounter('FrontMobsCounter',this._AllMobs.length);}
 
 		this._scene.add(newmob.mesh);
 		return this._AllMobs[this._CurrentMobImmat - 1];

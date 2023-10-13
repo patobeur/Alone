@@ -13,6 +13,7 @@ class PlayerManager {
 	immat = 0;
 	conslog = false;
 	order = 2;
+	myCurrentMapNum = null;
 	constructor(
 		startPos = false,
 		GameConfig,
@@ -29,32 +30,6 @@ class PlayerManager {
 
 		this.obstacles = [];
 		this.type = "player";
-		this.stats = {
-			hp: {
-				name: "Hit Point",
-				current: 25,
-				max: 100,
-				regen: 0.1,
-				backgroundColor: "rgba(250, 59, 9, 0.644)",
-			},
-			energy: {
-				name: "Energy",
-				current: 100,
-				max: 100,
-				regen: 1.5,
-				backgroundColor: "rgba(9, 223, 20, 0.644)",
-			},
-			def: {
-				name: "defense",
-				current: 1,
-				max: 100,
-				regen: 3,
-				backgroundColor: "rgba(9, 59, 223, 0.644)",
-			},
-		};
-		// this.futurPositions = { x: 0, y: 0, z: 0 };
-		// this.oldPosition = { x: 0, y: 0, z: 0 };
-		// this.futurRotation = { x: 0, y: 0, z: 0 };
 
 		this.ControlsManager = new ControlsManager(this.type, this._GameConfig);
 
@@ -91,7 +66,8 @@ class PlayerManager {
 	}
 	#init(startPos) {
 		// START POSITION
-		let currentFloorConfig = this._GameConfig.Floors.config[this._GameConfig.defaultMapNum]
+		let currentFloorConfig =
+			this._GameConfig.Floors.config[this._GameConfig.defaultMapNum];
 
 		if (startPos) {
 			this.PlayerConfig.config.futurPositions = {
@@ -107,16 +83,16 @@ class PlayerManager {
 				x: currentFloorConfig.spawns[defaultSpawnNum].x,
 				y: currentFloorConfig.spawns[defaultSpawnNum].y,
 				z: currentFloorConfig.spawns[defaultSpawnNum].z, // + (this.PlayerConfig.config.size.z / 2),
-			}
+			};
 		}
 		this.#addMeshToModel();
 		this.#addModelToGroupe();
 
-		this.playerGroupe.position.set(
-			this.PlayerConfig.config.futurPositions.x,
-			this.PlayerConfig.config.futurPositions.y,
-			this.PlayerConfig.config.futurPositions.z
-		);
+		// this.playerGroupe.position.set(
+		// 	this.PlayerConfig.config.futurPositions.x,
+		// 	this.PlayerConfig.config.futurPositions.y,
+		// 	this.PlayerConfig.config.futurPositions.z
+		// );
 
 		// this.#addPlayerOrbiter();
 		// SkillsManager
@@ -149,12 +125,15 @@ class PlayerManager {
 		}
 	}
 	detecteCollisionWithFloor(allFloors) {
-		let boundingBox = new THREE.Box3().setFromObject(this.playerGroupe);
 		let intersec = false;
-		allFloors.forEach((floor) => {
-			floor.bbox = new THREE.Box3().setFromObject(floor);
-			if(intersec === false) intersec = floor.bbox.intersectsBox(boundingBox); 
-		});
+		if (allFloors) {
+			let boundingBox = new THREE.Box3().setFromObject(this.playerGroupe);
+			allFloors.forEach((floor) => {
+				floor.bbox = new THREE.Box3().setFromObject(floor);
+				if (intersec === false)
+					intersec = floor.bbox.intersectsBox(boundingBox);
+			});
+		}
 		return intersec;
 	}
 	checkActions() {
@@ -345,7 +324,7 @@ class PlayerManager {
 		);
 	}
 	skillCallBack = (mob) => {
-		console.log("--------- YOU KILLLED ;( " + mob.config.nickname + "----");
+		// console.log("--------- YOU KILLLED ;( " + mob.config.nickname + "----");
 
 		let lvDif = mob.config.lv - this.PlayerConfig.config.lv;
 
@@ -356,37 +335,42 @@ class PlayerManager {
 				mob.config.stats.energy.max);
 
 		this.PlayerConfig.config.xp += xpp;
+
 		this._FrontboardManager.updateCounter(
 			"playerXp",
 			this.PlayerConfig.config.xp
 		);
-		console.log(
-			"mob:",
-			mob.config.nickname,
-			"(lv:",
-			mob.config.lv,
-			"xp:",
-			xpp,
-			")"
-		);
-		console.log(
-			"you (lv:",
-			this.PlayerConfig.config.lv,
-			") xp:",
-			this.PlayerConfig.config.xp,
-			")"
-		);
+		// console.log(
+		// 	"mob:",
+		// 	mob.config.nickname,
+		// 	"(lv:",
+		// 	mob.config.lv,
+		// 	"xp:",
+		// 	xpp,
+		// 	")"
+		// );
+		// console.log(
+		// 	"you (lv:",
+		// 	this.PlayerConfig.config.lv,
+		// 	") xp:",
+		// 	this.PlayerConfig.config.xp,
+		// 	")"
+		// );
 	};
 	shootCallback = (skill) => {
+		console.log("---------shootCallback--------------");
 		if (this.obstacles.length > 0) console.log(skill);
-
 		this.obstacles.push(skill);
+		console.log(this.obstacles);
 	};
 	checkSkills(allmobs) {
 		if (this.ControlsManager) {
 			if (this.ControlsManager.shoot1) {
 				// this.ControlsManager.shoot1 = false;
 				this.#shoot("fireball", allmobs, this.shootCallback);
+				this._GameConfig.playerChar.meshModel.changeAnimation(
+					"Shoot_OneHanded"
+				);
 			}
 			if (this.ControlsManager.shoot2) {
 				// this.ControlsManager.shoot2 = false;

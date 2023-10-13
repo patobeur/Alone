@@ -1,53 +1,30 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
 import { FloorsConfig } from "./FloorsConfig.js";
 class FloorsManager {
-	GameConfig;
-	floor = null;
-	_maxAnisotropy;
 	constructor(GameConfig) {
 		this.GameConfig = GameConfig;
 		this.GameConfig.Floors = new FloorsConfig();
-
-		this.currentMapNum = this.GameConfig.defaultMapNum;
-
 		this.activatedNumFloors = []
 		this.allFloors = []
 
 		// raccourcis
-		this.floorsConfig = this.GameConfig.Floors.config;
+		this.config = this.GameConfig.Floors.config;
 
-		this._init();
 	}
 	_init() {
-		this._initFirstFloor();
+		this.addFirstFloor();
 	}
-	_initFirstFloor() {
-		this.currentFloorMesh = this._get_floorMesh(this.currentMapNum);
-		// this.floor = this._get_floorMesh(this.currentMapNum);
-
-		this.activatedNumFloors.push(this.currentMapNum)
-		// this.allFloors[this.currentMapNum] = currentFloorMesh
-		this.allFloors.push(this.currentFloorMesh)
-		
-
-		// console.log("-------this.allFloors--------------------------");
-		// console.log(this.allFloors);
-		// console.log(this.activatedNumFloors);
-		// console.log("------- ok ok ok ok o--------------------------");
-
+	addFirstFloor() {
+		this.newFloorMesh = this._get_floorMesh(this.GameConfig.defaultMapNum);
+		this.activatedNumFloors.push(this.GameConfig.defaultMapNum)
+		this.allFloors.push(this.newFloorMesh)
 	}
-	addNewFloor(scene,currentMapNum) {
-		// if (this.floor) {
-			console.log('NEW FLOOOR-----------------')
-			let currentFloorConfig = this.floorsConfig[currentMapNum];
-
-			
-			let newFloorMesh = this._get_floorMesh(currentMapNum);
-			this.activatedNumFloors.push(currentMapNum)
-			// this.allFloors[this.currentMapNum] = currentFloorMesh
+	addNewFloor(scene,newMapNum) {
+			// console.log('addNewFloor-----------------')
+			let newFloorMesh = this._get_floorMesh(newMapNum);
+			this.activatedNumFloors.push(newMapNum)
+			// this.allFloors[this.newMapNum] = currentFloorMesh
 			this.allFloors.push(newFloorMesh)
-			console.log('------------GGGGGGGGGGGGGGGGGGGGG')
-			console.log(this.allFloors)
 			scene.add(newFloorMesh)
 			
 		// 	// scene.remove(this.floor)
@@ -59,56 +36,57 @@ class FloorsManager {
 		// 	return this.floor
 		// }
 	}
-	_get_floorMesh = (currentMapNum) => {
-		let currentFloorConfig = this.floorsConfig[currentMapNum];
-		console.log('---sdfgsdf----------------')
-		console.log(currentFloorConfig)
+	_get_floorMesh = (MapNum) => {
+		let floorConfig = this.config[MapNum];
 		var groundGeometry = false;
 		var groundMaterial = false;
 		var mesh = false;
 		// console.log("------AAAAAAAAAAA---------");
 		// console.log(this.GameConfig.Floors);
-		// console.log(currentFloorConfig.mode);
+		// console.log(floorConfig.mode);
 
-		switch (currentFloorConfig.mode.type) {
+		switch (floorConfig.mode.type) {
 			case "BoxGeometry":
 				groundGeometry = new THREE.BoxGeometry(
-					currentFloorConfig.size.x,
-					currentFloorConfig.size.y,
-					currentFloorConfig.size.z
+					floorConfig.size.x,
+					floorConfig.size.y,
+					floorConfig.size.z
 				);
 				groundMaterial = new THREE.MeshPhongMaterial({
-					color: currentFloorConfig.color,
+					color: floorConfig.color,
 				});
 				mesh = new THREE.Mesh(groundGeometry, groundMaterial);
-				mesh.position.x = currentFloorConfig.position.x;
-				mesh.position.y = currentFloorConfig.position.y;
-				mesh.position.z = -(currentFloorConfig.size.z / 2);
+				mesh.position.x = floorConfig.position.x;
+				mesh.position.y = floorConfig.position.y;
+				mesh.position.z = -(floorConfig.size.z / 2);
 				break;
 			case "PlaneGeometry":
-				if (currentFloorConfig.mode.fileName) {
+				if (floorConfig.mode.fileName) {
 					const mapLoader = new THREE.TextureLoader();
 					const boardTexture = mapLoader.load(
-						this.GameConfig.Floors.floorsRootPath + currentFloorConfig.mode.fileName
+						this.GameConfig.Floors.floorsRootPath + floorConfig.mode.fileName
 					);
 					boardTexture.encoding = THREE.sRGBEncoding;
 					boardTexture.anisotropy = this.GameConfig.MaxAnisotropy;
 					boardTexture.repeat.set(
-						(currentFloorConfig.size.x / currentFloorConfig.repeat[0]) * 2,
-						(currentFloorConfig.size.y / currentFloorConfig.repeat[1]) * 2
+						(floorConfig.size.x / floorConfig.repeat[0]) * 2,
+						(floorConfig.size.y / floorConfig.repeat[1]) * 2
 					);
 
 					boardTexture.wrapS = THREE.RepeatWrapping;
 					boardTexture.wrapT = THREE.RepeatWrapping;
 					mesh = new THREE.Mesh(
 						new THREE.PlaneGeometry(
-							currentFloorConfig.size.x,
-							currentFloorConfig.size.y,
+							floorConfig.size.x,
+							floorConfig.size.y,
 							10,
 							10
 						),
 						new THREE.MeshStandardMaterial({ map: boardTexture })
 					);
+					mesh.position.x = floorConfig.position.x;
+					mesh.position.y = floorConfig.position.y;
+					mesh.position.z = 0;
 					if (this.GameConfig.conslog) console.log(mesh);
 				}
 				break;
@@ -119,9 +97,9 @@ class FloorsManager {
 		if (!mesh === false) {
 			mesh.castShadow = false;
 			mesh.receiveShadow = true;
-			mesh.name = "floor_" + currentFloorConfig.name;
+			mesh.name = "floor_" + floorConfig.name;
 			// si une position est indiqué
-			// if(!typeof currentFloorConfig.position === 'undefined') mesh.position.set(currentFloorConfig.position);
+			// if(!typeof floorConfig.position === 'undefined') mesh.position.set(floorConfig.position);
 			return mesh;
 		}
 		return false;

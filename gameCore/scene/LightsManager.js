@@ -68,7 +68,7 @@ class LightsManager {
 			name: 'soleil',
 			color: 0xffffff,
 			power: 1,
-			position: new THREE.Vector3(30, 30, 30),
+			position: new THREE.Vector3(-30, 0, 0),
 			rotation: new THREE.Vector3(0.2, 0.2, 0.2),
 			size: (5, 16, 5),
 			mat: {

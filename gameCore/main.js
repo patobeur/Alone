@@ -44,6 +44,7 @@ class gameCore {
 	_ModelsManager = null;
 	_WindowActive = null;
 	// _TouchMe = null
+	floorFinished = false
 	// --------------------------------------
 	_previousREFRESH = null;
 	constructor(datas = { HowManyMobs: this.defaultMobsNumber }) {
@@ -130,9 +131,11 @@ class gameCore {
 		// this._TouchMe = new TouchMe()
 		this.camera = this._CameraManager.cameras[0];
 
+		// DEFINE FLOORS
 		this.allFloors = this._FloorsManager.allFloors;
-		this.activatedNumFloors = this._FloorsManager.allFloors;
-		this.currentMapNum = this._FloorsManager.currentMapNum;
+		// ADD FLOORS
+		this._FloorsManager.addFirstFloor();
+		// this.activatedNumFloors = this._FloorsManager.allFloors;
 
 		this.lights = this._LightsManager.lights;
 		this.sun = this._LightsManager.Sun;
@@ -141,21 +144,13 @@ class gameCore {
 		// ----------------------------
 		this._DomManager.init(this._threejs, this.camera);
 
-		// SCENE
-		// this.scene = this._SceneManager.set_AndGetScene(
-		// 	this.camera,
-		// 	this.lights,
-		// 	this.allFloors,
-		// 	this.plan,
-		// 	this.sun
-		// );
 		this.scene = this._SceneManager.set_AndGetScene({
-			camera:this.camera,
-			lights:this.lights,
-			allFloors:this.allFloors,
-			plan:this.plan,
-			sun:this.sun
-		})
+			camera: this.camera,
+			lights: this.lights,
+			allFloors: this.allFloors,
+			plan: this.plan,
+			sun: this.sun,
+		});
 		// ----------------------------
 		// PLAYER ----------------
 		this._PlayerManager = new PlayerManager(
@@ -177,8 +172,6 @@ class gameCore {
 		this._MobsManager.set_Camera(this.camera);
 		this._MobsManager.set_PlayerDatas(this._PlayerManager);
 		this._MobsManager.set_Models(this.allModels);
-
-		this.allMobs = this._MobsManager.addMobs(this.HowManyMobs, "mobs");
 
 		// ADD OrbitControls --------
 		// this.controls = this._SceneManager.setAndGet_OrbitControls(
@@ -202,6 +195,9 @@ class gameCore {
 
 		if (this._WindowActive != null) this._WindowActive.init();
 
+		this._MobsManager.addMobs(this._GameConfig.defaultMapNum, "mobs");
+		this.allMobs = this._MobsManager.get_allMobs();
+
 		// onmouseover mobs
 		this.RayCaster = new RayCaster({
 			camera: this.camera,
@@ -209,11 +205,6 @@ class gameCore {
 			FrontboardManager: this._FrontboardManager,
 			PlayerManager: this._PlayerManager,
 		});
-		setTimeout((iii) => {
-		// 	this.scene.remove(this.floor);
-			this._FloorsManager.addNewFloor(this.scene,0)
-				console.log('---New Floor added-----------')
-		}, 5000, 'vouvou');
 
 		// START
 		this.START();
@@ -253,7 +244,7 @@ class gameCore {
 			if (typeof this.allMobs === "object" && this.allMobs.length > 0) {
 				this._MobsManager.A_InitAllMobsDatas();
 
-				let datasPhaseB = this._MobsManager.B_CheckAllMobsDatas(); // all mob cycle
+				let datasPhaseB = this._MobsManager.B_GetAllMobsDatas(); // all mob cycle
 
 				if (datasPhaseB.colliders)
 					this._FrontboardManager.TriggerFrontBloc(
@@ -265,12 +256,67 @@ class gameCore {
 
 				this.allMobs = this._MobsManager.getOnlyLivings()[0];
 			}
+			if (this.allMobs.length === 0 && this.floorFinished) {
+				// you win
+				console.log('you win')
+			}
+			if (this.allMobs.length === 0 && !this.floorFinished) {
+				// add new floor
+				let activatedNumFloors = this._FloorsManager.activatedNumFloors;
+				let activatedNumLength = activatedNumFloors.length - 1;
+				let lastfloorNum = activatedNumFloors[activatedNumLength];
+				let lastfloor = this._GameConfig.Floors.config[lastfloorNum];
+				let currentFloorNum = lastfloor.next[0];
+				// console.log("------------lastfloor-------------");
 
+				// console.log("activatedNumFloors", activatedNumFloors);
+				// console.log("activatedNumLength", activatedNumLength);
+				// console.log("lastfloorNum", lastfloorNum);
+
+				// console.log("lastfloor", lastfloor);
+
+				// console.log(currentFloorNum);
+				// console.log("-------------------------");
+				if (currentFloorNum) {
+					// console.log(activatedNumFloors);
+					let existedeja =
+						this._FloorsManager.activatedNumFloors.includes(currentFloorNum);
+					if (!existedeja) {
+						this._FloorsManager.addNewFloor(this.scene, currentFloorNum);
+						// console.log("nouvelle map N°", currentFloorNum, "chargé");
+						let nextFloorNum =
+							this._GameConfig.Floors.config[currentFloorNum].next;
+						if (nextFloorNum) {
+							// console.log("nextFloorNum ", nextFloorNum);
+						} else {
+							this.floorFinished = true
+						}
+
+						this._MobsManager.addMobs(currentFloorNum, "mobs");
+						this.allMobs = this._MobsManager.get_allMobs();
+					} else {
+						console.log("Map N°", currentFloorNum, "existe deja");
+					}
+				} else {
+					console.log("no more mobs");
+				}
+				// 	// console.log(this._GameConfig.Floors.config[this._GameConfig.defaultMapNum].next[0])}
+				// 	// setTimeout((iii) => {
+				// 	// // 	this.scene.remove(this.floor);
+				// 	// 	this._FloorsManager.addNewFloor(this.scene,2)
+				// 	// 		console.log('---New Floor added-----------')
+				// 	// }, 5000, 'vouvou');
+				// }
+			}
 			// if (this._clikableThings) this._clikableThings.update(this._pause, this._WindowActive.get_isWindowActive());
 
 			// Check if floored
-			let floorcolide = this._PlayerManager.detecteCollisionWithFloor(this.allFloors);
-
+			let floorcolide = false;
+			if (this.allFloors && this.allFloors.length > 0) {
+				floorcolide = this._PlayerManager.detecteCollisionWithFloor(
+					this.allFloors
+				);
+			}
 			this._FrontboardManager.TriggerFrontBloc("FlooredSignal", floorcolide);
 			// GRAVITY
 			this._PlayerManager.applyGravity(floorcolide);

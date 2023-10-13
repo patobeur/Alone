@@ -13,6 +13,10 @@ class FrontboardManager {
 		// FlooredSignal:null,
 		// ColliderSignal:null
 	};
+
+	isDragging = false;
+	offsetX;
+	offsetY;
 	constructor(DDom) {
 		this.DDom = DDom;
 		this.frontConfig = new FrontConfig();
@@ -33,27 +37,53 @@ class FrontboardManager {
 
 		for (const key in this.config.parts) {
 			if (this.config.parts.hasOwnProperty(key)) {
+				// console.log(key);
 				this._setFrontPart(this.config.parts[key]);
 			}
 		}
+
+		// this.setDraggableEvents();
 	}
 
-	_setFrontMobsCounter() {
-		let stringCss =
-			".mobscounter{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;top:80px;right:20px;min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}";
-
-		this.DDom.addCss(stringCss, "mobscounter");
-
-		this.FrontMobsCounter = this.DDom.createEle({
-			tag: "div",
-			id: "mobscounter",
-			className: "front mobscounter",
-			textContent: "0",
-			title: "Mobs counter!",
-			alt: "Mobs counter!",
+	setDraggableEvents() {
+		document.addEventListener("mousemove", (event) => {
+			if (this.isDragging && this.currentDragDiv != "null") {
+				this.currentDragDiv.style.left = event.clientX - this.offsetX + "px";
+				this.currentDragDiv.style.top = event.clientY - this.offsetY + "px";
+			}
 		});
-		document.body.appendChild(this.FrontMobsCounter);
+
+		document.addEventListener("mouseup", () => {
+			if (this.isDragging && this.currentDragDiv != "null") {
+				this.isDragging = false;
+				this.currentDragDiv = null
+			}
+		});
 	}
+	makeItDraggable(div) {
+		div.addEventListener("mousedown", (event) => {
+			this.currentDragDiv = div;
+			this.isDragging = true;
+			this.offsetX = event.clientX - div.getBoundingClientRect().left;
+			this.offsetY = event.clientY - div.getBoundingClientRect().top;
+		});
+	}
+	// _setFrontMobsCounter() {
+	// 	let stringCss =
+	// 		".mobscounter{background-color:rgba(0,0,0,.3);border-radius:35%;color:white;position:absolute;font-family:'Roboto',sans-serif;font-weight:bold;display:flex;align-items: center;justify-content:center;top:80px;right:20px;min-width:50px;height:50px;z-index:11;display:flex;align-content: center;justify-content: center;}";
+
+	// 	this.DDom.addCss(stringCss, "mobscounter");
+
+	// 	this.FrontMobsCounter = this.DDom.createEle({
+	// 		tag: "div",
+	// 		id: "mobscounter",
+	// 		className: "front mobscounter",
+	// 		textContent: "0",
+	// 		title: "Mobs counter!",
+	// 		alt: "Mobs counter!",
+	// 	});
+	// 	document.body.appendChild(this.FrontMobsCounter);
+	// }
 	setFrontDatas(frontName, datas) {
 		// todo améliorer cette fonction
 		this[frontName].textContent = datas.nickname;
@@ -151,6 +181,9 @@ class FrontboardManager {
 			datas.elementAttributs
 		);
 		this.last[datas.elementAttributs.id] = null;
+
+		if (datas.drag) this.makeItDraggable(this[datas.elementAttributs.id]);
+
 		datas.target
 			? this[datas.target].appendChild(this[datas.elementAttributs.id])
 			: document.body.appendChild(this[datas.elementAttributs.id]);
@@ -172,25 +205,15 @@ class FrontboardManager {
 	// 	// 	// ctxMenu.style.top = "";
 	// 	// }, false);
 	// }
-	// addMobCounter = (number) => {
-	// 	this.FrontMobsCounter.textContent = number;
-	// };
-	// updateMobCounter(number) {
-	// 	if (this.last.mobnumbers != number && this.FrontMobsCounter) {
-	// 		this.last.mobnumbers = number;
-	// 		this.FrontMobsCounter.textContent = this.last.mobnumbers;
-	// 	}
-	// }
-	// updateXpCounter(number) {
-	// 	if (this.last.playerXp != number && this.playerXp) {
-	// 		this.last.playerXp = number;
-	// 		this.playerXp.textContent = this.last.playerXp;
-	// 	}
-	// }
-	updateCounter(frontId,number) {
+	addMobCounter = (number) => {
+		this.FrontMobsCounter.textContent = number;
+	};
+	updateCounter(frontId, number) {
 		if (this.last[frontId] != number && this[frontId]) {
 			this.last[frontId] = number;
-			this.FrontMobsCounter.textContent = this.last[frontId];
+			// console.log();
+			this[frontId].textContent = this.last[frontId];
+			// console.log("-----------this.last[" + frontId + "]", this.last[frontId]);
 		}
 	}
 }

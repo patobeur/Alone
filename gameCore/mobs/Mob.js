@@ -71,22 +71,20 @@ class Mob {
 		return intersec;
 	}
 	_keepMoving() {
-		this.config.position.x =
-			this.config.position.x -
-			Math.sin(this.config.theta.cur) * this.config.speed;
-		this.config.position.y =
-			this.config.position.y +
-			Math.cos(this.config.theta.cur) * this.config.speed;
-
+		this.config.position.x = this.config.position.x - Math.sin(this.config.theta.cur) * this.config.speed;
+		this.config.position.y = this.config.position.y + Math.cos(this.config.theta.cur) * this.config.speed;
 		// limits
-		if (this.config.position.x < -(this.config.floor.size.x / 2))
-			this.config.position.x = this.config.floor.size.x / 2;
-		if (this.config.position.x > this.config.floor.size.x / 2)
-			this.config.position.x = -(this.config.floor.size.x / 2);
-		if (this.config.position.y < -(this.config.floor.size.y / 2))
-			this.config.position.y = this.config.floor.size.y / 2;
-		if (this.config.position.y > this.config.floor.size.y / 2)
-			this.config.position.y = -(this.config.floor.size.y / 2);
+		if (this.config.position.x < this.config.set.min.x)
+			this.config.position.x = this.config.set.max.x;
+
+		if (this.config.position.x > this.config.set.max.x)
+			this.config.position.x = this.config.set.min.x;
+
+		if (this.config.position.y < this.config.set.min.y)
+			this.config.position.y = this.config.set.max.y;
+
+		if (this.config.position.y > this.config.set.max.y)
+			this.config.position.y = this.config.set.min.y;
 	}
 	// checkstatus(statusName){
 	// 	this.on(statusName)
@@ -147,12 +145,18 @@ class Mob {
 		this.mesh = new THREE.Group();
 		this.mesh.config = this.config;
 
+		// console.log("**############**********************");
+		// console.log(this.config)
+		// console.log(this.config.set)
+		// console.log('nickname',this.config.nickname)
+		
+
 		// this.mesh.feun = {mob:true}
-		this.mesh.position.set(
-			this.config.position.x,
-			this.config.position.y,
-			this.config.position.z + this.config.mesh.z / 2
-		);
+		// this.mesh.position.set(
+		// 	this.config.position.x,
+		// 	this.config.position.y,
+		// 	this.config.position.z + this.config.mesh.z / 2
+		// );
 		// altitude
 		// if (this.config.mesh.altitude) { this.mesh.position.z += this.config.mesh.altitude }
 

@@ -25,7 +25,7 @@ class MobsManager {
 		this._FrontboardManager = datas.FrontboardManager;
 		this._GameConfig = datas.GameConfig;
 		this._CameraManager = datas.CameraManager;
-
+		// ---------------
 		this.conslog = this._GameConfig.conslog;
 		this._maxMobLimiteLv = 5;
 		this._AllMobs = [];
@@ -35,26 +35,32 @@ class MobsManager {
 		this._Formula = new Formula();
 		this.MobmouseOverCallback = 0;
 	}
-	addMobs(howmanyMobs, mobType = false) {
+	addMobs(MapNum, mobType = false) {
+		let howmanyMobs = this._GameConfig.Floors.config[MapNum].mobs.number;
+
 		for (let i = 0; i < howmanyMobs; i++) {
+			mobType = mobType ?? "mobs";
 			// let name = this.rangers[this._Formula.rand(0, this.rangers.length - 1)]
 			let name = this.get_AName(8);
-			let mob = this.addOne(name, mobType ?? "mobs");
+			// console.log(
+			// 	" 1 creating {" + mobType + "} ref:" + name + " on map",
+			// 	MapNum
+			// );
+			this.addOne(name, mobType, MapNum);
 		}
-		return this.get_allMobs();
 	}
 
 	A_InitAllMobsDatas() {
 		// empty
 		this.colliders = [];
 	}
-	B_CheckAllMobsDatas() {
+	B_GetAllMobsDatas() {
 		// boucle sur LES MOBS
 		this._AllMobs.forEach((mob) => {
 			mob.update_VisualHp(this.camera);
 			mob.checkstatus("mouseover", (data) => {
 				this.MobmouseOverCallback++;
-				// console.log('retour '+this.MobmouseOverCallback,data)
+				// console.log("retour " + this.MobmouseOverCallback, data);
 				// this._FrontboardManager.setMouseOverMob('Targets', data.active)
 			});
 
@@ -265,8 +271,9 @@ class MobsManager {
 			.map((key) => this._AllMobs[key]);
 		return [onlyLivings, onlyDeads];
 	}
-	addOne(nickname = false, mobType = "mobs") {
+	addOne(nickname = false, mobType = "mobs", mapNum) {
 		let RandomMob = this._Formula.rand(1, this._maxMobLimiteLv);
+
 		this.mobsConfig = new MobConfig(RandomMob);
 		// i get a clone with the default config
 		let mobConf = this.mobsConfig.get_confData(mobType);
@@ -277,18 +284,36 @@ class MobsManager {
 		mobConf.speed = mobConf.speed / 50;
 		//mobConf.divs.prima.size
 
-		let currentFloorConfig =
-			this._GameConfig.Floors.config[this._GameConfig.defaultMapNum];
-		// add floor conf to mob
-		mobConf.position = this._Formula.get_aleaPosOnFloor(
-			currentFloorConfig.size
-		);
-		mobConf.floor = currentFloorConfig;
-		// mobConf.position.z = mobConf.mesh.altitude
+		let FloorConfig = this._GameConfig.Floors.config[mapNum];
 
-		mobConf.nickname =
-			!nickname === false ? nickname : new String("UnNamed_") + mobConf.immat;
-		// toto change this theta
+		// console.log("**############********************");
+		// console.log(FloorConfig.position);
+		// console.log(FloorConfig.size);
+		mobConf.set = {
+			// floor: FloorConfig,
+			// size:FloorConfig.size,
+			// position:FloorConfig.position,
+			min: {
+				x: FloorConfig.position.x - (FloorConfig.size.x / 2),
+				y: FloorConfig.position.y - (FloorConfig.size.y / 2),
+				z: FloorConfig.position.z - (FloorConfig.size.z / 2)
+			},
+			max: {
+				x: FloorConfig.position.x + (FloorConfig.size.x / 2),
+				y: FloorConfig.position.y + (FloorConfig.size.y / 2),
+				z: FloorConfig.position.z + (FloorConfig.size.z / 2)
+			},
+		};
+
+		mobConf.position = {
+			x: this._Formula.rand(mobConf.set.min.x,mobConf.set.max.x),
+			y:this._Formula.rand(mobConf.set.min.y,mobConf.set.max.y),
+			z: this._Formula.rand(mobConf.set.min.z,mobConf.set.max.z),
+		};
+
+		mobConf.nickname = !nickname === false ? nickname : new String("UnNamed_") + mobConf.immat;
+			
+		mobConf.floor = FloorConfig;
 		mobConf.theta.cur = this._Formula.rand(0, 360);
 
 		// add model
@@ -308,11 +333,14 @@ class MobsManager {
 
 		// set the new immat
 		this._CurrentMobImmat = this._AllMobs[this._AllMobs.length - 1].immat + 1;
-		if (this._FrontboardManager.FrontMobsCounter)
-			this._FrontboardManager.setMobCounter(this._AllMobs.length);
+
+		if (this._FrontboardManager && this._FrontboardManager.FrontMobsCounter)
+			this._FrontboardManager.updateCounter(
+				"FrontMobsCounter",
+				this._AllMobs.length
+			);
 
 		this._scene.add(newmob.mesh);
-		return this._AllMobs[this._CurrentMobImmat - 1];
 	}
 	handleMobCallback = (datas) => {
 		if (datas.dead === true) {

@@ -3,21 +3,18 @@ import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118/examples
 import { Formula } from "../mecanics/Formula.js";
 class SceneManager {
 	backgroundsRootPath = "./gameCore/3dAssets/backgrounds/";
-	conslog = true;
-	order = 0;
-	_GameConfig;
+
 	// ext
 	_WebGLRenderer;
 	_Scene;
 	_Formula = null;
 	constructor(GameConfig) {
 		this.CubeTextureLoader = new THREE.CubeTextureLoader();
-		this._GameConfig = GameConfig;
-		if (this._GameConfig.conslog) console.info("SceneManager start !");
+		this.GameConfig = GameConfig;
 		this._Formula = new Formula();
 	}
 	init() {
-		if (this._GameConfig.conslog) console.info("SceneManager initiated !");
+		if (this.GameConfig.conslog) console.info("SceneManager initiated !");
 	}
 	set_AndGetScene(datas) {
 		this.camera = datas.camera;
@@ -28,36 +25,43 @@ class SceneManager {
 		this.sunDistance = this.sun.position.distanceTo(new THREE.Vector3(0, 0, 0));
 
 		// Scene
-		this._Scene = new THREE.Scene();
+		this._scene = new THREE.Scene();
 
-		this.set_SceneBackground(this.backgroundsRootPath, [
-			"posx.jpg",
-			"negx.jpg",
-			"posy.jpg",
-			"negy.jpg",
-			"posz.jpg",
-			"negz.jpg",
-		]);
-		// this._Scene.background.rotation = 2
-		// this._Scene.flipY = true
-		// console.log(this._Scene.background)
+		// this.set_SceneBackground(this.backgroundsRootPath, [
+		// 	"posx.jpg",
+		// 	"negx.jpg",
+		// 	"posy.jpg",
+		// 	"negy.jpg",
+		// 	"posz.jpg",
+		// 	"negz.jpg",
+		// ]);
+		// this._scene.background.rotation = 2
+		// this._scene.flipY = true
+		// console.log(this._scene.background)
 
 		this.lights.forEach((light) => {
 			if (typeof light != "undefined") {
 				if (typeof light.castShadow != "undefined") {
 					light.castShadow = true;
 				}
-				this._Scene.add(light);
+				this._scene.add(light);
 			}
 		});
 
-		this._Scene.add(this.sun);
+		this._scene.add(this.sun);
 
 		// todo floor
-		this._Scene.add(this.allFloors[0]);
+		if (this.allFloors) {
+			if (this.allFloors.length > 0) {
+				this.allFloors.forEach(floor => {
+					this._scene.add(floor)
+				});
+				// this._scene.add(this.allFloors[0]);
+			}
+		}
 
-		// this._Scene.add(this.plan);
-		return this._Scene;
+		// this._scene.add(this.plan);
+		return this._scene;
 	}
 
 	rotateSun = (objet) => {
@@ -112,9 +116,9 @@ class SceneManager {
 	set_SceneBackground(path, images) {
 		this.CubeTextureLoader.setPath(path);
 		const texture = this.CubeTextureLoader.load(images);
-		this._Scene.background = texture;
+		this._scene.background = texture;
 
-		this._Scene.fog = new THREE.Fog(0x333333, 30, 55);
+		this._scene.fog = new THREE.Fog(0x333333, 30, 55);
 	}
 	setAndGet_WebGLRenderer() {
 		// WebGLRENDER
@@ -130,7 +134,7 @@ class SceneManager {
 		return this._WebGLRenderer;
 	}
 	setAndGet_OrbitControls(camera) {
-		if (this._GameConfig.conslog) console.info("test OrbitControls");
+		if (this.GameConfig.conslog) console.info("test OrbitControls");
 
 		if (typeof OrbitControls === "function") {
 			this.controls = new OrbitControls(camera, this._WebGLRenderer.domElement);
@@ -141,7 +145,7 @@ class SceneManager {
 
 				this.controls.target.set(0, 0, 0);
 				this.controls.update();
-				if (this._GameConfig.conslog) console.info("OrbitControls ok ! ");
+				if (this.GameConfig.conslog) console.info("OrbitControls ok ! ");
 			} else {
 				console.info("OrbitControls refused ! ");
 			}
@@ -149,11 +153,11 @@ class SceneManager {
 		return this.controls;
 	}
 	removeFromSceneAndDispose(sceneObject) {
-		const object = this._Scene.getObjectByProperty("uuid", sceneObject.uuid);
-		// if (this._GameConfig.conslog) console.log('removeFromSceneAndDispose',object)
+		const object = this._scene.getObjectByProperty("uuid", sceneObject.uuid);
+		// if (this.GameConfig.conslog) console.log('removeFromSceneAndDispose',object)
 		if (object.geometry) object.geometry.dispose();
 		if (object.material) object.material.dispose();
-		this._Scene.remove(object);
+		this._scene.remove(object);
 	}
 	// TEST -------------------
 	//      -------------------
@@ -172,8 +176,8 @@ class SceneManager {
 	// 	const geometry = new THREE.BoxGeometry(1, 1, 1); // Par exemple, une boîte
 	// 	const mesh = new THREE.Mesh(geometry, material);
 	// 	mesh.position.set(3, 3, 3);
-	// 	this._Scene.add(mesh); // Ajoutez le maillage à votre scène
-	// 	console.log(this._Scene)
+	// 	this._scene.add(mesh); // Ajoutez le maillage à votre scène
+	// 	console.log(this._scene)
 
 	// }
 	// addcubee(){
@@ -186,7 +190,7 @@ class SceneManager {
 	// 	const geometry = new THREE.BoxGeometry(1, 1, 1); // Par exemple, une boîte
 	// 	const mesh = new THREE.Mesh(geometry, material);
 	// 	mesh.position.set(2, 2, 2);
-	// 	this._Scene.add(mesh); // Ajoutez le maillage à votre scène
+	// 	this._scene.add(mesh); // Ajoutez le maillage à votre scène
 
 	// }
 	addAxes() {
@@ -208,7 +212,7 @@ class SceneManager {
 			new THREE.MeshStandardMaterial({ color: 0x0000ff })
 		);
 		zbox.position.set(0.5, 0.5, 0.5);
-		this._Scene.add(xbox, ybox, zbox);
+		this._scene.add(xbox, ybox, zbox);
 	}
 }
 export { SceneManager };

@@ -19,7 +19,7 @@ class GameConfig {
 		this.#Init()
 	}
 	#Init(conslog) {		
-		this.defaultMapNum = 3
+		this.defaultMapNum = 0
 
 		this.#renderer = {
 			// color: 0x000000,

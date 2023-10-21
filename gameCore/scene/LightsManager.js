@@ -153,11 +153,11 @@ class LightsManager {
 
 	}
 	_init_DirectionalLight() {
-		// this._directionalLight = new THREE.DirectionalLight(
-		// 	this._GameConfig.get_directionalLight('color'),
-		// 	this._GameConfig.get_directionalLight('intensity')
-		// );
-		this._directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+		this._directionalLight = new THREE.DirectionalLight(
+			this._GameConfig.get_directionalLight('color'),
+			this._GameConfig.get_directionalLight('intensity')
+		);
+		// this._directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 
 		this._directionalLight.name = 'directionalLight_0';
 		// this._directionalLight.castShadow = true;

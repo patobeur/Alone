@@ -159,8 +159,9 @@ class ControlsManager {
 			"Space": () => this.space = true,
 		};
 		if (KEY_MAP[event.key]) {
-			if (this.conslog) console.log('EVENT', event);
+			// if (this.conslog) console.log('EVENT', event);
 			if (this._preventDefaultRightClick) event.preventDefault();
+			if (event.key==="'") event.preventDefault();
 			KEY_MAP[event.key]();
 		}
 	}
